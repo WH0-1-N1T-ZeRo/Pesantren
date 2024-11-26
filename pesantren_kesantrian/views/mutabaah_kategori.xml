@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- cdn.mutabaah.kategori list view -->
+        <record id="cdn_mutabaah_kategori_view_tree" model="ir.ui.view">
+            <field name="name">cdn.mutabaah.kategori.view.list</field>
+            <field name="model">cdn.mutabaah.kategori</field>
+            <field name="arch" type="xml">
+                <list>
+                    <!-- Add your fields here -->
+                    <field name="name" />
+                </list>
+            </field>
+        </record>
+
+        <!-- cdn.mutabaah.kategori form view -->
+        <record id="cdn_mutabaah_kategori_view_form" model="ir.ui.view">
+            <field name="name">cdn.mutabaah.kategori.view.form</field>
+            <field name="model">cdn.mutabaah.kategori</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <!-- Add your fields here -->
+                            <field name="name"/>
+                            <field name="active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- cdn.mutabaah.kategori action window -->
+        <record id="cdn_mutabaah_kategori_action" model="ir.actions.act_window">
+            <field name="name">Kategori Mutabaah</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.mutabaah.kategori</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p><p>
+                    <!-- More details about what a user can do with this object will be OK --> 
+                
+                </p>
+            </field>
+        </record>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="kategori_mutabaah_menu_act" name="Kategori Mutabaah" parent="pengaturan_kepengasuhan_menu_categ" action="cdn_mutabaah_kategori_action" sequence="11"/>
+    
+        
+    
+    </data>
+    
+</odoo>

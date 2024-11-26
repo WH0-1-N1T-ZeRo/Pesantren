@@ -1,0 +1,76 @@
+<odoo>
+	<data>
+
+        <record id="action_report_sertifikat_santri" model="ir.actions.report">
+		    <field name="name">Sertifikat Santri</field>
+		    <field name="model">cdn.siswa</field>
+		    <field name="report_type">qweb-pdf</field>
+		    <field name="report_name">pesantren_base.report_sertifikat_santri</field>
+		    <field name="report_file">pesantren_base.report_sertifikat_santri</field>
+            <field name="multi" eval="True"/>
+		</record>
+        
+		<template id="report_sertifikat_santri" name="report_sertifikat_santri">
+			<t t-call="web.html_container">
+				<t t-foreach="docs" t-as="doc">
+					<t t-call="web.external_layout">
+						<div class="page">
+							<div style="border: 10px solid #365C3C; width: 639px; margin: auto; position: relative; margin-top: 50px; overflow: hidden;">
+                                <div style="border: 5px solid gold; width: 619px; padding: 15px;">
+                                    <div>
+                                        <table align="center" style="text-align: center; margin-bottom: 25px; margin-left: 60px;" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td style="font-size: 20px; font-weight: bold; padding-bottom: 5px;">بسم الله الرحمن الرحيم</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-transform: uppercase; font-size: 27px; font-weight: bold; letter-spacing: 7px; color: #538069; text-shadow: 2px 8px 6px rgba(0,0,0,0.2), 0px -5px 35px rgba(255,255,255,0.3); padding-bottom: 5px;">Sertifikat</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-transform: uppercase; letter-spacing: 3px; font-weight: bold; font-size: 20px; color: #445E50; padding-bottom: 15px;">Tahfidz Juz 30</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight: bold; font-size: 15px;">Diberikan kepada ananda : </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight: bold; font-size: 35px; padding-bottom: 20px;"><span t-field="doc.name"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight: bold; font-size: 17px; padding-bottom: 10px;">atas keberhasilannya menyelesaikan hafalan juz 30.</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Semoga ananda yang bersangkutan diberikan kemudahan untuk <br/> tetap istiqomah bermuroja'ah dan menjaga hafalannya. <br/> Semoga Allah berkahi ilmu yang didapat. Aamiin.
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <table cellpadding="0" cellspacing="0" style="text-align: center;">
+                                            <tr>
+                                                <td style="padding-left: 85px;">
+                                                    <div>
+                                                        <span>Kepala Yayasan</span><br/><br/>
+                                                        <span style="font-weight: bold;">Muhammad Faiz</span>
+                                                    </div>
+                                                </td>
+                                                <td style="padding-left: 160px;">
+                                                    <div>
+                                                        <span>Penguji Tahfidz</span><br/><br/>
+                                                        <span style="font-weight: bold;">Albert Einstein</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <div style="width: 80px; height: 80px; background-color: #FFD200; position: absolute; top: -10px; left: -30px; border-radius: 30px;"></div>
+                                        <div style="width: 80px; height: 80px; background-color: #FFD200; position: absolute; top: -10px; right: -30px; border-radius: 30px;"></div>
+                                        <div style="width: 80px; height: 80px; background-color: #FFD200; position: absolute; bottom: -10px; left: -30px; border-radius: 30px;"></div>
+                                        <div style="width: 80px; height: 80px; background-color: #FFD200; position: absolute; bottom: -10px; right: -30px; border-radius: 30px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
+
+	</data>
+</odoo>

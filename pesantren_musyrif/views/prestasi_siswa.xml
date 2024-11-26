@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <!-- cdn.prestasi_siswa action window -->
+        <record id="musyrif_prestasi_siswa_action" model="ir.actions.act_window">
+            <field name="name">Prestasi Siswa</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.prestasi_siswa</field>
+            <field name="view_mode">list,form</field>
+            <!-- <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('pesantren_kesantrian.cdn_prestasi_siswa_view_tree')}), 
+                (0, 0, {'view_mode': 'form', 'view_id': ref('pesantren_kesantrian.cdn_prestasi_siswa_view_form')})]"
+                /> -->
+        </record>
+        
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="cdn_prestasi_siswa_menu_act" name="Prestasi Siswa" parent="musyrif_aktivitas_menu_categ" action="musyrif_prestasi_siswa_action" sequence="30"/>
+    </data>
+</odoo>

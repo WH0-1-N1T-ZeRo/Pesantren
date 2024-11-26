@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <report
+        id="penilaian_akhir_xlsx"
+        model="cdn.penilaian_akhir"
+        string="Print to XLSX"
+        report_type="xlsx"
+        name="pesantren_guru.penilaian_akhir"
+        file="cdn_penilaian_akhir"
+        attachment_use="False"
+        />
+</odoo>

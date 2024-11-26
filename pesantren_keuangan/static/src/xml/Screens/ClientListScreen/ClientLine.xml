@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<templates id="template" xml:space="preserve">
+    <t t-extend="ClientLine" t-inherit="point_of_sale.ClientLine" t-inherit-mode="extension" owl="1">
+		<xpath expr="//button[@class='edit-client-button']" position="replace">
+        </xpath>
+        <xpath expr="//button[@class='add-credit-payment']" position="replace">  
+        </xpath>
+    </t>
+</templates>

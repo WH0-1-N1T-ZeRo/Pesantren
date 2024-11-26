@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+  <data>
+    <!-- cdn.mata_pelajaran list view -->
+    <record id="cdn_mata_pelajaran_view_tree" model="ir.ui.view">
+      <field name="name">cdn.mata_pelajaran.view.list</field>
+      <field name="model">cdn.mata_pelajaran</field>
+      <field name="arch" type="xml">
+        <list>
+          <!-- Add your fields here -->
+          <field name="urut"/>
+          <field name="name"/>
+          <field name="kode"/>
+          <field name="kategori"/>
+          <field name="jenjang"/>
+          <field name="guru_ids" widget="many2many_tags"/>
+        </list>
+      </field>
+    </record>
+
+    <!-- cdn.mata_pelajaran form view -->
+    <record id="cdn_mata_pelajaran_view_form" model="ir.ui.view">
+      <field name="name">cdn.mata_pelajaran.view.form</field>
+      <field name="model">cdn.mata_pelajaran</field>
+      <field name="arch" type="xml">
+        <form string="">
+          <sheet>
+            <group>
+              <!-- Add your fields here -->
+              <group>
+                <field name="urut"/>
+                <field name="jenjang"/>
+                <field name="tingkat_id" 
+                      domain="[('jenjang', '=', jenjang)]"
+                      options="{
+                        'no_create_edit':True, 
+                        'no_create':True, 
+                        'no_open': True
+                      }"/>
+                <field name="jurusan_id" invisible="jenjang not in ('sma')"/>
+              </group>
+              <group>
+                <field name="name"/>
+                <field name="kode"/>
+                <field name="kategori"/>
+                <field name="guru_ids"
+                      domain="[('jns_pegawai', '=', 'guru')]"
+                      widget="many2many_tags"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+    
+    <!-- cdn.mata_pelajaran search view -->
+    <record id="cdn_mata_pelajaran_view_search" model="ir.ui.view">
+      <field name="name">cdn.mata_pelajaran.view.search</field>
+      <field name="model">cdn.mata_pelajaran</field>
+      <field name="arch" type="xml">
+        <search string="Mata Pelajaran">
+          <!-- Add your fields here -->
+          <filter string="Akademik" name="filter_by_kategori" domain="[('kategori','=','akademik')]"/>
+          <filter string="Diniyyah" name="filter_by_kategori" domain="[('kategori','=','diniyyah')]"/>
+          <filter string="Tahfidz" name="filter_by_kategori" domain="[('kategori','=','tahfidz')]"/>
+          <filter string="Ekstrakurikuler" name="filter_by_kategori" domain="[('kategori','=','ekstrakurikuler')]"/>
+          <filter string="Lainnya" name="filter_by_kategori" domain="[('kategori','=','lainnya')]"/>
+          <group string="Group By..">
+              <filter string="Jenjang" domain="[]" name="group_by_jenjang" context="{'group_by':'jenjang'}"/>
+          </group>
+        </search>
+      </field>
+    </record>
+
+    <!-- cdn.mata_pelajaran action window -->
+    <record id="cdn_mata_pelajaran_action" model="ir.actions.act_window">
+      <field name="name">Mata Pelajaran</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">cdn.mata_pelajaran</field>
+      <field name="view_mode">list,form</field>
+      <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+          <!-- Add Text Here -->
+        </p><p>
+          <!-- More details about what a user can do with this object will be OK --> 
+        </p>
+      </field>
+    </record>
+
+    <!-- This Menu Item must have a parent and an action -->
+    <menuitem id="matpel_menu_act" name="Mata Pelajaran" parent="pengaturan_akademik_menu_categ" action="cdn_mata_pelajaran_action" sequence="20"/>
+  
+  </data>
+  
+</odoo>

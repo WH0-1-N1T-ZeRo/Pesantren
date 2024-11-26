@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <!-- Inherit PartnerLine untuk menambahkan data di kolom Uang Saku -->
+    <t t-name="pos_wallet_odoo.InheritData" t-inherit="point_of_sale.PartnerLine" t-inherit-mode="extension">
+        <!-- Menambahkan data Uang Saku di dalam tabel -->
+        <xpath expr="//tr/td[@class='partner-line-email ']" position="before">
+            <div t-if="partner">
+                <div t-if="partner.phone">
+                    <i class="fa fa-fw fa-id-badge me-2"/>
+                    <t t-esc="partner.phone"/>
+                </div>
+                <div t-if="partner.mobile">
+                    <i class="fa fa-fw fa-credit-card me-2"/>
+                    <t t-esc="partner.mobile"/>
+                </div>
+                <div t-if="partner.email" class="email-field">
+                    <i class="fa fa-fw fa-wallet me-2"/>
+                    <t t-esc="partner.email" />
+                </div>
+            </div>
+        </xpath>
+    </t>
+</templates>

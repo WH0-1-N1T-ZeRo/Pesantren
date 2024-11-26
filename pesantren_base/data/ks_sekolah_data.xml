@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- dashboard template -->
+        <record id="ks_template_sekolah" model="ks_dashboard_ninja.board_template">
+            <field name="name">Template Sekolah</field>
+            <field name="ks_gridstack_config">
+                [
+                    {"item_id":"pesantren_base.ks_hr_employee_item", "data": {"x": 0, "y": 0, "w": 4, "h": 2}},
+                    {"item_id":"pesantren_base.ks_cdn_orangtua_item", "data": {"x": 4, "y": 0, "w": 4, "h": 2}},
+                    {"item_id":"pesantren_base.ks_cdn_siswa_item", "data": {"x": 8, "y": 0, "w": 4, "h": 2}},
+                    {"item_id":"pesantren_base.ks_tagihan_siswa_item", "data": {"x": 0, "y": 2, "w": 12, "h": 5}}
+                ]
+            </field>
+            <field name="ks_item_count">1</field>
+        </record>
+
+        <!-- items -->
+        <record id="ks_tagihan_siswa_item" model="ks_dashboard_ninja.item">
+            <field name="name">Tagihan Siswa</field>
+            <field name="ks_chart_data_count_type">count</field>
+            <field name="ks_chart_groupby_type">relational_type</field>
+            <field name="ks_model_id" eval="ref('account.model_account_move')"/>
+            <field name="ks_chart_relation_groupby" eval="ref('pesantren_base.field_account_move__komponen_id')"/>
+            <field name="ks_chart_relation_sub_groupby" eval="ref('account.field_account_move__payment_state')"/>
+            <field name="ks_semi_circle_chart">1</field>
+            <field name="ks_chart_item_color">cool</field>
+            <field name="ks_record_data_limit">10</field>
+            <field name="ks_show_data_value">1</field>
+            <field name="ks_unit_selection">monetary</field>
+            <field name="ks_dashboard_item_type">ks_bar_chart</field>
+            <field name="ks_company_id" eval="0"/>
+            <field name="ks_date_filter_selection">l_none</field>
+        </record>
+        <record id="ks_hr_employee_item" model="ks_dashboard_ninja.item">
+            <field name="name">Guru</field>
+            <field name="ks_dashboard_item_type">ks_tile</field>
+            <field name="ks_record_count_type">count</field>
+            <field name="ks_model_id" eval="ref('pesantren_base.model_hr_employee')"/>
+            <field name="ks_default_icon">graduation-cap</field>
+            <field name="ks_dashboard_item_theme">blue</field>
+            <field name="ks_background_color">#1c243c,0.99</field>
+            <field name="ks_font_color">#ffffff,0.99</field>
+            <field name="ks_default_icon_color">#ffffff,0.99</field>
+            <field name="ks_layout">layout5</field>
+            <field name="ks_domain" >
+                [
+                    ("jns_pegawai","=","guru")
+                ]
+            </field>
+        </record>
+        <record id="ks_cdn_orangtua_item" model="ks_dashboard_ninja.item">
+            <field name="name">Orangtua</field>
+            <field name="ks_dashboard_item_type">ks_tile</field>
+            <field name="ks_record_count_type">count</field>
+            <field name="ks_model_id" eval="ref('pesantren_base.model_cdn_orangtua')"/>
+            <field name="ks_default_icon">address-book-o</field>
+            <field name="ks_dashboard_item_theme">blue</field>
+            <field name="ks_background_color">#1c243c,0.99</field>
+            <field name="ks_font_color">#ffffff,0.99</field>
+            <field name="ks_default_icon_color">#ffffff,0.99</field>
+            <field name="ks_layout">layout5</field>
+        </record>
+        <record id="ks_cdn_siswa_item" model="ks_dashboard_ninja.item">
+            <field name="name">Siswa</field>
+            <field name="ks_dashboard_item_type">ks_tile</field>
+            <field name="ks_record_count_type">count</field>
+            <field name="ks_model_id" eval="ref('pesantren_base.model_cdn_siswa')"/>
+            <field name="ks_default_icon">users</field>
+            <field name="ks_dashboard_item_theme">blue</field>
+            <field name="ks_background_color">#1c243c,0.99</field>
+            <field name="ks_font_color">#ffffff,0.99</field>
+            <field name="ks_default_icon_color">#ffffff,0.99</field>
+            <field name="ks_layout">layout5</field>
+        </record>
+    </data>
+    <!-- dashboard sekolah -->
+    <data noupdate="1">
+        <!-- dashboard -->
+        <record id="ks_sekolah_dashboard_board" model="ks_dashboard_ninja.board">
+            <field name="name">Dashboard</field>
+            <field name="ks_dashboard_state">Locked</field>
+            <field name="ks_dashboard_menu_name">Dashboard</field>
+            <field name="ks_dashboard_top_menu_id" ref="pesantren_base.sekolah_top_menu" />
+            <field name="ks_dashboard_menu_sequence">1</field>
+            <field name="ks_dashboard_active">1</field>
+            <field name="ks_set_interval">15000</field>
+            <field name="ks_dashboard_default_template" ref="pesantren_base.ks_template_sekolah" />
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,24 @@
+<!-- custom_number_popup.xml -->
+<templates xml:space="preserve">
+    <t t-name="CustomNumberPopup">
+        <div class="popup">
+            <header class="title">Masukkan Nomor</header>
+            <div class="popup-input">
+                <span t-esc="'*'.repeat(state.inputBuffer.length)" />
+            </div>
+            <div class="popup-numpad">
+                <t t-foreach="[1, 2, 3, 4, 5, 6, 7, 8, 9, 0]" t-as="num">
+                    <button class="input-button" t-on-click="() => this.onInput(num)">
+                        <t t-esc="num"/>
+                    </button>
+                </t>
+                <button class="backspace" t-on-click="backspace">
+                    Hapus
+                </button>
+            </div>
+            <footer class="footer">
+                <button class="button confirm" t-on-click="confirm">OK</button>
+            </footer>
+        </div>
+    </t>
+</templates>

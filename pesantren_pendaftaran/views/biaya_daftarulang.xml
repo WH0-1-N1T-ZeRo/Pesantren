@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- list view -->
+        <record id="view_ubig_biaya_daftarulang_tree" model="ir.ui.view">
+            <field name="name">ubig_biaya_daftarulang_tree</field>
+            <field name="model">ubig.biaya_daftarulang</field>
+            <field name="type">list</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <list string="Biaya Tahun Ajaran">
+                    <field name="daftarulang_id" />
+                    <field name="name" />
+                    <field name="nominal" />
+                </list>
+            </field>
+        </record>
+        <!-- form view -->
+        <record id="view_ubig_biaya_daftarulang_form" model="ir.ui.view">
+            <field name="name">ubig_biaya_daftarulang_form</field>
+            <field name="model">ubig.biaya_daftarulang</field>
+            <field name="type">form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Biaya Tahun Ajaran">
+                    <header>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <!--button type="object" name="action_view_detail" class="oe_stat_button" icon="fa-pencil-square-o"-->
+                                <!--field name="detail_count" widget="statinfo" string="Detail(s)"/-->
+                                <!--field name="detail_ids" invisible="1"/-->
+                            <!--/button-->
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Biaya daftarulang Name"/>
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group>
+                            <field name="daftarulang_id" />
+                            <field name="nominal" />
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- search -->
+        <record id="view_ubig_biaya_daftarulang_search" model="ir.ui.view">
+            <field name="name">ubig_biaya_daftarulang</field>
+            <field name="model">ubig.biaya_daftarulang</field>
+            <field name="arch" type="xml">
+                <search string="Biaya daftarulang">
+
+                    <filter string="Name" name="filter_by_name" domain="[('name','=','')]" />
+                    <filter string="Nominal" name="filter_by_nominal" domain="[('nominal','=','')]" />
+                    <field name="name" select="True"/>
+                    <field name="nominal" select="True"/>
+                    <field name="daftarulang_id" select="True"/>
+                    <group string="Group By..">
+                        <filter string="Tahunajaran" domain="[]" name="group_by_daftarulang_id" context="{'group_by':'daftarulang_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        <!-- graph -->
+        <!-- <record id="view_ubig_biaya_daftarulang_graph" model="ir.ui.view">
+            <field name="name">ubig_biaya_daftarulang</field>
+            <field name="model">ubig.biaya_daftarulang</field>
+            <field name="arch" type="xml">
+                <graph string="Biaya daftarulang" type="bar">
+                    <field name="daftarulang_id"/>
+                </graph>
+            </field>
+        </record> -->
+        <!-- action window -->
+        <record id="action_ubig_biaya_daftarulang" model="ir.actions.act_window">
+            <field name="name">Biaya Per Tahun Ajaran</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ubig.biaya_daftarulang</field>
+            <field name="view_mode">list,form,graph</field>
+            <field name="context">{"search_default_group_by_daftarulang_id":1}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                Click to add a new Biaya daftarulang
+                </p><p>
+                Click the Create button to add a new Biaya daftarulang
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

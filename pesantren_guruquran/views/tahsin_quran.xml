@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- cdn.tahsin_quran inherit form view -->
+        <!-- <record id="guruquran_cdn_tahsin_quran" model="ir.ui.view">
+            <field name="name">guruquran.tahsin_quran.inherit.view.form</field>
+            <field name="model">cdn.tahsin_quran</field>
+            <field name="inherit_id" ref="pesantren_kesantrian.cdn_tahsin_quran_view_form"/>
+            <field name="arch" type="xml">
+                
+                <xpath expr="//button[@name='action_confirm']" position="replace">
+                    <button string="Selesai" type="object" name="action_confirm" 
+                             invisible="state != 'draft'"
+                            groups="
+                                pesantren_kesantrian.group_kesantrian_manager,
+                                pesantren_guruquran.group_guru_quran_staff
+                            " />
+                </xpath>
+                
+            </field>
+        </record> -->
+        <!-- cdn.tahsin_quran action window -->
+        <record id="cdn_tahsin_quran_action" model="ir.actions.act_window">
+            <field name="name">Tahsin Al Qur'an</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.tahsin_quran</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="pesantren_kesantrian.cdn_tahsin_view_tree" />
+            <field name="domain">
+                [
+                    '|',
+                    ('halaqoh_id.penanggung_jawab_id.user_id','=',uid),
+                    ('halaqoh_id.pengganti_ids.user_id','=',uid)
+                ]
+            </field>
+        </record>
+        <record id="action_tree_view_cdn_tahsin" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2" />
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="pesantren_kesantrian.cdn_tahsin_view_tree" />
+            <field name="act_window_id" ref="cdn_tahsin_quran_action" />
+        </record>
+        <record id="action_form_view_cdn_tahsin" model="ir.actions.act_window.view">
+            <field name="sequence" eval="3" />
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="pesantren_kesantrian.cdn_tahsin_quran_view_form" />
+            <field name="act_window_id" ref="cdn_tahsin_quran_action" />
+        </record>
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="cdn_tahsin_quran_menu_act" name="Tahsin Al Qur'an" parent="guruquran_tahsin_kepesantrenan_menu_categ" action="cdn_tahsin_quran_action" sequence="20"/>
+    </data>
+</odoo>

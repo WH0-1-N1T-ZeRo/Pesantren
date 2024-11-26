@@ -1,0 +1,5 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_recharge_wallet_user,access.recharge.wallet.user,model_recharge_wallet,base.group_user,1,1,1,1
+access_wallet_transaction_user,access.wallet.transaction.user,model_pos_wallet_transaction,base.group_user,1,1,1,1
+access_pos_wallet_account,access_pos_wallet_account,model_pos_wallet_account,base.group_user,1,1,1,1
+access_res_partner,pesantren_keuangan.res_partner,model_res_partner,base.group_user,1,0,0,0

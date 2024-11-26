@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- cdn.mutabaah.sesi list view -->
+        <record id="cdn_mutabaah_sesi_view_tree" model="ir.ui.view">
+            <field name="name">cdn.mutabaah.sesi.view.list</field>
+            <field name="model">cdn.mutabaah.sesi</field>
+            <field name="arch" type="xml">
+                <list>
+                    <!-- Add your fields here -->
+                    <field name="name"/>
+                    <field name="jam_mulai" widget="float_time"/>
+                    <field name="jam_selesai" widget="float_time"/>
+                    <field name="keterangan"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+        <!-- cdn.mutabaah.sesi form view -->
+        <record id="cdn_mutabaah_sesi_view_form" model="ir.ui.view">
+            <field name="name">cdn.mutabaah.sesi.view.form</field>
+            <field name="model">cdn.mutabaah.sesi</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <!-- Add your fields here -->
+                            <field name="name"/>
+                            <field name="jam_mulai" widget="float_time"/>
+                            <field name="jam_selesai" widget="float_time"/>
+                        </group>
+                        <group>
+                            <field name="keterangan"/>
+                            <field name="active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- cdn.mutabaah.sesi action window -->
+        <record id="cdn_mutabaah_sesi_action" model="ir.actions.act_window">
+            <field name="name">Sesi Mutabaah</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.mutabaah.sesi</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p><p>
+                    <!-- More details about what a user can do with this object will be OK --> 
+                
+                </p>
+            </field>
+        </record>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="sesi_mutabaah_menu_act" name="Sesi Mutabaah" parent="pengaturan_kepengasuhan_menu_categ" action="cdn_mutabaah_sesi_action" sequence="12"/>
+    
+        
+    
+    </data>
+    
+</odoo>

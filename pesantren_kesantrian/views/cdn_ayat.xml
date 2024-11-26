@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- cdn.ayat form view -->
+        <record id="model_name_view_form" model="ir.ui.view">
+            <field name="name">cdn.ayat.view.form</field>
+            <field name="model">cdn.ayat</field>
+            <field name="arch" type="xml">
+                <form string="Ayat">
+                    <sheet>
+                        <group string="Info Ayat">
+                            <group>
+                                <field name="name"/>
+                                <field name="juz" />
+                                <field name="manzil" />
+                                <field name="ayat_sajda" />
+                            </group>
+                            <group>
+                                <field name="ruku" />
+                                <field name="hizb" />
+                                <field name="page" />
+                            </group>
+                        </group>
+                        <group string="Ayat">
+                            <field name="ayat" />
+                            <field name="text" />
+                            <field name="id_translation" widget="html" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

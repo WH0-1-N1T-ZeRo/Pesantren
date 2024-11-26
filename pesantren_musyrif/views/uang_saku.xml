@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <!-- cdn.uang_saku list view  khusus menu Musyrif -->
+        <record id="musyrif_cdn_uang_saku_view_tree" model="ir.ui.view">
+            <field name="name">cdn.uang_saku.view.list</field>
+            <field name="model">cdn.uang_saku</field>
+            <field name="arch" type="xml">
+                <list default_order="tgl_transaksi desc" create="1" edit="1" delete="1" >
+                    <field name="name"/>
+                    <field name="tgl_transaksi"/>
+                    <field name="siswa_id"/>
+                    <field name="va_saku"/>
+                    <field name="amount_in" widget="integer"/>
+                    <field name="amount_out" widget="integer"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- cdn.uang_saku action window -->
+        <record id="musyrif_uang_saku_action" model="ir.actions.act_window">
+            <field name="name">Uang Saku Santri</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.uang_saku</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'list', 'view_id': ref('pesantren_musyrif.musyrif_cdn_uang_saku_view_tree')}), 
+                (0, 0, {'view_mode': 'form', 'view_id': ref('pesantren_keuangan.cdn_uang_saku_view_form')})]"
+                />
+            <field name="domain">
+            [
+                '|',
+                ('siswa.kamar_id.musyrif_id.user_id', '=', uid),
+                ('siswa.kamar_id.pengganti_ids.user_id','=',uid)
+            ]
+            </field>
+        </record>
+        
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="musyrif_uang_saku_menu_act" name="Uang Saku Santri" parent="musyrif_data_santri_menu_categ" action="musyrif_uang_saku_action" sequence="20"/>
+    </data>
+</odoo>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <!-- pos_wallet_odoo/static/src/overrides/components/InheritTabel/InheritTabel.xml -->
+    <!-- Inherit PartnerList untuk menambahkan kolom Identitas Santri -->
+    <t t-name="pos_wallet_odoo.InheritTabel" t-inherit="point_of_sale.PartnerList" t-inherit-mode="extension">
+        <xpath expr="//Dialog" position="replace">
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+            <Dialog bodyClass="'partner-list-custom overflow-y-auto'" contentClass="'h-100'">
+                <t t-set-slot="header">
+                    <button t-if="!ui.isSmall" class="btn btn-primary btn-lg lh-lg" role="img" aria-label="Add a customer"
+                            t-on-click="() => this.editPartner()"
+                            title="Add a customer">
+                        Create 
+                    </button>
+                    <button t-if="!ui.isSmall" class="btn btn-secondary btn-lg lh-lg o-default-button ms-2" 
+                            t-on-click="() => this.clickPartner(this.props.partner)">
+                        Cancel
+                    </button>
+                    <Input tModel="[state, 'query']"
+                           class="'ms-auto'"
+                           isSmall="ui.isSmall"
+                           placeholder.translate="Search Customers..."
+                           icon="{type: 'fa', value: 'fa-search'}"
+                           autofocus="true"
+                           debounceMillis="100" />
+                    <button class="btn btn-secondary btn-lg lh-lg o-default-button ms-2" 
+                                t-on-click="BarCodeSantri">
+                            Barcode
+                        </button>
+                         <button t-if="this.pos.scanning" class="btn btn-secondary btn-lg lh-lg o-default-button ms-2" 
+                                t-on-click="BarCodeSantri">
+                            Stop
+                        </button>
+                </t>
+                <table class="table table-hover" id="barcode">
+                    <thead t-if="!ui.isSmall">
+                        <tr>
+                            <th class="py-2">Name</th>
+                            <th class="py-2">Address</th>
+                            <th class="py-2">Data Santri</th>
+                            <th class="partner-line-email py-2">Contact</th>
+                            <th class="pos-right-align py-2" t-if="isBalanceDisplayed">Balance</th>
+                            <th class="py-2"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="getPartners()" t-as="partner" t-key="partner.id">
+                            <PartnerLine
+                                close="props.close"
+                                partner="partner"
+                                isSelected="props.partner?.id === partner.id"
+                                isBalanceDisplayed="isBalanceDisplayed"
+                                onClickEdit.bind="(p) => this.editPartner(p)"
+                                onClickUnselect.bind="() => this.clickPartner()"
+                                onClickOrders.bind="(p) => this.goToOrders(p)"
+                                onClickPartner.bind="clickPartner"/>
+                        </t>
+                    </tbody>
+                </table>
+                <div t-if="state.query" class="search-more-button d-flex justify-content-center my-2">
+                    <button class="btn btn-lg btn-primary" t-on-click="onEnter">Search more</button>
+                </div>
+                <t t-set-slot="footer">
+                    <div class="d-flex justify-content-start flex-wrap gap-2 w-100">
+                        <button t-if="ui.isSmall" class="btn btn-primary btn-lg lh-lg" role="img" aria-label="Add a customer"
+                                t-on-click="() => this.editPartner()"
+                                title="Add a customer">
+                            Create 
+                        </button>
+                        <button t-if="ui.isSmall" class="btn btn-secondary btn-lg lh-lg o-default-button ms-2" 
+                                t-on-click="() => this.clickPartner(this.props.partner)">
+                            Cancel
+                        </button>
+                    </div>
+                </t>
+            </Dialog>
+        </xpath>
+    </t>
+</templates>

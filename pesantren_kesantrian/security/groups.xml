@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record model="ir.module.category" id="module_category_kesantrian">
+            <field name="name">Kesantrian</field>
+            <field name="description">Group Kesantrian</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="group_kesantrian_user" model="res.groups">
+            <field name="name">User</field>
+            <field name="category_id" ref="module_category_kesantrian"/>
+        </record>
+        <record id="group_kesantrian_staff" model="res.groups">
+            <field name="name">Staff</field>
+            <field name="category_id" ref="module_category_kesantrian"/>
+            <field name="implied_ids" eval="[(4, ref('group_kesantrian_user'))]"/>
+        </record>
+        <record id="group_kesantrian_manager" model="res.groups">
+            <field name="name">Manager</field>
+            <field name="category_id" ref="module_category_kesantrian"/>
+            <field name="implied_ids" eval="[(4, ref('group_kesantrian_staff'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+
+        <!-- kesehatan -->
+        <record id="group_kesantrian_kesehatan"  model="res.groups">
+            <field name="name">Kesantrian Kesehatan</field>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+			<field name="category_id" ref="pesantren_base.module_category_alhamra"/>
+        </record>
+
+        <!-- keamanan -->
+        <record id="group_kesantrian_keamanan"  model="res.groups">
+            <field name="name">Kesantrian Keamanan</field>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+			<field name="category_id" ref="pesantren_base.module_category_alhamra"/>
+        </record>
+
+        <!-- orang tua -->
+        <record id="group_kesantrian_orang_tua"  model="res.groups">
+            <field name="name">Orang Tua</field>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+			<field name="category_id" ref="pesantren_base.module_category_alhamra"/>
+        </record>
+
+    </data>
+    
+
+</odoo>

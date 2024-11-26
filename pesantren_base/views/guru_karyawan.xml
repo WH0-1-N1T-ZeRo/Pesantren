@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- Add you code here -->
+        <!-- Tampilan Guru : Inherit modul hr.employee -->
+        <record id="view_employee_tree_inherit" model="ir.ui.view">
+            <field name="name">hr.employee.list.inherit</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_tree"/>
+            <field name="arch" type="xml">
+                <field name="department_id" position="before">
+                    <field name="nip"/>
+                    <field name="lembaga"/>
+				</field>
+            </field>
+        </record>
+        <record id="view_employee_form_inherit" model="ir.ui.view">
+            <field name="name">hr.employee.from.inherit</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <field name="department_id" position="before">
+                    <field name="nip"/>
+                    <field name="lembaga"/>
+				</field>
+                <field name="coach_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <!-- Add your xpath here -->
+                <xpath expr="//page[@name='personal_information']//group[1]//group[4]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//page[@name='personal_information']//group[1]//group[3]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//page[@name='personal_information']//group[1]//group[1]" position="attributes">
+                    <attribute name="string">Data Kontak</attribute>
+                </xpath>
+                <xpath expr="//header" position="inside">
+                    <button name="activate_account"
+        string="Aktifkan Akun"
+        type="object" />
+                </xpath>
+                <!-- <field name="country_of_birth" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field> -->
+                <!-- <field name="km_home_work" position="attributes">
+                    <attribute name="string">Jarak Rumah (km)</attribute>
+                </field> -->
+                <!-- <xpath expr="//page[@name='personal_information']//group[1]//group[5]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//page[@name='personal_information']//group[1]//group[6]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='coach_id']" position="attributes">
+                    <attribute name="attrs">{'invisible':True}</attribute>
+                </xpath> -->
+                <xpath expr="//notebook" position="inside">
+                    <page string="Daftar Mata Pelajaran" invisible="jns_pegawai != 'guru'">
+                        <field name="jns_pegawai" invisible="1"/>
+                        <field name="mata_pelajaran_ids" nolable="1" colspan="4">
+                            <list editable="bottom">
+                                <field name="name"/>
+                                <field name="jenjang"/>
+                                <field name="tingkat_id"/>
+                                <field name="jurusan_id"/>
+                                <field name="kategori"/>
+                            </list>
+                        </field>
+                    </page>
+                </xpath>
+                <!-- <xpath expr="//notebook" position="inside">
+                    <page string="Jadwal Mengajar" invisible="[('jns_pegawai','!=','guru')]">
+                        <field name="jns_pegawai" invisible="1"/>
+                        <field name="jadwal_pelajaran_lines_ids" nolable="1" colspan="4">
+                            <list editable="bottom">
+                                <field name="name"/>
+                                <field name="kelas_id"/>
+                                <field name="jampelajaran_id"/>
+                                <field name="matapelajaran_id"/>
+                            </list>
+                        </field>
+                    </page>
+                </xpath> -->
+            </field>
+        </record>
+        <record id="hr_employee_kanban_inheritance_view" model="ir.ui.view">
+            <field name="name">hr.employee.kanban.inherit</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.hr_kanban_view_employees"/>
+            <!-- Replace 'your_module' with the actual module name -->
+            <field name="arch" type="xml">
+                <!-- Use XPath to insert the jns_pegawai field -->
+                <xpath expr="//field[@name='job_title']" position="attributes">
+                    <attribute name="t-if">False</attribute>
+                </xpath>
+                <xpath expr="//field[@name='job_title']" position="after">
+                    <span t-if="record.jns_pegawai.raw_value" class="o_kanban_record_subtitle">
+                        <field name="jns_pegawai"/>
+                    </span>
+                </xpath>
+            </field>
+        </record>
+        <!-- model.name action window -->
+        <record id="hr_employee_guru_open_action" model="ir.actions.act_window">
+            <field name="name">Data Guru / Karyawan</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hr.employee</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('jns_pegawai','=','guru')]</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p>
+                <p>
+                    <!-- More details about what a user can do with this object will be OK -->
+                </p>
+            </field>
+        </record>
+        <menuitem id="menu_cdn_guru" name="Data Guru Karyawan" parent="guru_menu_categ" action="hr_employee_guru_open_action" sequence="20"/>
+    </data>
+</odoo>

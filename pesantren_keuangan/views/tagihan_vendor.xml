@@ -1,0 +1,66 @@
+<odoo>
+    <data>
+        <!-- Vendor Invoice list View -->
+        <record id="vendor_invoice_view_tree" model="ir.ui.view">
+            <field name="name">account.move.vendor.view.list</field>
+            <field name="model">account.move</field>
+            <field name="arch" type="xml">
+                <list default_order="invoice_date desc">
+                    <field name="name"/>
+                    <field name="invoice_date" string="Tgl Faktur"/>
+                    <field name="vendor_id"/>
+                    <field name="amount_total_signed" string="Total Tagihan" widget="integer"/>
+                    <field name="amount_residual_signed" string="Sisa Tagihan" widget="integer"/>
+                    <field name="state"/>
+                    <field name="payment_state"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vendor Invoice Form View -->
+        <record id="vendor_invoice_view_form" model="ir.ui.view">
+            <field name="name">account.move.vendor.view.form</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="attributes">
+                    <attribute name="readonly">True</attribute>
+                    <attribute name="force_save">True</attribute>
+                </field>
+            </field>
+        </record>
+
+        <!-- Vendor Invoice Action Window -->
+        <record id="vendor_invoice_action" model="ir.actions.act_window">
+            <field name="name">Tagihan Vendor</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.move</field>
+            <field name="view_mode">list,form,kanban</field>
+            <field name="context">{'default_vendor': True, 'default_move_type': 'in_invoice'}</field>
+            <field name="domain">[('move_type', '=', 'in_invoice')]</field>
+        </record>
+
+        <!-- Vendor Invoice Action Window Views -->
+        <record id="list_vendor_invoice_action" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="vendor_invoice_view_tree"/>
+            <field name="act_window_id" ref="vendor_invoice_action"/>
+        </record>
+        <record id="form_vendor_invoice_action" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="vendor_invoice_view_form"/>
+            <field name="act_window_id" ref="vendor_invoice_action"/>
+        </record>
+        <record id="action_vendor_kanban_view" model="ir.actions.act_window.view">
+            <field eval="3" name="sequence"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="account.view_account_move_kanban"/>
+            <field name="act_window_id" ref="vendor_invoice_action"/>
+        </record>
+
+        <!-- Vendor Invoice Menu Item -->
+        <menuitem id="vendor_invoice_menu_act" name="Tagihan Vendor" parent="aktivitas_menu_categ" action="vendor_invoice_action" sequence="40"/>
+    </data>
+</odoo>

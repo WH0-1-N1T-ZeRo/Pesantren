@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- res.partner.change.pin form view -->
+        <record id="res_partner_change_pin_view_form" model="ir.ui.view">
+            <field name="name">res.partner.change.pin.view.form</field>
+            <field name="model">res.partner.change.pin</field>
+            <field name="arch" type="xml">
+                <form string="Ubah Wallet PIN">
+                    <group>
+                        <field name="wallet_pin" password="True" />
+                    </group>
+                    <footer>
+                        <button name="change_pin" string="Ubah" type="object" class="btn-primary"/>
+		                <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <!-- res.partner.change.pin action window -->
+        <record id="res_partner_change_pin_action" model="ir.actions.act_window">
+            <field name="name">Change Wallet PIN</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner.change.pin</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

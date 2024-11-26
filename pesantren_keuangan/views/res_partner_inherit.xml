@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- res.partner inherit form view -->
+        <record id="res_partner" model="ir.ui.view">
+            <field name="name">res.partner.inherit.view.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="l10n_id_efaktur.res_partner_tax_form_view"/>
+            <field name="arch" type="xml">
+                <!-- Add your xpath here -->
+                <xpath expr="//field[@name='l10n_id_kode_transaksi']" position="after">
+                    <field name="has_wallet_pin" invisible="1"/>
+                    <field name="wallet_pin" invisible="1"/>
+                    <field name="barcode_santri" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

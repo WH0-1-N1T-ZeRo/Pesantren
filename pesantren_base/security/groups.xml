@@ -1,0 +1,30 @@
+<odoo>
+	<data>
+		<record model="ir.module.category" id="module_category_alhamra">
+			<field name="name">Daarul Qur’an Istiqomah</field>
+			<field name="description">Aplikasi Daarul Qur’an Istiqomah</field>
+			<field name="sequence">5</field>
+		</record>
+		<record model="ir.module.category" id="module_category_sekolah">
+			<field name="name">Sekolah</field>
+			<field name="description">Group Sekolah</field>
+			<field name="sequence">10</field>
+		</record>
+		<record id="group_sekolah_user" model="res.groups">
+			<field name="name">User</field>
+			<field name="category_id" ref="module_category_sekolah"/>
+		</record>
+		<record id="group_sekolah_admin" model="res.groups">
+			<field name="name">Administrator</field>
+			<field name="category_id" ref="module_category_sekolah"/>
+			<field name="implied_ids" eval="[(4, ref('group_sekolah_user'))]"/>
+		</record>
+		<record id="group_sekolah_manager" model="res.groups">
+			<field name="name">Manager</field>
+			<field name="category_id" ref="module_category_sekolah"/>
+			<field name="implied_ids" eval="[(4, ref('group_sekolah_admin'))]"/>
+        	<field name="users" eval="[(4, ref('base.user_admin'))]"/>
+		</record>
+
+	</data>
+</odoo>

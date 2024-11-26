@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="action_owl_guruquran_dashboard" model="ir.actions.client">
+            <field name="name">Dashboard</field>
+            <field name="tag">owl.guruquran_dashboard</field>
+        </record>
+        <menuitem name="Dashboard" id="menu_guruquran_dashboard" parent="pesantren_guruquran.guruquran_menu_root" sequence="0" action="action_owl_guruquran_dashboard"/>
+    </data>
+</odoo>

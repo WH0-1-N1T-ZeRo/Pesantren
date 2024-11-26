@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- cdn.ref_jam_pelajaran list view -->
+        <record id="model_name_view_tree" model="ir.ui.view">
+            <field name="name">cdn.ref_jam_pelajaran.view.list</field>
+            <field name="model">cdn.ref_jam_pelajaran</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="start_time" widget="float_time"/>
+                    <field name="end_time" widget="float_time"/>
+                </list>
+            </field>
+        </record>
+        <!-- cdn.ref_jam_pelajaran form view -->
+        <record id="cdn_ref_jam_pelajaran_view_form" model="ir.ui.view">
+            <field name="name">cdn.ref_jam_pelajaran.view.form</field>
+            <field name="model">cdn.ref_jam_pelajaran</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="start_time" widget="float_time"/>
+                            <field name="end_time" widget="float_time"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- cdn.ref_jam_pelajaran action window -->
+        <record id="cdn_ref_jam_pelajaran_action" model="ir.actions.act_window">
+            <field name="name">Jam Pelajaran</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.ref_jam_pelajaran</field>
+            <field name="view_mode">list,form</field>
+        </record>
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="cdn_ref_jam_pelajaran_menu_act" name="Jam Pelajaran" 
+            parent="pengaturan_ref_menu_categ" action="cdn_ref_jam_pelajaran_action" sequence="60"/>
+    </data>
+</odoo>

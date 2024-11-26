@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- pos.wallet.transaction list view -->
+        <record id="musyrif_pos_wallet_transaction_view_tree" model="ir.ui.view">
+            <field name="name">musyrif.wallet.transaction.view.list</field>
+            <field name="model">pos.wallet.transaction</field>
+            <field name="arch" type="xml">
+                <list string="POS Wallet" create="false" delete="false" expand="1">													
+					<field name="name"/>
+					<field name="wallet_type"/>
+					<field name="partner_id"/>
+                    <field name="create_date" />				
+					<field name="pos_order_id"/>	
+					<field name="reference"/>	
+					<field name="amount"/>
+					<field name="currency_id"/>
+				</list>
+            </field>
+        </record>
+        <!-- pos.wallet.transaction form view -->
+        <record id="musyrif_pos_wallet_transaction_view_form" model="ir.ui.view">
+            <field name="name">musyrif.wallet.transaction.view.form</field>
+            <field name="model">pos.wallet.transaction</field>
+            <field name="arch" type="xml">
+                <form string="Pos Wallet" create="false" edit="false" delete="false">
+                    <sheet>
+                        <group>
+                            <field name="create_date" />
+                            <field name="partner_id"/>
+                            <field name="name" />				
+                            <field name="wallet_type"/>
+                            <field name="pos_order_id"/>	
+                            <field name="reference"/>	
+                            <field name="amount"/>
+                            <field name="currency_id"/>
+                        </group>
+                    </sheet>
+				</form>
+            </field>
+        </record>
+
+        <record id="musyrif_view_wallet_transaction_search" model="ir.ui.view">
+            <field name="name">pos.wallet.transaction.search</field>
+            <field name="model">pos.wallet.transaction</field>
+            <field name="arch" type="xml">
+                <search string="POS Wallet Search">
+                    <field name="partner_id"/>
+                    <filter string="Wallet Type" name="group_by_wallet_type" context="{'group_by':'wallet_type'}"/>
+                    <filter string="Status" name="group_by_status" context="{'group_by':'status'}"/>
+                    <filter string="Santri" name="group_by_santri" context="{'group_by':'partner_id'}"/>
+                </search>
+            </field>
+        </record>
+        <!-- pos.wallet.transaction action window -->
+        <record id="musyrif_pos_wallet_transaction_action" model="ir.actions.act_window">
+            <field name="name">Transaksi Dompet Santri</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">pos.wallet.transaction</field>
+            <field name="view_mode">list,form</field>
+            <!-- <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'list', 'view_id': ref('pesantren_musyrif.musyrif_pos_wallet_transaction_view_tree')}), 
+                (0, 0, {'view_mode': 'form', 'view_id': ref('pesantren_musyrif.musyrif_pos_wallet_transaction_view_form')})]"
+                /> -->
+            <field name="domain">
+            [
+                '|',
+                ('siswa_id.kamar_id.musyrif_id.user_id','=',uid),
+                ('siswa_id.kamar_id.pengganti_ids.user_id','=',uid)
+            ]
+            </field>
+            <field name="context">{'search_default_group_by_santri':1}</field>
+        </record>
+       
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="musyrif_pos_wallet_transaction_menu_act" name="Transaksi Dompet Santri" parent="musyrif_data_santri_menu_categ" action="musyrif_pos_wallet_transaction_action" sequence="30"/>
+    </data>
+</odoo>

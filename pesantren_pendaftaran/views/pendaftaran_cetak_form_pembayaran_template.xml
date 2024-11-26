@@ -1,0 +1,78 @@
+<odoo>
+    <template id="pendaftaran_cetak_form_pembayaran_template" name="Cetak Form Pembayaran">
+        <t t-call="web.html_container">
+            <t t-set="title">Pembayaran - Daarul Qur'an Istiqomah</t>
+            <div class="d-flex justify-content-center">
+                <div style="width: 800px;">
+                    <div>
+                    <div class="text-center">
+                        <h4 class="fw-bold">Pondok Pesantren Daarul Qur'an Istiqomah</h4>
+                        <span>Kabupaten Tanah Laut, Kalimantan Selatan</span>
+                    </div>
+                    </div>
+                    <hr style="border-bottom: 2px solid #000;" class="mb-4"/>
+                    <div>
+                    <h4 class="fw-bold text-center mb-4"><u>Alhamdulillah Pendaftaran Santri Baru Telah Berhasil</u></h4>
+                    <div>
+                        <span>Data yang telah disimpan adalah : </span>
+                        <table class="mt-4 mb-4" cellpadding="10" cellspacing="0" width="100%">
+                        <tbody>
+                            <tr>
+                                <td>No Pendaftaran</td>
+                                <td>:</td>
+                                <td><t t-esc="pendaftaran.nomor_pendaftaran"/> <span class="ms-4">(tgl daftar : <t t-esc="pendaftaran.tanggal_daftar"/>)</span></td>
+                            </tr>
+                            <tr style="background-color: #E6E4E4;">
+                                <td>Prodi Dipilih</td>
+                                <td>:</td>
+                                <td><span class="text-capitalize"><t t-esc="pendaftaran.jenjang_id.name"/></span></td>
+                            </tr>
+                            <tr>
+                                <td>Nama / JK</td>
+                                <td>:</td>
+                                <td><t t-esc="pendaftaran.partner_id.name"/> ( <span class="text-uppercase"><t t-esc="pendaftaran.gender"/></span> )</td>
+                            </tr>
+                            <tr style="background-color: #E6E4E4;">
+                                <td>Tempat &amp; Tanggal Lahir</td>
+                                <td>:</td>
+                                <td><t t-esc="pendaftaran.kota_lahir"/>, <t t-esc="pendaftaran.tanggal_lahir"/></td>
+                            </tr>
+                            <tr>
+                                <td>NIK</td>
+                                <td>:</td>
+                                <td><t t-esc="pendaftaran.nik"/></td>
+                            </tr>
+                            <tr style="background-color: #E6E4E4;">
+                                <td>Golongan darah</td>
+                                <td>:</td>
+                                <td><span class="text-uppercase"><t t-esc="pendaftaran.golongan_darah"/></span></td>
+                            </tr>
+                            <tr style="background-color: #E6E4E4;">
+                                <td>Email</td>
+                                <td>:</td>
+                                <td><t t-esc="pendaftaran.email"/></td>
+                            </tr>
+                        </tbody>
+                        </table>
+                        <div>
+                        <h5 class="fw-bold">Langkah Selanjutnya lakukan pembayaran melalui : <br/> Virtual Account Bank BRI <br/> Nomor : 808989898894798778</h5>
+                        </div>
+                        <br/>
+                        <div>
+                        <div>
+                            <span>Kalimantan, <t t-esc="pendaftaran.get_formatted_tanggal()" /> <br/> Panitia PSB,</span> <br/> <br/> <br/>
+                            <span>(...................................)</span>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                window.print();
+            </script>
+
+        </t>
+    </template>
+</odoo>

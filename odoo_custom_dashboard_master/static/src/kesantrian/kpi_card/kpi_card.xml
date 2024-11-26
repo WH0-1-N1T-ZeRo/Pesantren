@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="owl.KpiCard" owl="1">
+        <div class="container-fluid px-6">
+            <div class="row g-4">
+                <t t-foreach="state.kpiData" t-as="kpi" t-key="kpi.name">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 kpi-card border-0 rounded-3 shadow-sm"
+                             t-att-data-name="kpi.name"
+                             t-on-click="handleKpiCardClick">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div>
+                                        <!-- KPI Value with CountUp -->
+                                        <div class="kpi-value">
+                                            <span t-att-id="'counter-' + kpi_index"
+                                                  t-att-data-value="kpi.value">0</span>
+                                        </div>
+                                        <!-- KPI Name -->
+                                        <div class="kpi-label">
+                                            <span t-esc="kpi.name"/>
+                                        </div>
+                                    </div>
+                                    <!-- Icon container -->
+                                    <div class="icon-circle">
+                                        <i t-att-class="'fa ' + kpi.icon"
+                                           style="color: white; font-size: 20px;"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- cdn.siswa inherit list view -->
+        <record id="cdn_siswa_inherit_tree_view" model="ir.ui.view">
+            <field name="name">cdn.siswa.inherit.view.list</field>
+            <field name="model">cdn.siswa</field>
+            <field name="inherit_id" ref="pesantren_base.view_cdn_siswa_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='ruang_kelas_id']" position="after">
+                    <field name="kamar_id" />
+                </xpath>
+            </field>
+        </record>
+
+        <!-- cdn.siswa inherit form view -->
+        <record id="cdn_siswa_inherit_form_view" model="ir.ui.view">
+            <field name="name">cdn.siswa.inherit.view.form</field>
+            <field name="model">cdn.siswa</field>
+            <field name="inherit_id" ref="pesantren_base.view_cdn_siswa_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[@class='oe_button_box']" position="inside">
+                    <button name="action_kesehatan" type="object" class="oe_stat_button" icon="fa-heartbeat">
+                        <field name="kesehatan_count" widget="statinfo" string="Kesehatan" />
+                    </button>
+                    <button name="action_pelanggaran" type="object" class="oe_stat_button" icon="fa-exclamation-triangle">
+                        <field name="pelanggaran_count" widget="statinfo" string="Pelanggaran" />
+                    </button>
+                    <button name="action_prestasi_siswa" type="object" class="oe_stat_button" icon="fa-trophy">
+                        <field name="prestasi_siswa_count" widget="statinfo" string="Prestasi" />
+                    </button>
+                    <button name="action_tahfidz_quran" type="object" class="oe_stat_button" icon="fa-book">
+                        <field name="tahfidz_quran_count" widget="statinfo" string="Tahfidz Al Qur'an" />
+                    </button>
+                    <button name="action_saldo_tagihan" type="object" class="oe_stat_button" icon="fa-money">
+                        <field name="saldo_tagihan_count" widget="statinfo" string="Saldo Tagihan" />
+                    </button>
+
+                    <button name="action_uang_saku" type="object" class="oe_stat_button" icon="fa-money">
+                        <field name="uang_saku_count" widget="integer" string="Uang Saku" />
+                    </button>
+                    <button type="object" name="action_saldo_tagihan" class="oe_stat_button" context="{'default_siswa_id': True}" groups="pesantren_keuangan.group_keuangan_manager">
+                        <div class="o_field_widget o_stat_info mr4">
+                            <span class="o_stat_text">Tag:</span>
+                            <span class="o_stat_text">Sisa:</span>
+                        </div>
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value"><field name="total_invoiced" widget="integer" options="{'currency_field': 'currency_id'}"/></span>
+                            <!-- <span class="o_stat_value"><field name="total_due" widget="monetary" options="{'currency_field': 'currency_id'}"/></span> -->
+                        </div>
+                    </button>
+                </xpath>
+                <xpath expr="//field[@name='zip']" position="after">
+                    <field name="last_tahfidz" />
+                </xpath>
+                <xpath expr="//field[@name='jurusan_sma']" position="after">
+                    <field name="kamar_id" />
+                    <field name="musyrif_id" />
+                    <field name="musyrif_ganti_ids" widget="many2many_tags"/>
+                </xpath>
+                <xpath expr="//field[@name='kewarganegaraan']" position="after">
+                    <field name="halaqoh_id" />
+                    <field name="penanggung_jawab_id" />
+                    <field name="pengganti_ids" widget="many2many_tags"/>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Tahfidz Al Qur'an" name="tahfidz_quran">
+                        <field name="tahfidz_quran_ids">
+                            <list default_order="id desc" editable="bottom">
+                                <field name="tanggal" />
+                                <field name="sesi_tahfidz_id" />
+                                <field name="halaqoh_id" />
+                                <field name="surah_id" />
+                                <field name="number" />
+                                <field name="ayat_awal" />
+                                <field name="ayat_akhir" />
+                                <field name="nilai_id" />
+                                <field name="ustadz_id" />
+                                <field name="state" />
+                            </list>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- cdn.siswa action window -->
+        <record id="santri_action" model="ir.actions.act_window">
+            <field name="name">Santri</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.siswa</field>
+            <field name="view_mode">list,form</field>
+            <!-- use the views -->
+            <field name="view_id" ref="cdn_siswa_inherit_tree_view" />
+        </record>
+        <record id="action_tree_view_santri" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2" />
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="cdn_siswa_inherit_tree_view" />
+            <field name="act_window_id" ref="santri_action" />
+        </record>
+
+        <record id="cdn_siswa_qrcode_action" model="ir.actions.server">
+            <field name="name">Generate QR Code untuk Santri</field>
+            <field name="model_id" ref="model_cdn_siswa"/>
+            <field name="binding_model_id" ref="model_cdn_siswa"/>
+            <field name="binding_view_types">form,list</field>
+            <field name="state">code</field>
+            <field name="code">action = records.action_generate_qr()</field>
+        </record>
+
+        <record id="action_form_view_santri" model="ir.actions.act_window.view">
+            <field name="sequence" eval="3" />
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="cdn_siswa_inherit_form_view" />
+            <field name="act_window_id" ref="santri_action" />
+        </record>
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="santri_menu_act" name="Santri" parent="data_kesantrian_menu_categ" action="santri_action"
+            sequence="10" />
+    </data>
+</odoo>

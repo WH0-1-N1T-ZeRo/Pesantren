@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- dashboard template -->
+        <record id="ks_template_guruquran" model="ks_dashboard_ninja.board_template">
+            <field name="name">Template Kesantrian</field>
+            <field name="ks_gridstack_config">
+                [
+                    {"item_id":"pesantren_guruquran.ks_kehadiran_tahifdz_item", "data": {"x": 0, "y": 0, "w": 6, "h": 4}},
+                    {"item_id":"pesantren_guruquran.ks_tahfidz_quran_item", "data": {"x": 6, "y": 0, "w": 6, "h": 4}},
+                    {"item_id":"pesantren_guruquran.ks_kehadiran_tahsin_item", "data": {"x": 0, "y": 4, "w": 6, "h": 4}},
+                    {"item_id":"pesantren_guruquran.ks_tahfidz_quran_item_sma", "data": {"x": 6, "y": 4, "w": 6, "h": 4}},
+                    {"item_id":"pesantren_guruquran.ks_tahfidz_quran_item_smp", "data": {"x": 0, "y": 8, "w": 6, "h": 4}}
+                ]
+            </field>
+            <field name="ks_item_count">5</field>
+        </record>
+
+        <!-- dashboard item -->
+        <record id="ks_kehadiran_tahifdz_item" model="ks_dashboard_ninja.item">
+            <field name="name">Kehadiran Tahfidz</field>
+            <field name="ks_chart_data_count_type">count</field>
+            <field name="ks_chart_groupby_type">relational_type</field>
+            <field name="ks_model_id" eval="ref('pesantren_kesantrian.model_cdn_absen_tahfidz_quran_line')" />
+            <field name="ks_chart_relation_groupby" eval="
+                ref('pesantren_kesantrian.field_cdn_absen_tahfidz_quran_line__halaqoh_id')
+            " />
+            <field name="ks_chart_relation_sub_groupby" eval="
+                ref('pesantren_kesantrian.field_cdn_absen_tahfidz_quran_line__absen_id')
+            " />
+            <field name="ks_chart_item_color">default</field>
+            <field name="ks_dashboard_item_type">ks_bar_chart</field>
+            <field name="ks_show_data_value">1</field>
+            <field name="ks_company_id" eval="0" />
+            <field name="ks_date_filter_field" eval="
+                ref('pesantren_kesantrian.field_cdn_absen_tahfidz_quran_line__tanggal')
+            "/>
+            <field name="ks_date_filter_selection">l_none</field>
+             <field name="ks_domain" >
+                [
+                    "&amp;","|",
+                    ("halaqoh_id.penanggung_jawab_id.user_id","=","%UID"),
+                    ("halaqoh_id.pengganti_ids.user_id","=","%UID"),
+                    "&amp;",
+                    ("kehadiran", "=", "Hadir"),
+                    ("absen_id.state","=","Done")
+                ]
+            </field>
+        </record>
+
+        <record id="ks_tahfidz_quran_item" model="ks_dashboard_ninja.item">
+            <field name="name">Tahfidz Al Qur'an Tertinggi</field>
+            <field name="ks_model_id" eval="ref('pesantren_kesantrian.model_cdn_tahfidz_quran')" />
+            <field name="ks_tree_view_type">ungrouped</field>
+            <field name="ks_tree_view_fields" eval="[
+                (6, 0, [
+                    ref('pesantren_kesantrian.field_cdn_tahfidz_quran__siswa_id'),
+                    ref('pesantren_kesantrian.field_cdn_tahfidz_quran__halaqoh_id'),
+                    ref('pesantren_kesantrian.field_cdn_tahfidz_quran__surah_id'),
+                    ref('pesantren_kesantrian.field_cdn_tahfidz_quran__ayat_awal'),
+                    ref('pesantren_kesantrian.field_cdn_tahfidz_quran__ayat_akhir'),
+                    ref('pesantren_kesantrian.field_cdn_tahfidz_quran__nilai_id'),
+                ])
+            ]" />
+            <!-- <field name="ks_domain">[["id","&lt;",10]]</field> -->
+            <field name="ks_dashboard_item_type">ks_tree_view</field>
+            <field name="ks_company_id" eval="0" />
+            <field name="ks_record_data_limit" eval="10" />
+            <field name="ks_sort_by_field" eval="ref('pesantren_kesantrian.field_cdn_tahfidz_quran__surah_id')" />
+            <field name="ks_sort_by_order">DESC</field>
+            <field name="ks_domain" eval="[('surah_id', '!=', False)]" />
+            <field name="ks_date_filter_field" eval="
+                ref('pesantren_kesantrian.field_cdn_tahfidz_quran__tanggal')
+            "/>
+            <field name="ks_date_filter_selection">l_none</field>
+        </record>
+
+        <record id="ks_tahfidz_quran_item_sma" model="ks_dashboard_ninja.item">
+            <field name="name">Tahfidz Al Qur'an SMA</field>
+            <field name="ks_model_id" eval="ref('pesantren_kesantrian.model_cdn_tahfidz_quran')" />
+            <field name="ks_tree_view_type">ungrouped</field>
+            <field name="ks_tree_view_fields" eval="[
+                (6, 0, [
+                    ref('pesantren_kesantrian.field_cdn_tahfidz_quran__siswa_id'),
+                    ref('pesantren_kesantrian.field_cdn_tahfidz_quran__halaqoh_id'),
+                    ref('pesantren_kesantrian.field_cdn_tahfidz_quran__surah_id'),
+                    ref('pesantren_kesantrian.field_cdn_tahfidz_quran__ayat_awal'),
+                    ref('pesantren_kesantrian.field_cdn_tahfidz_quran__ayat_akhir'),
+                    ref('pesantren_kesantrian.field_cdn_tahfidz_quran__nilai_id'),
+                ])
+            ]" />
+            <field name="ks_dashboard_item_type">ks_tree_view</field>
+            <field name="ks_domain">
+                [
+                    "&amp;","|",
+                    ("halaqoh_id.penanggung_jawab_id.user_id", "=", "%UID"),
+                    ("siswa_id.jenjang", "=", "sma"),
+                    "&amp;",
+                    ("state", "=", "done")
+                ]
+            </field>
+        </record>
+
+        <record id="ks_tahfidz_quran_item_smp" model="ks_dashboard_ninja.item">
+            <field name="name">Tahfidz Al Qur'an SMP</field>
+            <field name="ks_model_id" eval="ref('pesantren_kesantrian.model_cdn_tahfidz_quran')" />
+            <field name="ks_tree_view_type">ungrouped</field>
+            <field name="ks_tree_view_fields" eval="[
+                (6, 0, [
+                    ref('pesantren_kesantrian.field_cdn_tahfidz_quran__siswa_id'),
+                    ref('pesantren_kesantrian.field_cdn_tahfidz_quran__halaqoh_id'),
+                    ref('pesantren_kesantrian.field_cdn_tahfidz_quran__surah_id'),
+                    ref('pesantren_kesantrian.field_cdn_tahfidz_quran__ayat_awal'),
+                    ref('pesantren_kesantrian.field_cdn_tahfidz_quran__ayat_akhir'),
+                    ref('pesantren_kesantrian.field_cdn_tahfidz_quran__nilai_id'),
+                ])
+            ]" />
+            <field name="ks_dashboard_item_type">ks_tree_view</field>
+            <field name="ks_domain">
+                [
+                    "&amp;",
+                    ("halaqoh_id.penanggung_jawab_id.user_id", "=", "%UID"),
+                    ("siswa_id.jenjang", "=", "smp"),
+                    ("state", "=", "done")
+                ]
+            </field>
+        </record>
+
+        
+        <record id="ks_kehadiran_tahsin_item" model="ks_dashboard_ninja.item">
+            <field name="name">Kehadiran Tahsin</field>
+            <field name="ks_chart_data_count_type">count</field>
+            <field name="ks_chart_groupby_type">relational_type</field>
+            <field name="ks_model_id" eval="ref('pesantren_kesantrian.model_cdn_absen_tahsin_quran_line')" />
+            <field name="ks_chart_relation_groupby" eval="
+                ref('pesantren_kesantrian.field_cdn_absen_tahsin_quran_line__halaqoh_id')
+            " />
+            <field name="ks_chart_relation_sub_groupby" eval="
+                ref('pesantren_kesantrian.field_cdn_absen_tahsin_quran_line__absen_id')
+            " />
+            <field name="ks_chart_item_color">default</field>
+            <field name="ks_dashboard_item_type">ks_bar_chart</field>
+            <field name="ks_show_data_value">1</field>
+            <field name="ks_company_id" eval="0" />
+            <field name="ks_date_filter_field" eval="
+                ref('pesantren_kesantrian.field_cdn_absen_tahsin_quran_line__tanggal')
+            "/>
+            <field name="ks_date_filter_selection">l_none</field>
+            <field name="ks_domain" >
+                [
+                    "&amp;","|",
+                    ("halaqoh_id.penanggung_jawab_id.user_id","=","%UID"),
+                    ("halaqoh_id.pengganti_ids.user_id","=","%UID"),
+                    "&amp;",
+                    ('kehadiran', '=', 'Hadir'),
+                    ('absen_id.state','=','Done')
+                ]
+            </field>               
+        </record>
+        
+    </data>
+    <data noupdate="1">
+        <record id="ks_guruquran_dashboard_board" model="ks_dashboard_ninja.board">
+            <field name="name">Dashboard</field>
+            <field name="ks_dashboard_state">Locked</field>
+            <field name="ks_dashboard_menu_name">Dashboard</field>
+            <field name="ks_dashboard_top_menu_id" ref="pesantren_guruquran.guruquran_menu_root"/>
+            <field name="ks_dashboard_menu_sequence">1</field>
+            <field name="ks_dashboard_active">1</field>
+            <field name="ks_set_interval">15000</field>
+            <field name="ks_dashboard_default_template" ref="pesantren_guruquran.ks_template_guruquran"/>
+        </record>
+    </data>
+</odoo>

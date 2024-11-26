@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- dashboard template -->
+        <record id="ks_template_kesantrian" model="ks_dashboard_ninja.board_template">
+            <field name="name">Template Kesantrian</field>
+            <field name="ks_gridstack_config">
+                [
+                    {"item_id":"pesantren_musyrif.ks_data_pelanggaran_item", "data": {"x": 0, "y": 5, "w": 6, "h": 4}},
+                    {"item_id":"pesantren_musyrif.ks_pelanggaran_item", "data": {"x": 7, "y": 5, "w": 6, "h": 4}},
+                    {"item_id":"pesantren_musyrif.ks_kesehatan_item", "data": {"x": 0, "y": 10, "w": 6, "h": 4}},
+                    {"item_id":"pesantren_musyrif.ks_perijinan_item", "data": {"x": 0, "y": 15, "w": 6, "h": 4}},
+                    {"item_id":"pesantren_musyrif.ks_mutabaah_harian_item","data":{"x":7,"y":15,"w":6,"h":4}}
+                ]
+            </field>
+            <field name="ks_item_count">1</field>
+        </record>
+
+        <record id="ks_perijinan_item" model="ks_dashboard_ninja.item">
+            <field name="name">Perijinan</field>
+            <field name="ks_chart_data_count_type">count</field>
+            <field name="ks_chart_groupby_type">relational_type</field>
+            <field name="ks_model_id" eval="ref('pesantren_kesantrian.model_cdn_perijinan')" />
+            <field name="ks_chart_relation_groupby" eval="
+                ref('pesantren_kesantrian.field_cdn_perijinan__state')
+            " />
+            <field name="ks_chart_item_color">default</field>
+            <field name="ks_dashboard_item_type">ks_bar_chart</field>
+            <field name="ks_show_data_value">1</field>
+            <field name="ks_company_id" eval="0" />
+            <field name="ks_date_filter_field" eval="
+                ref('pesantren_kesantrian.field_cdn_perijinan__tgl_ijin')
+            "/>
+            <field name="ks_date_filter_selection">l_none</field>
+            <field name="ks_date_filter_selection">l_none</field>
+            <field name="ks_domain" >
+                [
+                    "|",
+                    ("halaqoh_id.penanggung_jawab_id.user_id","=","%UID"),
+                    ("halaqoh_id.pengganti_ids.user_id","=","%UID")
+                ]
+            </field>                  
+        </record>
+        <record id="ks_kesehatan_item" model="ks_dashboard_ninja.item">
+            <field name="name">Kesehatan</field>
+            <field name="ks_chart_data_count_type">count</field>
+            <field name="ks_chart_groupby_type">relational_type</field>
+            <field name="ks_model_id" eval="ref('pesantren_kesantrian.model_cdn_kesehatan')" />
+            <field name="ks_chart_relation_groupby" eval="
+                ref('pesantren_kesantrian.field_cdn_kesehatan__state')
+            " />
+            <field name="ks_chart_item_color">default</field>
+            <field name="ks_dashboard_item_type">ks_bar_chart</field>
+            <field name="ks_show_data_value">1</field>
+            <field name="ks_company_id" eval="0" />
+            <field name="ks_date_filter_field" eval="
+                ref('pesantren_kesantrian.field_cdn_kesehatan__create_date')
+            "/>
+            <field name="ks_date_filter_selection">l_none</field>
+        </record>
+        <record id="ks_pelanggaran_item" model="ks_dashboard_ninja.item">
+            <field name="name">Santri Dengan Pelanggaran Tertinggi</field>
+            <field name="ks_model_id" eval="ref('pesantren_kesantrian.model_cdn_pelanggaran')" />
+            <field name="ks_tree_view_type">ungrouped</field>
+            <field name="ks_tree_view_fields" eval="[
+                (6, 0, [
+                    ref('pesantren_kesantrian.field_cdn_pelanggaran__siswa_id'),
+                    ref('pesantren_kesantrian.field_cdn_pelanggaran__pelanggaran_id'),
+                    ref('pesantren_kesantrian.field_cdn_pelanggaran__kategori'),
+                    ref('pesantren_kesantrian.field_cdn_pelanggaran__poin'),
+                ])
+            ]" />
+            <field name="ks_dashboard_item_type">ks_tree_view</field>
+            <field name="ks_company_id" eval="0" />
+            <field name="ks_record_data_limit" eval="10" />
+            <field name="ks_sort_by_field" eval="ref('pesantren_kesantrian.field_cdn_pelanggaran__poin')" />
+            <field name="ks_sort_by_order">DESC</field>
+            <field name="ks_date_filter_field" eval="
+                ref('pesantren_kesantrian.field_cdn_pelanggaran__tgl_pelanggaran')
+            "/>
+            <field name="ks_date_filter_selection">l_none</field>
+            <field name="ks_domain" >
+                [
+                    "&amp;","|",
+                    ("halaqoh_id.penanggung_jawab_id.user_id","=","%UID"),
+                    ("halaqoh_id.pengganti_ids.user_id","=","%UID"),
+                    ("poin","!=",False)
+                ]
+            </field>     
+        </record>
+
+        <record id="ks_data_pelanggaran_item" model="ks_dashboard_ninja.item">
+            <field name="name">Data Pelanggaran</field>
+            <field name="ks_chart_data_count_type">count</field>
+            <field name="ks_chart_groupby_type">relational_type</field>
+            <field name="ks_model_id" eval="ref('pesantren_kesantrian.model_cdn_pelanggaran')"/>
+            <field name="ks_chart_relation_groupby" eval="ref('pesantren_kesantrian.field_cdn_pelanggaran__kategori')"/>
+            <field name="ks_semi_circle_chart">1</field>
+            <field name="ks_chart_item_color">warm</field>
+            <field name="ks_record_data_limit">10</field>
+            <field name="ks_show_data_value">1</field>
+            <field name="ks_unit_selection">monetary</field>
+            <field name="ks_dashboard_item_type">ks_pie_chart</field>
+            <field name="ks_company_id" eval="0"/>
+            <field name="ks_domain" eval="state == 'approved')]" />
+            <field name="ks_date_filter_field" eval="
+                ref('pesantren_kesantrian.field_cdn_pelanggaran__tgl_pelanggaran')
+            "/>
+            <field name="ks_date_filter_selection">l_none</field>
+            <field name="ks_domain" >
+                [
+                    "|",
+                    ("siswa_id.halaqoh_id.penanggung_jawab_id.user_id","=","%UID"),
+                    ("siswa_id.halaqoh_id.pengganti_ids.user_id","=","%UID")
+                ]
+            </field>             
+        </record>
+        <record id="ks_mutabaah_harian_item" model="ks_dashboard_ninja.item">
+            <field name="name">Mutabaah Harian</field>
+            <field name="ks_chart_data_count_type">count</field>
+            <field name="ks_chart_groupby_type">relational_type</field>
+            <field name="ks_model_id" eval="ref('pesantren_kesantrian.model_cdn_mutabaah_line')"/>
+            <field name="ks_chart_relation_groupby" eval="ref('pesantren_kesantrian.field_cdn_mutabaah_line__siswa_id')"/>
+            <!-- <field name="ks_chart_relation_sub_groupby" eval="ref('pesantren_kesantrian.field_cdn_mutabaah_line__kategori')"/> -->
+            <field name="ks_chart_item_color">default</field>
+            <field name="ks_show_data_value">1</field>
+            <field name="ks_unit_selection">monetary</field>
+            <field name="ks_dashboard_item_type">ks_bar_chart</field>
+            <field name="ks_company_id" eval="0"/>
+            <field name="ks_date_filter_field" eval="
+                ref('pesantren_kesantrian.field_cdn_mutabaah_line__tgl')
+            "/>
+            <field name="ks_date_filter_selection">l_none</field>
+            <field name="ks_domain" >
+                [
+                    "|",
+                    ("halaqoh_id.penanggung_jawab_id.user_id","=","%UID"),
+                    ("halaqoh_id.pengganti_ids.user_id","=","%UID"),
+                ]
+            </field>             
+        </record>
+        
+    </data>
+    <!-- dashboard kesantrian -->
+    <data noupdate="1">
+        <!-- dashboard -->
+        <record id="ks_kesantrian_dashboard_board" model="ks_dashboard_ninja.board">
+            <field name="name">Dashboard</field>
+            <field name="ks_dashboard_state">Locked</field>
+            <field name="ks_dashboard_menu_name">Dashboard</field>
+            <field name="ks_dashboard_top_menu_id" ref="pesantren_musyrif.musyrif_menu_root" />
+            <field name="ks_dashboard_menu_sequence">1</field>
+            <field name="ks_dashboard_active">1</field>
+            <field name="ks_set_interval">15000</field>
+            <field name="ks_dashboard_default_template" ref="pesantren_musyrif.ks_template_kesantrian" />
+        </record>
+    </data>
+
+</odoo>

@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- Create action server to set state to confirm -->
+        <record id="action_confirm_uang_saku" model="ir.actions.server">
+            <field name="name">Konfirmasi/Validasi Uang Saku</field>
+            <field name="model_id" ref="model_cdn_uang_saku"/>
+            <field name="binding_view_types">list</field>
+            <field name="binding_model_id" ref="model_cdn_uang_saku"/>
+            <field name="state">code</field>
+            <field name="code">
+                for rec in records:
+                    rec.action_confirm()
+            </field>
+        </record>
+
+        <!-- cdn.uang_saku tree view -->
+        <record id="cdn_uang_saku_view_tree" model="ir.ui.view">
+            <field name="name">cdn.uang_saku.view.tree</field>
+            <field name="model">cdn.uang_saku</field>
+            <field name="arch" type="xml">
+                <list default_order="tgl_transaksi desc" create="1">
+                    <field name="name"/>
+                    <field name="tgl_transaksi" widget="date"/>
+                    <field name="siswa_id"/>
+                    <field name="va_saku"/>
+                    <field name="amount_in" widget="integer"/>
+                    <field name="amount_out" widget="integer"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+        <!-- cdn.uang_saku form view -->
+        <record id="cdn_uang_saku_view_form" model="ir.ui.view">
+            <field name="name">cdn.uang_saku.view.form</field>
+            <field name="model">cdn.uang_saku</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <header>
+                        <button name="action_confirm" string="Confirm" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="tgl_transaksi"
+                                    readonly=" state not in ('draft')"/>
+                                <field name="siswa_id"
+                                    options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"
+                                    readonly=" state not in ('draft')"/>
+                                <field name="va_saku"/>
+                                <field name="saldo_awal" widget="integer"/>
+                            </group>
+                            <group>
+                                <field name="jns_transaksi"
+                                    readonly="state not in ('draft')"/>
+                                <field name="amount_in" widget="integer" 
+                                    invisible=" jns_transaksi != 'masuk'" readonly="state not in ('draft')"/>
+                                <field name="amount_out" widget="integer" 
+                                    invisible=" jns_transaksi != 'keluar'" readonly="state not in ('draft')"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="validasi_id"/>
+                            <field name="validasi_time"/>
+                            <field name="keterangan"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_saku_transaction_search_musyrif" model="ir.ui.view">
+            <field name="name">view.saku.transaction.search.musyrif</field>
+            <field name="model">cdn.uang_saku</field>
+            <field name="arch" type="xml">
+                <search string="Uang Saku">
+                    <field name="siswa_id"/>
+                    <field name="name"/>
+                    <filter name="draft" string="Status Draft" domain="[('state', '=', 'draft')]"  />
+                    <filter name="confirm" string="Sudah Validasi" domain="[('state', '=', 'confirm')]"  />
+                    <filter string="Jenis Transaksi" name="group_by_jns_transaksi" context="{'group_by':'jns_transaksi'}"/>
+                    <filter string="Santri" name="group_by_santri" context="{'group_by':'siswa_id'}"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="cdn_uang_saku_action" model="ir.actions.act_window">
+            <field name="name">Uang Saku</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.uang_saku</field>
+            <field name="view_mode">list,form</field>
+        </record>
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="cdn_uang_saku_menu_act" name="Uang Saku" parent="keu_saku_wallet_menu_categ" action="cdn_uang_saku_action" sequence="50"/>
+    </data>
+</odoo>

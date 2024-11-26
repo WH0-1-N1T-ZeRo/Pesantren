@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--    Res partner form view-->
+    <!-- <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">
+            res.partner.view.form.inherit.pos.customer.wallet.management
+        </field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button" type="object" name="action_number_of_wallet">
+                    <field string="Wallet" name="wallet_count" widget="statinfo"/>
+                </button>
+            </div>
+            <xpath expr="//group[@name='misc']" position="before">
+                <group string="Saldo Dompet" name="wallet balance">
+                    <field name="wallet_balance" readonly="True"/>
+                    <div>
+                        <button name="action_recharge" string="Isi Dompet" type="object" class="btn btn-secondary"/>
+                    </div>
+                </group>
+            </xpath>
+        </field>
+    </record> -->
+
+    <record id="action_view_wallet_account" model="ir.actions.act_window">
+        <field name="name">Wallet Accounts</field>
+        <field name="res_model">pos.wallet.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_partner_id': active_id}</field>
+    </record>
+
+    <!-- <record id="mt_pos_subtotal_to_qty_inherit_product_template" model="ir.ui.view">
+        <field name="name">product.template.view.form.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+    </record> -->
+
+</odoo>

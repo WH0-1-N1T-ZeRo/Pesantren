@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- list view -->
+        <record id="view_cdn_master_kelas_tree" model="ir.ui.view">
+            <field name="name">cdn_master_kelas_tree</field>
+            <field name="model">cdn.master_kelas</field>
+            <field name="type">list</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <list string="Master kelas">
+                    <field name="name" />
+                    <field name="jenjang" />
+                    <field name="tingkat" />
+                    <field name="jurusan_id" invisible="jenjang != 'sma'"/>
+                </list>
+            </field>
+        </record>
+        <!-- form view -->
+        <record id="view_cdn_master_kelas_form" model="ir.ui.view">
+            <field name="name">cdn_master_kelas_form</field>
+            <field name="model">cdn.master_kelas</field>
+            <field name="type">form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Master kelas">
+                    <header>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <!--button type="object" name="action_view_detail" class="oe_stat_button" icon="fa-pencil-square-o"-->
+                                <!--field name="detail_count" widget="statinfo" string="Detail(s)"/-->
+                                <!--field name="detail_ids" invisible="1"/-->
+                            <!--/button-->
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Master kelas Name"/>
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="jenjang" />
+                                <field name="tingkat" domain="[('jenjang', '=', jenjang)]"
+                                    options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                                <field name="jurusan_id" invisible="jenjang != 'sma'"/>
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                        <notebook>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- search -->
+        <record id="view_cdn_master_kelas_search" model="ir.ui.view">
+            <field name="name">cdn_master_kelas</field>
+            <field name="model">cdn.master_kelas</field>
+            <field name="arch" type="xml">
+                <search string="Master kelas">
+
+                    <filter string="Nama" name="filter_by_name" domain="[('name','=','')]" />
+                    <filter string="Jenjang" name="filter_by_jenjang" domain="[('jenjang','=','')]" />
+                    <filter string="Tingkat" name="filter_by_tingkat" domain="[('tingkat','=','')]" />
+                    <field name="name" select="True"/>
+                    <field name="jenjang" select="True"/>
+                    <field name="tingkat" select="True"/>
+                    <group string="Group By..">
+                    </group>
+                </search>
+            </field>
+        </record>
+        <!-- kanban , to show image, please add image_small in the model -->
+        <record id="view_cdn_master_kelas_kanban" model="ir.ui.view" >
+            <field name="name">cdn_master_kelas</field>
+            <field name="model">cdn.master_kelas</field>
+            <field name="arch" type="xml">
+                <kanban version="7.0">
+                    <field name="id" />
+                    <field name="name" />
+                    <field name="jenjang" />
+                    <field name="tingkat" />
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click o_kanban_record_has_image_fill">
+                                <div class="oe_kanban_details">
+                                    <h4>
+                                        <a type="open"><field name="name"/></a>
+                                    </h4>
+                                    <ul>
+                                    </ul>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        <!-- calendar if a date field exists -->
+        <!-- graph -->
+        <!-- <record id="view_cdn_master_kelas_graph" model="ir.ui.view">
+            <field name="name">cdn_master_kelas</field>
+            <field name="model">cdn.master_kelas</field>
+            <field name="arch" type="xml">
+                <graph string="Master kelas" type="bar">
+                </graph>
+            </field>
+        </record> -->
+        <!-- action window -->
+        <record id="action_cdn_master_kelas" model="ir.actions.act_window">
+            <field name="name">Master kelas</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.master_kelas</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="context">{"search_default_fieldname":1}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                Click to add a new Master kelas
+                </p><p>
+                Click the Create button to add a new Master kelas
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_cdn_master_kelas" name="Master Kelas" parent="pengaturan_umum_menu_categ" action="action_cdn_master_kelas" sequence="20"/>
+    </data>
+</odoo>

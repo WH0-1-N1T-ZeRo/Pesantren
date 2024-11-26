@@ -1,0 +1,295 @@
+<odoo>
+    <template id="pendaftaran_success_template" name="Pendaftaran Success">
+        <t t-call="web.html_container">
+            <t t-set="title">Pendaftaran Sukses - Daarul Qur'an Istiqomah</t>
+            <link rel="stylesheet"
+                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+                integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+                crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <style>
+
+                .container-main {
+                background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
+                }
+
+                .offcanvas.offcanvas-end {
+                width: 250px; /* Lebar kustom untuk offcanvas */
+                }
+
+                .offcanvas .nav-link {
+                color: #ffffff; /* teks warna putih */
+                }
+
+                .offcanvas .btn-close {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                filter: invert(1);
+                }
+
+                input:focus {
+                border-bottom: 1.5px solid #FD0870 !important;
+                transition: .5s;
+                }
+
+                .background {
+                background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
+                }
+
+                /* Desain Dropdown */
+                .dropdown {
+                position: relative;
+                }
+
+                .dropdown-link {
+                cursor: pointer;
+                }
+
+                .dropdown-content {
+                display: none;
+                position: absolute;
+                top: 100%;
+                right: 0;
+                background-color: #ffffff;
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+                border-radius: 5px;
+                min-width: 150px;
+                z-index: 1;
+                overflow: hidden;
+                }
+
+                .dropdown-content a {
+                color: #333;
+                padding: 10px 15px;
+                display: block;
+                text-decoration: none;
+                transition: background-color 0.2s;
+                }
+
+                .dropdown-content a:hover {
+                background-color: #f1f1f1;
+                }
+
+                /* Menampilkan dropdown saat hover */
+                .dropdown:hover .dropdown-content {
+                display: block;
+                animation: fadeIn 0.3s;
+                }
+
+                /* Animasi fade-in */
+                @keyframes fadeIn {
+                from {
+                opacity: 0;
+                transform: translateY(-10px);
+                }
+                to {
+                opacity: 1;
+                transform: translateY(0);
+                }
+                }
+
+            </style>
+            <div class="container-main">
+                <nav class="navbar navbar-expand-lg" style="height: 65px;">
+                    <div class="container-fluid">
+                        <a class="navbar-brand ms-5 text-white fw-semibold" style="color: white;"
+                            href="/psb">
+                            <img src="https://i.ibb.co.com/f9j819p/1731466812700.png" width="50"
+                                alt="Logo Pesantren" /> Daarul Qur'an Istiqomah </a>
+                        <button class="navbar-toggler ms-auto" type="button"
+                            data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                            aria-controls="offcanvasNavbar">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" style="color: white;" id="navbarNav">
+                            <ul class="navbar-nav ms-auto">
+                                <li class="nav-item me-3">
+                                    <a class="nav-link stext-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
+                                </li>
+                                <li class="nav-item me-3">
+                                    <a class="nav-link text-white" style="color: white !important;"
+                                        href="/pendaftaran"><i class="fa-solid fa-note-sticky me-2"></i>
+                                        Pendaftaran</a>
+                                </li>
+                                <li class="nav-item me-3">
+                                    <a class="nav-link text-white" style="color: white !important;"
+                                        href="/web/login"><i
+                                            class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                </li>
+                                <li class="nav-item me-3">
+                                    <a class="nav-link text-white" style="color: white !important;"
+                                        href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a href="#" class="dropdown-link nav-link"
+                                        style="color: white !important;">
+                                        <i class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
+                                    <div class="dropdown-content">
+                                        <a href="/pengumuman/sd-mi">SD / MI</a>
+                                        <a href="/pengumuman/smp-mts">SMP / MTS</a>
+                                        <a href="/pengumuman/sma-ma">SMA / MA</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="offcanvas offcanvas-end background" tabindex="-1" id="offcanvasNavbar"
+                    aria-labelledby="offcanvasNavbarLabel">
+                    <button type="button" class="btn-close btn-close-white"
+                        data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    <a class="navbar-brand mt-1 text-white fw-semibold" href="/psb"
+                        style="display: flex; flex-direction: column; align-items: center; color: white;">
+                        <img src="https://i.ibb.co.com/f9j819p/1731466812700.png" width="50"
+                            alt="Logo Pesantren" /> Daarul Qur'an Istiqomah </a>
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item me-3">
+                                <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
+                            </li>
+                            <li class="nav-item me-3">
+                                <a class="nav-link text-white" href="/pendaftaran"><i
+                                        class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
+                            </li>
+                            <li class="nav-item me-3">
+                                <a class="nav-link text-white" href="/web/login"><i
+                                        class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                            </li>
+                            <li class="nav-item me-3">
+                                <a class="nav-link text-white" href="/bantuan"><i
+                                        class="fa-solid fa-lock me-2"></i>Bantuan</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="dropdown-link nav-link"
+                                    style="color: white !important;">
+                                    <i class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
+                                <div class="dropdown-content">
+                                    <a href="/pengumuman/sd-mi">SD / MI</a>
+                                    <a href="/pengumuman/smp-mts">SMP / MTS</a>
+                                    <a href="/pengumuman/sma-ma">SMA / MA</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <div style="width: 800px; padding-top: 30px;" class="bg-white rounded mt-5 mb-3">
+                        <h4 class="text-center mb-4">Alhamdulillah pendaftaran sudah berhasil</h4>
+                        <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
+                            <div>
+                                <div class="mb-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fa-solid fa-id-card me-2"
+                                            style="color: #FD0870; font-size: 20px;"></i>
+                                        <span class="fs-5">Nomor Pendaftaran</span>
+                                    </div>
+                                    <br />
+                                    <div>
+                                        <h4 style="margin-left: 30px;">
+                                            <t t-esc="pendaftaran.nomor_pendaftaran" />
+                                        </h4>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="fa-solid fa-user-group me-2"
+                                            style="color: #A812AE; font-size: 20px;"></i>
+                                        <span class="fs-5">Data Calon Santri</span>
+                                    </div>
+                                    <div
+                                        style="display: flex; flex-direction: column; margin-left: 30px;">
+                                        <span>Nama : <t t-esc="pendaftaran.partner_id.name" /></span>
+                                        <span>TTL : <span class="text-capitalize">
+                                                <t t-esc="pendaftaran.kota_lahir" />
+                                            </span>
+                                            , <t t-esc="pendaftaran.tanggal_lahir" /></span>
+                                        <span>Alamat : <t t-esc="pendaftaran.alamat" /></span>
+                                        <span>Email : <t t-esc="pendaftaran.email" /></span>
+                                        <span>NIK : <t t-esc="pendaftaran.nik" /></span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fa-solid fa-code me-2 text-info"
+                                            style="font-size: 20px;"></i>
+                                        <span class="fs-5">Program Studi dipilih</span>
+                                    </div>
+                                    <br />
+                                    <div>
+                                        <span class="text-capitalize" style="margin-left: 30px;">
+                                            <t t-esc="pendaftaran.jenjang_id.name" />
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="mb-5">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="fa-solid fa-briefcase me-2 text-warning"
+                                            style="font-size: 20px;"></i>
+                                        <span class="fs-5">Nomor Rekening Virtual Account</span>
+                                    </div>
+                                    <div
+                                        style="display: flex; flex-direction: column; margin-left: 30px;">
+                                        <span>Bank BNI</span>
+                                        <span>Nomor Rekening: <br /> 80674467656547</span>
+                                        <span>Sebesar : Rp. <t
+                                                t-esc="'{:,}'.format(pendaftaran.biaya).replace(',', '.')" /></span>
+                                    </div>
+                                </div>
+                                <a t-attf-href="/pendaftaran/cetak?id=#{pendaftaran.id}"
+                                    class="text-uppercase mb-5 d-inline-block"
+                                    style="background-color: #A812AE; padding: 10px; border-radius: 20px; color: white; text-decoration: none; font-size: 13px; margin-left: 30px;"
+                                    target="_blank">Cetak Form Pembayaran</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer class="p-2"
+                    style="display: flex; justify-content: space-between; flex-wrap: wrap; color: white !important;">
+                    <div class="ms-5">
+                        <ul
+                            style="list-style-type: none; display: flex; text-transform: uppercase; font-size: 13px;"
+                            class="fw-semibold">
+                            <li>
+                                <a href="/psb" class="me-4"
+                                    style="text-decoration: none; color: white;">Home</a>
+                            </li>
+                            <li>
+                                <a href="/beranda" class="me-4"
+                                    style="text-decoration: none; color: white;" target="_blank">Info
+                                    Pondok</a>
+                            </li>
+                            <li>
+                                <a
+                                    href="https://drive.google.com/drive/mobile/folders/1EYat5411joyoOmH_DkJ3g2DeJKgyyuBQ?usp=share_link&amp;fbclid=IwY2xjawGflGlleHRuA2FlbQIxMQABHTusVv9hD3VRDSLW9-671QhOL86e3KMv30smsAYW0DHkkWf7zwPlcBlbeA_aem_XXofAY-ay0syx043L5BLvw"
+                                    class="me-4" style="text-decoration: none; color: white;"
+                                    target="_blank">Brosur</a>
+                            </li>
+                            <li>
+                                <a href="" class="me-4" style="text-decoration: none; color: white;">
+                                    Panduan</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="me-5">
+                        <p class="text-center mt-1">© 2024 TIM IT PPIB</p>
+                    </div>
+                </footer>
+            </div>
+            <script>
+                // Cari elemen body dengan class spesifik
+                const bodyElement =
+                document.querySelector('body.o_body_html.container.overflow-x-hidden');
+
+                // Jika elemen ditemukan, hapus class "container"
+                if (bodyElement) {
+                bodyElement.classList.remove('o_body_html');
+                bodyElement.classList.remove('container');
+                }
+            </script>
+        </t>
+    </template>
+</odoo>

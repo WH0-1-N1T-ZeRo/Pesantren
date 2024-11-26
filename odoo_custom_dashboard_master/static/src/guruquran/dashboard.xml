@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="owl.OwlGuruquranDashboard" owl="1">
+        <div class="container-fluid vh-100">
+            <!-- Header Full Width -->
+            <div class="mx-3 my-3">
+                <div class="col-12">
+                    <div class="p-4">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between">
+                            <h2 class="text-primary fw-bold">Dashboard Guru Qur'an</h2>
+                            <div class="d-flex align-items-center">
+                                <!-- Dropdown Periode -->
+                                <div class="dropdown me-3">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span t-esc="getPeriodLabel(state.selectedPeriod)"/>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item d-flex justify-content-between align-items-center" href="#" id="selectionFilter" t-on-click.prevent="() => this.setPeriod('all')">
+                                                Default
+                                                <i class="fas fa-check" t-att-class="{'invisible': !isPeriodSelected('all')}"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item d-flex justify-content-between align-items-center" href="#" id="selectionFilter" t-on-click.prevent="() => this.setPeriod('today')">
+                                                Hari Ini
+                                                <i class="fas fa-check" t-att-class="{'invisible': !isPeriodSelected('today')}"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item d-flex justify-content-between align-items-center" href="#" id="selectionFilter" t-on-click.prevent="() => this.setPeriod('yesterday')">
+                                                Kemarin
+                                                <i class="fas fa-check" t-att-class="{'invisible': !isPeriodSelected('yesterday')}"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item d-flex justify-content-between align-items-center" href="#" id="selectionFilter" t-on-click.prevent="() => this.setPeriod('thisWeek')">
+                                                Minggu Ini
+                                                <i class="fas fa-check" t-att-class="{'invisible': !isPeriodSelected('thisWeek')}"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item d-flex justify-content-between align-items-center" href="#" id="selectionFilter" t-on-click.prevent="() => this.setPeriod('lastWeek')">
+                                                Minggu Lalu
+                                                <i class="fas fa-check" t-att-class="{'invisible': !isPeriodSelected('lastWeek')}"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item d-flex justify-content-between align-items-center" href="#" id="selectionFilter" t-on-click.prevent="() => this.setPeriod('thisMonth')">
+                                                Bulan Ini
+                                                <i class="fas fa-check" t-att-class="{'invisible': !isPeriodSelected('thisMonth')}"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item d-flex justify-content-between align-items-center" href="#" id="selectionFilter" t-on-click.prevent="() => this.setPeriod('lastMonth')">
+                                                Bulan Lalu
+                                                <i class="fas fa-check" t-att-class="{'invisible': !isPeriodSelected('lastMonth')}"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item d-flex justify-content-between align-items-center" href="#" id="selectionFilter" t-on-click.prevent="() => this.setPeriod('thisYear')">
+                                                Tahun Ini
+                                                <i class="fas fa-check" t-att-class="{'invisible': !isPeriodSelected('thisYear')}"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item d-flex justify-content-between align-items-center" href="#" id="selectionFilter" t-on-click.prevent="() => this.setPeriod('lastYear')">
+                                                Tahun Lalu
+                                                <i class="fas fa-check" t-att-class="{'invisible': !isPeriodSelected('lastYear')}"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Custom Date Range Button -->
+                                <button class="btn btn-outline-secondary me-3" t-on-click="toggleDatePicker">
+                                    <i class="fas fa-calendar"></i>
+                                    <t t-if="state.selectedDateRange">
+                                        <span t-esc="formatDateRange(state.selectedDateRange.start, state.selectedDateRange.end)" class="ms-2"/>
+                                    </t>
+                                    <t t-else="">
+
+                                    </t>
+                                </button>
+
+                                <!-- Timer Button -->
+                                <button id="timerButton" class="btn btn-outline-secondary">
+                                    <i id="timerIcon" class="fas fa-stopwatch"></i>                                    <!-- Icon timer -->
+                                    <span id="timerCountdown"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Date Range Picker Popup -->
+            <div t-if="state.showDatePicker" class="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center" style="background: rgba(0,0,0,0.5); z-index: 1050;">
+                <div class="bg-white p-4 rounded shadow-lg">
+                    <div class="mb-3">
+                        <h5 class="mb-4">Pilih Rentang Tanggal</h5>
+                        <div class="mb-3">
+                            <label class="form-label">Dari</label>
+                            <input type="date" class="form-control" t-model="state.tempDateRange.start"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Sampai</label>
+                            <input type="date" class="form-control" t-model="state.tempDateRange.end"/>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button class="btn btn-secondary" t-on-click="closeDatePicker">
+                            Batal
+                        </button>
+                        <button class="btn btn-primary" t-on-click="applyDateRange">
+                            Terapkan
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="mx-0 my-3">
+                <GuruquranKpiCard 
+                    startDate="state.selectedDateRange.start" 
+                    endDate="state.selectedDateRange.end"
+                />
+            </div>
+
+            <!-- Charts -->
+            <div class="row mx-0 my-3">
+                <div class="col-lg-6 col-md-12 col-sm-12 m-0 p-2">
+                    <div class="shadow-sm border p-4 bg-white h-100">
+                        <h2 class="mb-5">Absen Tahfidz per Kehadiran</h2>
+                        <GuruquranChartRenderer type="'donutChart'" period="state.selectedPeriod" startDate="state.selectedDateRange?.start" endDate="state.selectedDateRange?.end"/>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-12 col-sm-12 m-0 p-2">
+                    <div class="shadow-sm border p-4 bg-white h-100">
+                        <h2 class="mb-5">Absen Tahsin per Kehadiran</h2>
+                        <GuruquranChartRenderer type="'donutChart2'" period="state.selectedPeriod" startDate="state.selectedDateRange?.start" endDate="state.selectedDateRange?.end"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mx-0 my-3">
+                <div class="col-lg-6 col-md-12 col-sm-12 m-0 p-2">
+                    <div class="shadow-sm border bg-white h-auto">
+                        <GuruquranTahsinCardList startDate="state.selectedDateRange?.start" endDate="state.selectedDateRange?.end"/>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-12 col-sm-12 m-0 p-2">
+                    <div class="shadow-sm bg-white h-auto" style="border-radius: 0.375rem; overflow: hidden;">
+                        <GuruquranTahfidzCardList startDate="state.selectedDateRange?.start" endDate="state.selectedDateRange?.end"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

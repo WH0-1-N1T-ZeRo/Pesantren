@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+
+        <!-- cdn.pelanggaran tree view -->
+        <record id="cdn_pelanggaran_view_tree" model="ir.ui.view">
+            <field name="name">cdn.pelanggaran.view.tree</field>
+            <field name="model">cdn.pelanggaran</field>
+            <field name="arch" type="xml">
+                <list default_order="id desc" >
+                    <!-- Add your fields here -->
+                    <field name="tgl_pelanggaran" />
+                    <field name="siswa_id" />
+                    <field name="kelas_id" />
+                    <field name="pelanggaran_id" />
+                    <field name="kategori" />
+                    <field name="poin" />
+                    <field name="tindakan_id" />
+                    <field name="state" />
+                </list>
+            </field>
+        </record>
+
+        <!-- cdn.pelanggaran form view -->
+        <record id="cdn_pelanggaran_view_form" model="ir.ui.view">
+            <field name="name">cdn.pelanggaran.view.form</field>
+            <field name="model">cdn.pelanggaran</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <header>
+                        <button string="Konfirmasi" type="object" 
+                            name="action_confirmed" invisible="state not in ('draft')"
+                            groups="pesantren_kesantrian.group_kesantrian_manager" />
+                        <button string="Disetujui" type="object" name="action_approved" invisible="state not in ('confirmed')"
+                            groups="pesantren_kesantrian.group_kesantrian_manager" />
+                        <button string="Ubah ke Draft" type="object" name="action_set_to_draft" groups="pesantren_kesantrian.group_kesantrian_manager" 
+                            invisible="state not in ('confirmed' , 'approved')"/>
+                        <field name="state" widget="statusbar" />
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="No Referensi (Auto)" />
+                            <h1>
+                                <field name="name" />
+                            </h1>
+                        </div>
+                        <group string="Data Santri">
+                            <field name="tgl_pelanggaran" readonly="state == 'approved'" />
+                            <field name="siswa_id" readonly="state == 'approved'"/>
+                            <field name="kelas_id" readonly="state == 'approved'" />
+                        </group>
+                        <group string="Data Pelanggaran">
+                            <field name="pelanggaran_id" readonly="state == 'approved'"/>
+                            <field name="kategori" readonly="1" force_save="1" />
+                            <field name="poin" readonly="1" force_save="1" />
+                            <field name="deskripsi" readonly="state == 'approved'" />
+                        </group>
+                        <group string="Tindakan / Hukuman">
+                            <field name="tindakan_id" readonly="state == 'approved'"
+                                domain="[('level_pelanggaran','=',kategori)]" />
+                            <field name="deskripsi_tindakan" readonly="state == 'approved'" />
+                        </group>
+                        <group string="Dicatat dan Diperiksa">
+                            <field name="diperiksa_oleh"
+                                readonly="state == 'approved'" />
+                        </group>
+                        <group string="Mengetahui / Disetujui" >
+                            <field name="catatan_ka_asrama" readonly="state == 'approved'"/>
+                            <field name="tgl_disetujui" />
+                            <field name="user_disetujui" options="{'no_create_edit':True, 'no_create':True, 'no_open': True}" />
+                        </group>
+                        
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- cdn.pelanggaran search view -->
+        <record id="cdn_pelanggaran_view_search" model="ir.ui.view">
+            <field name="name">cdn.pelanggaran.view.search</field>
+            <field name="model">cdn.pelanggaran</field>
+            <field name="arch" type="xml">
+                <search>
+                    
+                    <field name="name" />
+                    <field name="tgl_pelanggaran" />
+                    <field name="siswa_id" />
+                    <group string="Group by ..">
+                        <filter string="Nama" domain="[]" name="group_by_siswa_id" context="{'group_by':'siswa_id'}"/>
+                        <filter string="Tgl Pelanggaran" domain="[]" name="group_by_tgl_pelanggaran" context="{'group_by':'tgl_pelanggaran'}"/>
+                        <filter name="group_by_kategori" string="Kategori" domain="[]" context="{'group_by': 'kategori'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- cdn.pelanggaran graph view -->
+        <record id="cdn_pelanggaran_view_graph" model="ir.ui.view">
+            <field name="name">cdn.pelanggaran.view.graph</field>
+            <field name="model">cdn.pelanggaran</field>
+            <field name="arch" type="xml">
+                <graph string="Graph Description">
+                    <!-- Add your fields here -->
+                    <field name="pelanggaran_id" />
+                </graph>
+            </field>
+        </record>
+
+        <!-- cdn.pelanggaran action window -->
+        <record id="pelanggaran_action" model="ir.actions.act_window">
+            <field name="name">Pelanggaran</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.pelanggaran</field>
+            <field name="view_mode">list,form,graph</field>
+            <field name="context">{'group_by': 'kategori'}</field>
+        </record>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="pelanggaran_menu_act" name="Pelanggaran" parent="aktivitas_kesantrian_menu_categ"
+            action="pelanggaran_action" sequence="10"  />
+
+    </data>
+
+
+</odoo>

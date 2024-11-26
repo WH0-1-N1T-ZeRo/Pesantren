@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- cdn.tahfidz_quran list view -->
+        <record id="cdn_tahfidz_quran_view_tree" model="ir.ui.view">
+            <field name="name">cdn.tahfidz_quran.view.list</field>
+            <field name="model">cdn.tahfidz_quran</field>
+            <field name="arch" type="xml">
+                <list default_order="id desc" create="false" >
+                    <field name="tanggal" />
+                    <field name="sesi_tahfidz_id" />
+                    <field name="siswa_id" />
+                    <field name="halaqoh_id" />
+                    <field name="surah_id" />
+                    <field name="ayat_awal" />
+                    <field name="ayat_akhir" />
+                    <field name="jml_baris" />
+                    <field name="nilai_id" />
+                    <field name="ustadz_id" />
+                    <field name="state" />
+                </list>
+            </field>
+        </record>
+
+        <!-- cdn.tahfidz_quran form view -->
+        <record id="cdn_tahfidz_quran_view_form" model="ir.ui.view">
+            <field name="name">cdn.tahfidz_quran.view.form</field>
+            <field name="model">cdn.tahfidz_quran</field>
+            <field name="arch" type="xml">
+                <form string="Tahfidz quran" create="false" >
+                    <header>
+                        <button string="Confirm" type="object" name="action_confirm" 
+                             invisible="state not in ('draft')" groups="pesantren_kesantrian.group_kesantrian_manager,pesantren_kesantrian.group_kesantrian_staff"/>
+                        <button string="Ubah ke Draf" type="object" name="action_draft" 
+                             invisible="state not in ('done')" groups="pesantren_kesantrian.group_kesantrian_manager,pesantren_kesantrian.group_kesantrian_staff"/>
+                        <field name="state" widget="statusbar" />
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="No Referensi" />
+                            <h1>
+                                <field name="name" />
+                            </h1>
+                        </div>
+
+                        <group string="Data Santri">
+                            <group>
+                                <field name="tanggal" readonly="state in ('draft','done')" />
+                                <field name="siswa_id" options="{'no_create_edit':True, 'no_create':True}"
+                                readonly="state in ('draft','done')" />
+                                <field name="last_tahfidz" />
+                                <field name="surah_id" options="{'no_create_edit':True, 'no_create':True}" required="1" />
+                            </group>
+                            <group>
+                                <field name="ustadz_id" options="{'no_create_edit':True, 'no_create':True, 'no_open':True}"
+                                    readonly="state in ('draft','done')" />
+                                <field name="halaqoh_id" />
+                                <field name="sesi_tahfidz_id"
+                                    options="{'no_create_edit':True, 'no_create':True, 'no_open':True}"
+                                    readonly="state in ('draft','done')" />
+                                <field name="jml_ayat" />
+                            </group>
+                        </group>
+                        <field name="ayat_awal_name" invisible="1" />
+                        <group string="Penilaian Tahfidz" >
+                            <group>
+                                <field name="ayat_awal" domain="[('surah_id','=',surah_id)]"
+                                options="{'no_create_edit':True, 'no_create':True}" required="1" />
+                                <field name="jml_baris" required="1" />
+                            </group>
+                            <group>
+                                <field name="ayat_akhir" domain="[('surah_id','=',surah_id),('name','>',ayat_awal_name)]"
+                                    options="{'no_create_edit':True, 'no_create':True}" required="1" />
+                                
+                                <field name="nilai_id" string="Kategori Penilaian" required="1" />
+                            </group>
+                        </group>
+                        <group>
+                            <field name="keterangan" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- cdn.tahfidz_quran search view -->
+        <record id="cdn_tahfidz_quran_view_search" model="ir.ui.view">
+            <field name="name">cdn.tahfidz_quran.view.search</field>
+            <field name="model">cdn.tahfidz_quran</field>
+            <field name="arch" type="xml">
+                <search string="Search Description">
+                    <field name="siswa_id" />
+                    <filter string="Hari Ini" name="today" domain="[
+                        ('tanggal','=',(context_today().strftime('%Y-%m-%d'))),
+                    ]" />
+                </search>
+            </field>
+        </record>
+
+        <!-- cdn.tahfidz_quran graph view -->
+        <!-- <record id="cdn_tahfidz_quran_view_graph" model="ir.ui.view">
+            <field name="name">cdn.tahfidz_quran.view.graph</field>
+            <field name="model">cdn.tahfidz_quran</field>
+            <field name="arch" type="xml">
+                <graph string="Tahfidz Quran" type="pie" stacked="True">
+                    <field name="siswa_id" />
+                </graph>
+            </field>
+        </record> -->
+
+        <!-- cdn.tahfidz_quran calendar view -->
+        <record id="cdn_tahfidz_quran_view_calendar" model="ir.ui.view">
+            <field name="name">cdn.tahfidz_quran.view.calendar</field>
+            <field name="model">cdn.tahfidz_quran</field>
+            <field name="arch" type="xml">
+                <calendar string="Tahfidz Quran"  date_start="tanggal">
+                    <field name="name" />
+                </calendar>
+            </field>
+        </record>
+
+        
+
+        <!-- cdn.tahfidz_quran action window -->
+        <record id="cdn_tahfidz_quran_action" model="ir.actions.act_window">
+            <field name="name">Tahfidz Al Qur'an</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.tahfidz_quran</field>
+            <field name="view_mode">list,form,graph,calendar</field>
+        </record>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="tahfidz_quran_menu_act" name="Tahfidz Al Qur'an" parent="kepesantrenan_tahfidz_menu_categ"
+         action="cdn_tahfidz_quran_action" sequence="20"/>
+    </data>
+</odoo>

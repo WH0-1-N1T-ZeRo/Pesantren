@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="ubig_pendaftaran_report_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="page">
+                        <h2>Biaya Daftar Ulang</h2>
+                        <p>Nomor Pendaftaran: <span t-esc="doc.nomor_pendaftaran"/></p>
+                        <p>Nama: <span t-esc="doc.name"/></p>
+                        <p>Jenjang: <span t-esc="doc.jenjang_id.name"/></p>
+                        <p>Biaya: <span t-esc="doc.biaya"/></p>
+                        <!-- Tambahkan detail lain sesuai kebutuhan -->
+                    </div>
+                </t>
+            </t>
+        </t>    
+    </template>
+</odoo>

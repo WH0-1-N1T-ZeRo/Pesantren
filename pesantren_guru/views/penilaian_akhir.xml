@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <data>
+            <!-- cdn.penilaian_akhir list view -->
+            <record id="cdn_penilaian_akhir_view_tree" model="ir.ui.view">
+                <field name="name">cdn.penilaian_akhir.view.list</field>
+                <field name="model">cdn.penilaian_akhir</field>
+                <field name="arch" type="xml">
+                    <list>
+                        <field name="name"/>
+                        <field name="walikelas_id"/>
+                        <field name="kelas_id"/>
+                        <field name="siswa_id"/>
+                        <field name="nis"/>
+                        <field name="tahunajaran_id"/>
+                        <field name="semester"/>
+                        <field name="state"/>
+                        <field name="tgl_disetujui"/>
+                    </list>
+                </field>
+            </record>
+
+            <!-- cdn.penilaian_akhir form view -->
+            <record id="cdn_penilaian_akhir_view_form" model="ir.ui.view">
+                <field name="name">cdn.penilaian_akhir.view.form</field>
+                <field name="model">cdn.penilaian_akhir</field>
+                <field name="arch" type="xml">
+                    <form string="">
+                        <header> 
+                            <button string="Confirm" name="act_confirm" type="object" class="oe_highlight"  invisible="state != 'draft'"/>
+                            <button string="Di Setujui" name="act_approved" type="object" class="oe_highlight" invisible="state != 'confirm'"/>
+                            <field name="state" widget="statusbar"/>
+                        </header>
+                        <sheet>
+                            <div class="oe_title"  invisible="1">
+                                <label for="name" class="oe_edit_only" string="Nama"/>
+                                <h1><field name="name"/></h1>
+                            </div>
+                            <group>
+                                <group>
+                                    <field name="walikelas_id" options="{'no_create_edit':True, 'no_create':True}"/>
+                                </group>
+                                <group>
+                                </group>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="siswa_id" options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                                    <field name="nis"/>
+                                    <field name="kelas_id" options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                                </group>
+                                <group>
+                                    <field name="tahunajaran_id" options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                                    <field name="semester"/>
+                                    <field name="tgl_disetujui"/>
+                                </group>
+                            </group>
+                            <notebook>
+                                 <page name="penilaian_akhir" string="Penilaian Akhir">
+                                    <field name="penilaianakhir_ids">
+                                        <list editable="bottom"> 
+                                            <field name="mapel_id" options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                                            <field name="nilai1" widget="integer"/>
+                                            <field name="predikat1"/>
+                                            <field name="nilai2" widget="integer"/>
+                                            <field name="predikat2"/>
+                                            <field name="aspek1"/>
+                                            <field name="aspek2"/>
+                                            <field name="aspek3"/>
+                                            <field name="aspek4"/>
+                                            <field name="aspek5"/>
+                                            <field name="aspek6"/>
+                                        </list>
+                                    </field>
+                                </page>
+                                <page name="penilaian_ekstrakulikuler" string="Penilaian Ekstrakulikuler">
+                                    <field name="ekstrakulikuler_ids">
+                                        <list editable="bottom">
+                                            <field name="name"/>
+                                            <field name="is_wajib"/>
+                                            <field name="nilai" widget="integer"/>
+                                            <field name="predikat"/>
+                                        </list>
+                                    </field>
+                                </page>
+                                <page name="organisasi" string="Organisasi">
+                                    <field name="organisasi_ids">
+                                        <list editable="bottom">
+                                            <field name="name"/>
+                                            <field name="position"/>
+                                        </list>
+                                    </field>
+                                </page>
+                            </notebook> 
+                        </sheet>
+                    </form>
+                </field>
+            </record>
+
+            <!-- cdn.penilaian_akhir action window -->
+            <record id="penilaian_akhir_action" model="ir.actions.act_window">
+                <field name="name">Penilaian Akhir ( Wali Kelas )</field>
+                <field name="type">ir.actions.act_window</field>
+                <field name="res_model">cdn.penilaian_akhir</field>
+                <field name="view_mode">list,form</field>
+                <field name="domain">
+                [
+                    ('siswa_id.ruang_kelas_id.walikelas_id.user_id','=',uid)
+                ]
+                </field>
+            </record>
+            <!-- This Menu Item must have a parent and an action -->
+            <menuitem id="penilaian_akhir_menu_act" name="Penilaian Akhir ( Wali Kelas )" parent="aktivitas_penilaian_menu_categ" action="penilaian_akhir_action" sequence="30"/>
+        </data>
+
+</odoo>

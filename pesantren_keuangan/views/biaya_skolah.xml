@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <data>
+            <!-- cdn.biaya_sekolah list view -->
+            <record id="cdn_biaya_sekolah_view_tree" model="ir.ui.view">
+                <field name="name">cdn.biaya_sekolah.view.list</field>
+                <field name="model">cdn.biaya_sekolah</field>
+                <field name="arch" type="xml">
+                    <list>
+                        <field name="name"/>
+                        <field name="nominal_biaya" widget="integer"/>
+                        <field name="lama_tagihan"/>
+                        <field name="keterangan"/>
+                    </list>
+                </field>
+            </record>
+
+            <!-- cdn.biaya_sekolah form view -->
+            <record id="cdn_biaya_sekolah_view_form" model="ir.ui.view">
+                <field name="name">cdn.biaya_sekolah.view.form</field>
+                <field name="model">cdn.biaya_sekolah</field>
+                <field name="arch" type="xml">
+                    <form string="">
+                        <sheet>
+                            <group>
+                                <field name="name"/>
+                                <field name="nominal_biaya" widget="integer"/>
+                                <field name="lama_tagihan"/>
+                                <field name="keterangan"/>
+                            </group>
+                        </sheet>
+                    </form>
+                </field>
+            </record>
+        </data>
+
+        <!-- cdn.biaya_sekolah action window -->
+        <record id="cdn_biaya_sekolah_action" model="ir.actions.act_window">
+            <field name="name">Biaya Sekolah</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.biaya_sekolah</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p><p>
+                    <!-- More details about what a user can do with this object will be OK --> 
+                </p>
+            </field>
+        </record>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="biaya_sekolah_menu_act" name="Biaya Sekolah" parent="pengaturan_menu_categ" action="cdn_biaya_sekolah_action" sequence="10"/>
+
+</odoo>

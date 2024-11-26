@@ -1,0 +1,117 @@
+    async fetchData() {
+        try {
+            const startDate = this.state.currentStartDate || this.defaultStartDate;
+            const endDate = this.state.currentEndDate || this.defaultEndDate;
+    
+            const dateDomain = [
+                ['name', '>=', startDate],
+                ['name', '<=', endDate]
+            ];
+    
+            // Initialize variables
+            let tahfidzData = [];
+            let tahsinData = [];
+            let tahfidzAlpaCount = 0;
+            let tahsinAlpaCount = 0;
+    
+            // Fetch Tahfidz data
+            try {
+                tahfidzData = await this.orm.call(
+                    'cdn.absen_tahfidz_quran', 
+                    'search_read', 
+                    [[...dateDomain, ['state', '=', 'Proses']], ['name', 'absen_ids']],
+                    { context: this.env.context }
+                );
+
+                if (tahfidzData.length > 0) {
+                    tahfidzAlpaCount = await this.orm.call(
+                        'cdn.absen_tahfidz_quran_line',
+                        'search_count',
+                        [[
+                            ['absen_id', 'in', tahfidzData.map(t => t.id)],
+                            ['kehadiran', '=', 'Alpa']
+                        ]],
+                        { context: this.env.context }
+                    );
+                }
+            } catch (error) {
+                console.warn('Error fetching tahfidz data:', error);
+            }
+    
+            // Fetch Tahsin data
+            try {
+                tahsinData = await this.orm.call(
+                    'cdn.absen_tahsin_quran', 
+                    'search_read', 
+                    [[...dateDomain, ['state', '=', 'Proses']], ['name', 'absen_ids']],
+                    { context: this.env.context }
+                );
+
+                if (tahsinData.length > 0) {
+                    tahsinAlpaCount = await this.orm.call(
+                        'cdn.absen_tahsin_quran_line',
+                        'search_count',
+                        [[
+                            ['absen_id', 'in', tahsinData.map(t => t.id)],
+                            ['kehadiran', '=', 'Alpa']
+                        ]],
+                        { context: this.env.context }
+                    );
+                }
+            } catch (error) {
+                console.warn('Error fetching tahsin data:', error);
+            }
+    
+            this.state.kpiData = [
+                {
+                    name: 'Absen Tahfidz',
+                    value: tahfidzData.length,
+                    icon: 'fa-user-graduate',
+                    color: '#00e396',
+                    res_model: 'cdn.absen_tahfidz_quran',
+                    domain: [...dateDomain, ['state', '=', 'Proses']],
+                },
+                {
+                    name: 'Santri Tahfidz Alpa',
+                    value: tahfidzAlpaCount,
+                    icon: 'fa-users',
+                    color: '#00e396',
+                    res_model: 'cdn.absen_tahfidz_quran_line',
+                    domain: [
+                        ['absen_id.name', '>=', startDate],
+                        ['absen_id.name', '<=', endDate],
+                        ['absen_id.state', '=', 'Proses'],
+                        ['kehadiran', '=', 'Alpa']
+                    ],
+                },
+                {
+                    name: 'Absen Tahsin',
+                    value: tahsinData.length,
+                    icon: 'fa-user-tie',
+                    color: '#00e396',
+                    res_model: 'cdn.absen_tahsin_quran',
+                    domain: [...dateDomain, ['state', '=', 'Proses']],
+                },
+                {
+                    name: 'Santri Tahsin Alpa',
+                    value: tahsinAlpaCount,
+                    icon: 'fa-book',
+                    color: '#00e396',
+                    res_model: 'cdn.absen_tahsin_quran_line',
+                    domain: [
+                        ['absen_id.name', '>=', startDate],
+                        ['absen_id.name', '<=', endDate],
+                        ['absen_id.state', '=', 'Proses'],
+                        ['kehadiran', '=', 'Alpa']
+                    ],
+                },
+            ];
+    
+            if (this.state.kpiData.some(kpi => kpi.value > 0)) {
+                this.startKpiAnimations();
+            }
+                
+        } catch (error) {
+            console.error('Error in fetchData:', error);
+        }
+    }

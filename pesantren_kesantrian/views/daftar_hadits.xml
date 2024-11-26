@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- cdn.hadits list view -->
+        <record id="cdn_hadits_view_tree" model="ir.ui.view">
+            <field name="name">cdn.hadits.view.list</field>
+            <field name="model">cdn.hadits</field>
+            <field name="arch" type="xml">
+                <list>
+                    <!-- Add your fields here -->
+                    <field name="name" />
+                    <field name="kode" />
+                    <field name="no_hadits" />
+                    <field name="keterangan" />
+                    <field name="matan_hadits" />
+                </list>
+            </field>
+        </record>
+        <!-- cdn.hadits form view -->
+        <record id="cdn_hadits_view_form" model="ir.ui.view">
+            <field name="name">cdn.hadits.view.form</field>
+            <field name="model">cdn.hadits</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Hadits Name"/>
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="kode"/>
+                                <field name="no_hadits"/>
+                                <field name="keterangan"/>
+                                <field name="matan_hadits"/>
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                        <notebook>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- cdn.hadits action window -->
+        <record id="cdn_hadits_action" model="ir.actions.act_window">
+            <field name="name">Hadits</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.hadits</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p><p>
+                    <!-- More details about what a user can do with this object will be OK --> 
+                </p>
+            </field>
+        </record>
+        <!-- cdn.daftar.haditz search view -->
+        <record id="cdn_hadits_view_search" model="ir.ui.view">
+            <field name="name">cdn.hadits.view.search</field>
+            <field name="model">cdn.hadits</field>
+            <field name="arch" type="xml">
+                <search string="Hadits">
+                    <filter string="Nama" name="filter_by_name" domain="[('name','=','')]"/>
+                    <filter string="Kode" name="filter_by_kode" domain="[('kode','=','')]"/>
+                    <filter string="No hadits" name="filter_by_no_hadits" domain="[('no_hadits','=','')]"/>
+                    <filter string="Keterangan" name="filter_by_keterangan" domain="[('keterangan','=','')]"/>
+                    <filter string="Matan hadits" name="filter_by_matan_hadits" domain="[('matan_hadits','=','')]"/>
+                    <field name="name" select="True"/>
+                    <field name="kode" select="True"/>
+                    <field name="no_hadits" select="True"/>
+                    <field name="keterangan" select="True"/>
+                    <field name="matan_hadits" select="True"/>
+                    <group string="Group By..">
+                    </group>
+                </search>
+                    
+            </field>
+        </record>
+        <menuitem id="hadits_menu_act" name="Daftar Hadits" parent="pengaturan_tahfidz_menu_categ" action="cdn_hadits_action" sequence="20"/>
+
+    </data>
+</odoo>

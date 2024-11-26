@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+
+        <!-- cdn.perijinan list view -->
+        <record id="cdn_perijinan_view_tree" model="ir.ui.view">
+            <field name="name">cdn.perijinan.view.list</field>
+            <field name="model">cdn.perijinan</field>
+            <field name="arch" type="xml">
+                <list default_order="id desc">
+                    <!-- Add your fields here -->
+                    <field name="name" />
+                    <field name="tgl_ijin" />
+                    <field name="siswa_id" />
+                    <field name="kamar_id" />
+                    <field name="halaqoh_id" />
+                    <field name="musyrif_id" />
+                    <field name="keperluan" />
+                    <field name="lama_ijin" />
+                    <field name="state" />
+                    <field name="penjemput" />
+                </list>
+            </field>
+        </record>
+
+        <!-- cdn.perijinan form view -->
+        <record id="cdn_perijinan_view_form" model="ir.ui.view">
+            <field name="name">cdn.perijinan.view.form</field>
+            <field name="model">cdn.perijinan</field>
+            <field name="arch" type="xml">
+                <form string="Permohonan Ijin Santri" duplicate="0">
+                    <header>
+                        <button string="Ijin Diperiksa" type="object" name="action_checked" groups="pesantren_kesantrian.group_kesantrian_staff" invisible="state != 'Draf'" />
+
+                        <button string="Ijin Disetujui" type="object" name="action_approved" groups="pesantren_kesantrian.group_kesantrian_manager" invisible="state != 'Check'" />
+
+                        <button string="Ijin Ditolak" type="object" name="action_rejected" groups="pesantren_kesantrian.group_kesantrian_manager" invisible="state != 'Check'" />
+
+                        <button string="Santri Keluar" type="object" name="action_permission" groups="pesantren_kesantrian.group_kesantrian_manager,
+                                pesantren_kesantrian.group_kesantrian_keamanan" invisible="state != 'Approved'"/>
+                        <button string="Santri Kembali" type="object" name="action_return" groups="pesantren_kesantrian.group_kesantrian_manager,
+                                pesantren_kesantrian.group_kesantrian_keamanan" invisible="state != 'Permission'"/>
+
+                        <field name="state" widget="statusbar" statusbar_visible="Draft,Check,Approved,Permission" />
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="No Referensi (Auto)" />
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group string="Data Ijin Santri">
+                           <group>
+                                <field name="tgl_ijin" readonly="state == 'Check' or state == 'Approved' or state == 'Permission' or state == 'Return'"/>
+                                <field name="siswa_id" options="{'no_create_edit':True, 'no_create':True}" readonly="state == 'Check' or state == 'Approved' or state == 'Permission' or state == 'Return'"/>
+                                <field name="kelas_id" />
+                            </group>
+                            <group>
+                                <field name="kamar_id" />
+                                <field name="halaqoh_id" />
+                                <field name="musyrif_id" />
+                            </group>
+                        </group>
+                        <group string="Pengajuan Ijin Santri">
+                            <group>
+                                <field name="tgl_kembali" readonly="state == 'Approved' or state ==  'Permission' or state == 'Return'"/>
+                                <field name="penjemput" readonly="state == 'Approved' or state ==  'Permission' or state == 'Return'"/>
+
+                            </group>
+                            <group>
+                                <field name="lama_ijin" />
+                                <field name="keperluan" readonly="state == 'Approved' or state ==  'Permission' or state == 'Return'"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="catatan" string='Catatan' />
+                        </group>
+                        <group string="Akses Keamanan" invisible="state not in('Approved','Permission','Return')">
+                            <group>
+                                <field name="waktu_keluar" />
+                                <field name="jatuh_tempo" />
+                            </group>
+                            <group>
+                                <field name="waktu_kembali" />
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter" groups="pesantren_kesantrian.group_kesantrian_manager">
+                        <chatter>
+                            <field name="message_follower_ids" widget="mail_followers" />
+                            <field name="activity_ids" widget="mail_activity" />
+                            <field name="message_ids" widget="mail_thread"  options="{'display_log_button': True}"/>
+                        </chatter>
+                    </div>
+                </form>
+
+            </field>
+        </record>
+
+        <!-- cdn.perijinan search view -->
+        <record id="cdn_perijinan_view_search" model="ir.ui.view">
+            <field name="name">cdn.perijinan.view.search</field>
+            <field name="model">cdn.perijinan</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="siswa_id" string="Siswa" />
+                    <!-- filter -->
+                    <filter string="Tgl Izin Hari Ini" name="today" domain="[ ('tgl_ijin','=',(context_today().strftime('%Y-%m-%d'))),
+                    ]" />
+                    <filter string="Lama Ijin Lebih Dari 3 Hari" name="three_days" domain="[('lama_ijin', '>', 3)]" />
+                    <filter string="Draft" name="draft" domain="[('state' ,'=', 'Draft')]" />
+                    <filter string="Diperiksa" name="check" domain="[('state' ,'=', 'Check')]" />
+                    <filter string="Diterima" name="approved" domain="[('state' ,'=', 'Approved')]" />
+                    <filter string="Ditolak" name="rejected" domain="[('state' ,'=', 'Rejected')]" />
+                    <filter string="Santri Ijin" name="permission" domain="[('state' ,'=', 'Permission')]" />
+                    <filter string="Kembali" name="return" domain="[('state' ,'=', 'Return')]" />
+                    <!-- group by siswa -->
+                    <group string="Siswa" colspan="4">
+                        <field name="siswa_id" />
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- cdn.perijinan graph view -->
+        <!-- <record id="cdn_perijinan_view_graph" model="ir.ui.view">
+            <field name="name">cdn.perijinan.view.graph</field>
+            <field name="model">cdn.perijinan</field>
+            <field name="arch" type="xml">
+                <graph>
+                    <field name="siswa_id" />
+                </graph>
+            </field>
+        </record> -->
+
+        <!-- cdn.perijinan action window -->
+        <record id="cdn_perijinan_action" model="ir.actions.act_window">
+            <field name="name">Perijinan</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.perijinan</field>
+            <field name="view_mode">list,form,graph</field>
+            <field name="search_view_id" ref="pesantren_kesantrian.cdn_perijinan_view_search"/>
+        </record>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="perijinan_menu_act" name="Perijinan" parent="kepesantrenan_menu_categ" action="cdn_perijinan_action" sequence="10"/>
+
+    </data>
+
+
+</odoo>

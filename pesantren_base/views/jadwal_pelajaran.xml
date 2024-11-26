@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- cdn.jadwal_pelajaran list view -->
+        <record id="cdn_jadwal_pelajaran_view_tree" model="ir.ui.view">
+            <field name="name">cdn.jadwal_pelajaran.view.list</field>
+            <field name="model">cdn.jadwal_pelajaran</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="tahunajaran_id"/>
+                    <field name="kelas_id"/>
+                    <field name="jenjang"/>
+                </list>
+            </field>
+        </record>
+        <!-- cdn.jadwal_pelajaran form view -->
+        <record id="cdn_jadwal_pelajaran_view_form" model="ir.ui.view">
+            <field name="name">cdn.jadwal_pelajaran.view.form</field>
+            <field name="model">cdn.jadwal_pelajaran</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <field name="name" nolabel="1"/>
+                        <group>
+                            <group>
+                                <field name="tahunajaran_id"
+                                    options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                                <field name="kelas_id"
+                                    options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                            </group>
+                            <group>
+                                <field name="semester"/>
+                                <field name="walikelas_id"/>
+                            </group>
+                        </group>
+                            <field name="jadwal_ids" nolabel="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="jampelajaran_id"
+                                        options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                                    <field name="jenjang" invisible="1"/>
+                                    <field name="matapelajaran_id" domain="[('jenjang', '=', jenjang)]"
+                                        options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                                    <field name="guru_id"
+                                        options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                                </list>
+                            </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- cdn.jadwal_pelajaran action window -->
+        <record id="cdn_jadwal_pelajaran_action" model="ir.actions.act_window">
+            <field name="name">Jadwal Pelajaran</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.jadwal_pelajaran</field>
+            <field name="view_mode">list,form</field>
+        </record>
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="jadwal_pelajaran_menu_act" name="Jadwal Pelajaran" 
+            parent="tu_aktivitas_akademik" action="cdn_jadwal_pelajaran_action" sequence="10"/>
+    </data>
+</odoo>

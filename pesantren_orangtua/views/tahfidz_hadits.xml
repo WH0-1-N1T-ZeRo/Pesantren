@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- cdn.tahfidz_hadits action window -->
+        <record id="cdn_tahfidz_hadits_action" model="ir.actions.act_window">
+            <field name="name">Tahfidz Hadits</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.tahfidz_hadits</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="pesantren_kesantrian.cdn_tahfidz_hadits_view_tree" />
+            <field name="domain">
+            [
+                ('siswa_id.orangtua_id.partner_id.user_id','=',uid)
+            ]
+            </field>
+        </record>
+        <record id="action_tree_view_cdn_tahfidz_hadits" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2" />
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="pesantren_kesantrian.cdn_tahfidz_hadits_view_tree" />
+            <field name="act_window_id" ref="cdn_tahfidz_hadits_action" />
+        </record>
+        <record id="action_form_view_cdn_tahfidz_hadits" model="ir.actions.act_window.view">
+            <field name="sequence" eval="3" />
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="pesantren_kesantrian.cdn_tahfidz_hadits_view_form" />
+            <field name="act_window_id" ref="cdn_tahfidz_hadits_action" />
+        </record>
+        <!-- This Menu Item must have a parent and an action -->
+        <!-- <menuitem id="cdn_tahfidz_hadits_menu_act" name="Tahfidz Hadits" parent="tahfidz_menu_categ" action="cdn_tahfidz_hadits_action" sequence="20"/> -->
+    </data>
+</odoo>

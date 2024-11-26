@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+  <data noupdate="1">
+
+  <!-- sequence kesehatan -->
+    <record id="sequence_kesehatan" model="ir.sequence">
+        <field name="name">kesehatan</field>
+        <field name="code">cdn.kesehatan</field>
+        <field name="prefix">KS/%(y)s.%(month)s/</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+        <field name="implementation">standard</field>
+    </record>  
+  
+    <!-- ir.sequence for cdn.pelanggaran -->
+    <record id="cdn_pelanggaran_sequence" model="ir.sequence">
+        <field name="name">No Referensi Pelanggaran</field>
+        <field name="code">cdn.pelanggaran</field>
+        <field name="prefix">KP/%(y)s.%(month)s/</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+        <field name="implementation">standard</field>
+        <field name="active">True</field>
+    </record>
+
+    <!-- ir.sequence for cdn.perijinan -->
+    <record id="cdn_perijinan_sequence" model="ir.sequence">
+        <field name="name">No Referensi Perijinan</field>
+        <field name="code">cdn.perijinan</field>
+        <field name="prefix">KI/%(y)s.%(month)s/</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+        <field name="implementation">standard</field>
+        <field name="active">True</field>
+    </record>
+    <!-- ir.sequence for cdn.perijinan -->
+    <record id="cdn_tahfidz_hadits_sequence" model="ir.sequence">
+        <field name="name">No Referensi Tahfidz Al Hadits</field>
+        <field name="code">cdn.tahfidz_hadits</field>
+        <field name="prefix">TH/%(y)s.%(month)s/</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+        <field name="implementation">standard</field>
+        <field name="active">True</field>
+    </record>
+
+    
+
+    <!-- ir.sequence for cdn.tahfidz_quran -->
+    <record id="cdn_tahfidz_quran_sequence" model="ir.sequence">
+        <field name="name">No Referensi Tahfidz Quran</field>
+        <field name="code">cdn.tahfidz_quran</field>
+        <field name="prefix">TQ/%(y)s.%(month)s/</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+        <field name="implementation">standard</field>
+        <field name="active">True</field>
+    </record>
+
+    <!-- ir.sequence for cdn.tahsin_quran -->
+    <record id="cdn_tahsin_quran_sequence" model="ir.sequence">
+        <field name="name">No Referensi Tahsin Quran</field>
+        <field name="code">cdn.tahsin_quran</field>
+        <field name="prefix">TS/%(y)s.%(month)s/</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+        <field name="implementation">standard</field>
+        <field name="active">True</field>
+    </record>
+
+
+  </data>
+  
+</odoo>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="owl.MusyrifChartRenderer">
+        <div class="chart-container">
+            <t t-if="props.type === 'chart'">
+                <div t-ref="chart" class="h-full w-full"/>
+            </t>
+            <t t-if="props.type === 'areaChart'">
+                <div t-ref="areaChart" />
+            </t>
+        </div>
+    </t>
+</templates>

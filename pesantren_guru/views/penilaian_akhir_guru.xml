@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- cdn.penilaian_akhir_guru list view -->
+        <record id="cdn_penialian_akhir_guru_view_tree" model="ir.ui.view">
+            <field name="name">cdn.penilaian_akhir_guru.view.list</field>
+            <field name="model">cdn.penilaian_akhir_guru</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="kelas_id"/>
+                    <field name="tahunajaran_id"/>
+                    <field name="semester"/>
+                    <field name="guru_id"/>
+                    <field name="mapel_id"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+        <!-- cdn.penilaian_akhir_guru form view -->
+        <record id="cdn_penialian_akhir_guru_view_form" model="ir.ui.view">
+            <field name="name">cdn.penilaian_akhir_guru.view.form</field>
+            <field name="model">cdn.penilaian_akhir_guru</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <header>
+                        <button string="Confirm" name="act_confirm" type="object" class="oe_highlight"  invisible="state != 'draft'"/>
+                        <button string="Set to Draft" name="act_draft" type="object" class="oe_highlight" invisible="state != 'confirm'" />
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="guru_id"
+                                    readonly="state == 'confirm'"
+                                    options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="kelas_id"
+                                    readonly=" state == 'confirm'"
+                                    options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                                <field name="mapel_id"
+                                    readonly="state == 'confirm'"
+                                    options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                            </group>
+                            <group>
+                                <field name="tahunajaran_id"
+                                    readonly="state == 'confirm'"
+                                    options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                                <field name="semester"
+                                    readonly="state == 'confirm'"/>
+                            </group>
+                        </group>
+                        <field name="penilaian_ids" readonly=" state == 'confirm'">
+                            <list editable="bottom">
+                                <field name="siswa_id"
+                                    options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                                <field name="mapel_id" invisible="1"/>
+                                <field name="tahunajaran_id" invisible="1"/>
+                                <field name="semester" invisible="1"/>
+                                <field name="nilai1" widget="integer" />
+                                <field name="predikat1"/>
+                                <field name="nilai2" widget="integer"/>
+                                <field name="predikat2"/>
+                                <field name="aspek1"/>
+                                <field name="aspek2"/>
+                                <field name="aspek3"/>
+                                <field name="aspek4"/>
+                                <field name="aspek5"/>
+                                <field name="aspek6"/>
+                            </list>
+                        </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- cdn.penilaian_akhir_guru action window -->
+        <record id="cdn_penialian_akhir_guru_action" model="ir.actions.act_window">
+            <field name="name">Penilaian Akhir ( Guru )</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.penilaian_akhir_guru</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">
+            [
+                '|',
+                ('guru_id.user_id','=',uid),
+                ('penilaian_ids.siswa_id.ruang_kelas_id.walikelas_id.user_id','=',uid)
+            ]
+            </field>
+        </record>
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="cdn_penilaian_akhir_guru_menu_act" name="Penilaian Akhir ( Guru )" parent="aktivitas_penilaian_menu_categ" action="cdn_penialian_akhir_guru_action" sequence="20"/>
+    </data>
+</odoo>

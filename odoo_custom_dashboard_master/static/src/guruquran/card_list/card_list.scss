@@ -1,0 +1,106 @@
+/* Styling Card agar menyatu dengan Dashboard */
+    .dashboard-card {
+        border: none;
+        background: #ffffff; /* Background putih */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-card .card-header {
+        background: linear-gradient(135deg, #00a65a, #008d4c);
+        color: white;
+        border-radius: 12px 12px 0 0;
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .dashboard-card .card-title {
+        font-size: 1rem;
+        font-weight: bold;
+        margin: 0;
+    }
+
+    .dashboard-card .card-body {
+        padding: 1.5rem;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f0fff4; /* Efek hijau terang */
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f9f9f9; /* Alternating row color */
+    }
+
+    /* Loading Spinner Styling */
+    .fa-spinner {
+        color: #00a65a;
+    }
+
+    /* Typography */
+    .text-muted {
+        color: #6c757d;
+    }
+
+    /* Hover effect for table */
+    .table tbody tr:hover {
+        background-color: #e6f7ee;
+    }
+
+    /* Override default table styles */
+.table {
+    margin-bottom: 0;
+}
+
+.table > :not(:first-child) {
+    border-top: none;
+}
+
+.table > tbody > tr:last-child > td {
+    border-bottom: none;
+}
+
+/* Custom padding for first and last columns */
+.table td:first-child,
+.table th:first-child {
+    padding-left: 1.5rem;
+}
+
+.table td:last-child,
+.table th:last-child {
+    padding-right: 1.5rem;
+}
+
+/* Remove border from header */
+.card-header {
+    border-bottom: none;
+}
+
+/* Override default table styles */
+.table {
+    margin-bottom: 0;
+}
+
+.table > :not(:first-child) {
+    border-top: none;
+}
+
+.table > tbody > tr:last-child > td {
+    border-bottom: none;
+}
+
+/* Custom padding for first and last columns */
+.table td:first-child,
+.table th:first-child {
+    padding-left: 1.5rem;
+}
+
+.table td:last-child,
+.table th:last-child {
+    padding-right: 1.5rem;
+}
+
+/* Remove border from header */
+.card-header {
+    border-bottom: none;
+}
+

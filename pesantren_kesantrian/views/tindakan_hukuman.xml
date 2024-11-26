@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- cdn.tindakan_hukuman list view -->
+        <record id="cdn_tindakan_hukuman_view_tree" model="ir.ui.view">
+            <field name="name">cdn.tindakan_hukuman.view.list</field>
+            <field name="model">cdn.tindakan_hukuman</field>
+            <field name="arch" type="xml">
+                <list expand="1">
+                    <!-- Add your fields here -->
+                    <field name="name" />
+                    <field name="level_pelanggaran" />
+                    <field name="deskripsi" />
+                </list>
+            </field>
+        </record>
+
+        <!-- cdn.tindakan_hukuman form view -->
+        <record id="cdn_tindakan_hukuman_name_view_form" model="ir.ui.view">
+            <field name="name">cdn.tindakan_hukuman.view.form</field>
+            <field name="model">cdn.tindakan_hukuman</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <!-- Add your fields here -->
+                            <field name="name" />
+                            <field name="level_pelanggaran" />
+                            <field name="deskripsi" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- cdn.tindakan_hukuman search view -->
+        <record id="cdn_tindakan_hukuman_view_search" model="ir.ui.view">
+            <field name="name">cdn.tindakan_hukuman.view.search</field>
+            <field name="model">cdn.tindakan_hukuman</field>
+            <field name="arch" type="xml">
+                <search string="Search Description">
+                    <!-- Add your fields here -->
+                    <filter name="group_by_level_pelanggaran" string="Level Pelanggaran" context="{'group_by': 'level_pelanggaran'}" />
+                </search>
+            </field>
+        </record>
+
+        <!-- cdn.tindakan_hukuman action window -->
+        <record id="tindakan_hukuman_action" model="ir.actions.act_window">
+            <field name="name">Tindakan Hukuman</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.tindakan_hukuman</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'search_default_group_by_level_pelanggaran':1}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p><p>
+                    <!-- More details about what a user can do with this object will be OK --> 
+                </p>
+            </field>
+        </record>
+
+        <menuitem
+            id="cdn_tindakan_hukuman_menu"
+            name="Tindakan Hukuman"
+            action="tindakan_hukuman_action"
+            parent="pengaturan_kepengasuhan_menu_categ"
+            sequence="30"/>
+    </data>
+</odoo>

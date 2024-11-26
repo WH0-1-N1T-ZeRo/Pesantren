@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+    
+        <!-- cdn.jilid_tahsin list view -->
+        <record id="cdn_jilid_tahsin_view_tree" model="ir.ui.view">
+            <field name="name">cdn.jilid_tahsin.view.list</field>
+            <field name="model">cdn.jilid_tahsin</field>
+            <field name="arch" type="xml">
+                <list>
+                    <!-- Add your fields here -->
+                    <field name="name" />
+                    <field name="keterangan" />
+                    
+                </list>
+            </field>
+        </record>
+        <!-- cdn.jilid_tahsin form view -->
+        <record id="cdn_jilid_tahsin_view_form" model="ir.ui.view">
+            <field name="name">cdn.jilid_tahsin.view.form</field>
+            <field name="model">cdn.jilid_tahsin</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                         <group>
+                            <group>
+                                <field name="keterangan"/>
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                        <notebook>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- cdn.jilid_tahsin action window -->
+        <record id="cdn_jilid_tahsin_action" model="ir.actions.act_window">
+            <field name="name">Jilid Tahsin</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.jilid_tahsin</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p><p>
+                    <!-- More details about what a user can do with this object will be OK --> 
+                </p>
+            </field>
+        </record>
+        <!-- cdn.jilid_tahsin search view -->
+        <record id="cdn_jilid_tahsin_view_search" model="ir.ui.view">
+            <field name="name">cdn.jilid_tahsin.view.search</field>
+            <field name="model">cdn.jilid_tahsin</field>
+            <field name="arch" type="xml">
+                <search string="Level tahsin">
+                    <filter string="Nama" name="filter_by_name" domain="[('name','=','')]"/>
+                    <filter string="Keterangan" name="filter_by_keterangan" domain="[('keterangan','=','')]"/>
+                    <field name="name" select="True"/>
+                    <field name="keterangan" select="True"/>
+                    <group string="Group By..">
+                    </group>
+                </search>
+            </field>
+        </record>
+        <menuitem id="jilid_tahsin_menu_act" name="Buku Tahsin" parent="kepesantrenan_tahsin_menu_categ" action="cdn_jilid_tahsin_action" sequence="40"/>
+
+    
+    </data>
+    
+</odoo>

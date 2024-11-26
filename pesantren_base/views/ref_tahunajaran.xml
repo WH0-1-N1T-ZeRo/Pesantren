@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- list view -->
+        <record id="view_cdn_ref_tahunajaran_tree" model="ir.ui.view">
+            <field name="name">cdn_ref_tahunajaran_tree</field>
+            <field name="model">cdn.ref_tahunajaran</field>
+            <field name="type">list</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <list string="Ref tahunajaran">
+                    <field name="name" />
+                    <field name="keterangan" />
+                    <field name="start_date" string="Tgl Mulai"/>
+                    <field name="end_date" string="Tgl Selesai"/>
+                    <field name="term_structure"/>
+                </list>
+            </field>
+        </record>
+        <!-- form view -->
+        <record id="view_cdn_ref_tahunajaran_form" model="ir.ui.view">
+            <field name="name">cdn_ref_tahunajaran_form</field>
+            <field name="model">cdn.ref_tahunajaran</field>
+            <field name="type">form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Ref tahunajaran">
+                                        <header>
+                        <field name="create_boolean" invisible="1"/>
+                        <button name="term_create" type="object" string="Buat Termin Akademik" class="oe_highlight"
+                                invisible="create_boolean == 'False', term_structure == 'others'"/>
+                        <button name="create_periode_tagihan"  string="Buat Periode Tagihan Bulanan" type="object" class="oe_highlight"/>
+
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <!--button type="object" name="action_view_detail" class="oe_stat_button" icon="fa-pencil-square-o"-->
+                                <!--field name="detail_count" widget="statinfo" string="Detail(s)"/-->
+                                <!--field name="detail_ids" invisible="1"/-->
+                            <!--/button-->
+                        </div>
+                        <div class="oe_title">
+                            <label for="name"  string="Tahun Pelajaran"/>
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group>
+                            <field name="term_structure"/>
+                            <field name="start_date" string="Tgl Mulai"/>
+                            <field name="end_date" string="Tgl Selesai"/>
+                            <field name="keterangan" />
+                        </group>
+                        <notebook>
+                            <page name="termin_akademik" string="Termin Akademik">
+                                    <field name="term_akademik_ids" nolabel="1">
+                                        <list>
+                                            <field name="name"/>
+                                            <field name="term_start_date"/>
+                                            <field name="term_end_date"/>
+                                            <field name="tahunajaran_id"/>
+                                            <field name="parent_term"/>
+                                        </list>
+                                    </field>
+                            </page>
+                            <page name="biaya" string="Biaya">
+                                <field colspan="4" name="biaya_ids">
+                                    <list editable="bottom">
+                                        <field name="name"/>
+                                        <field name="nominal" widget="integer"/>
+                                    </list>
+
+                                </field>
+                            </page>
+                            <page name="periode_tagihan" string="Periode Tagihan">
+                                    <field name="periode_tagihan_ids" nolabel="1">
+                                        <list>
+                                            <field name="name"/>
+                                            <field name="start_date" string="Tgl Mulai"/>
+                                            <field name="end_date" string="Tgl Selesai"/>
+                                            <field name="tahunajaran_id"/>
+                                        </list>
+                                    </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- search -->
+        <record id="view_cdn_ref_tahunajaran_search" model="ir.ui.view">
+            <field name="name">cdn_ref_tahunajaran</field>
+            <field name="model">cdn.ref_tahunajaran</field>
+            <field name="arch" type="xml">
+                <search string="Ref tahunajaran">
+
+                    <filter string="Nama" name="filter_by_name" domain="[('name','=','')]" />
+                    <filter string="Keterangan" name="filter_by_keterangan" domain="[('keterangan','=','')]" />
+                    <field name="name" select="True"/>
+                    <field name="keterangan" select="True"/>
+                    <group string="Group By..">
+                    </group>
+                </search>
+            </field>
+        </record>
+  
+        <!-- action window -->
+        <record id="action_cdn_ref_tahunajaran" model="ir.actions.act_window">
+            <field name="name">Tahun Ajaran</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.ref_tahunajaran</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{"search_default_fieldname":1}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                Click to add a new Ref tahunajaran
+                </p><p>
+                Click the Create button to add a new Ref tahunajaran
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_cdn_ref_tahunajaran" name="Tahun Ajaran" parent="pengaturan_umum_menu_categ" action="action_cdn_ref_tahunajaran" sequence="10"/>
+    </data>
+</odoo>

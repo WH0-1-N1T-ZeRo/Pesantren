@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- cdn.absensi_siswa list view -->
+        <record id="cdn_absensi_siswa_view_tree" model="ir.ui.view">
+            <field name="name">cdn.absensi_siswa.view.list</field>
+            <field name="model">cdn.absensi_siswa</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="tanggal"/>
+                    <field name="jampelajaran_id"/>
+                    <field name="kelas_id"/>
+                    <field name="mapel_id"/>
+                    <field name="guru_id"/>
+                </list>
+            </field>
+        </record>
+        <!-- cdn.absensi_siswa form view -->
+        <record id="cdn_absensi_siswa_view_form" model="ir.ui.view">
+            <field name="name">cdn.absensi_siswa.view.form</field>
+            <field name="model">cdn.absensi_siswa</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <header>
+                        <button name="action_draft" string="Set to Draft" type="object"  invisible="state != 'done'" class="btn-default"/>
+                        <button name="action_done" string="Confirm" type="object"  invisible="state != 'draft'" class="btn-primary"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="tanggal"/>
+                                <field name="kelas_id"
+                                    options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                        <group string="Aktivitas Pelajaran">
+                            <group>
+                                <field name="hari"/>
+                                <field name="jampelajaran_id"
+                                    options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                            </group>
+                            <group>
+                                <field name="mapel_id"
+                                    options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                                <field name="guru_id"
+                                    options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Absensi Siswa">
+                                <field name="absensi_ids" nolable="1">
+                                    <list editable="bottom">
+                                        <field name="siswa_id"
+                                            options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                                        <field name="nis"/>
+                                        <field name="kehadiran"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Materi">
+                                <group>
+                                    <field name="tingkat_id" invisible="1"/>
+                                    <field name="pertemuan_ke"/>
+                                    <field name="tema"/>
+                                    <field name="materi"/>
+                                    <field name="rpp_id" domain="[('tingkat_id', '=', tingkat_id),('matpel_id','=',mapel_id)]"
+                                        options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                                </group>
+                                <field name="dokumen" widget="pdf_viewer" nolable="1"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- cdn.absensi_siswa action window -->
+        <record id="cdn_absensi_siswa_action" model="ir.actions.act_window">
+            <field name="name">Absensi Siswa</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.absensi_siswa</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">
+            [
+                ('guru_id.user_id','=',uid)
+            ]
+            </field>
+        </record>
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="cdn_absensi_siswa_menu_act" name="Absensi Siswa" 
+            parent="aktivitas_menu_categ" action="cdn_absensi_siswa_action" sequence="10"/>
+    </data>
+</odoo>

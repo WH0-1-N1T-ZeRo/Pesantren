@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+            <!-- View untuk SoalSeleksi -->
+        <record id="view_soal_seleksi_tree" model="ir.ui.view">
+            <field name="name">seleksi.soal.tree</field>
+            <field name="model">seleksi.soal</field>
+            <field name="arch" type="xml">
+                <list string="Soal Seleksi">
+                    <field name="name"/>
+                    <field name="deskripsi"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+        <record id="view_soal_seleksi_form" model="ir.ui.view">
+            <field name="name">seleksi.soal.form</field>
+            <field name="model">seleksi.soal</field>
+            <field name="arch" type="xml">
+                <form string="Soal Seleksi">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="deskripsi"/>
+                            <field name="active"/>
+                            <field name="jenjang"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="view_soal_seleksi_search" model="ir.ui.view">
+            <field name="name">seleksi.soal.search</field>
+            <field name="model">seleksi.soal</field>
+            <field name="arch" type="xml">
+                <search string="Cari Soal Seleksi">
+                    <field name="name"/>
+                    <field name="deskripsi"/>
+                    <field name="active"/>
+                </search>
+            </field>
+        </record>
+
+        
+        <!-- Action untuk Soal Seleksi -->
+        <record id="action_soal_seleksi" model="ir.actions.act_window">
+            <field name="name">Soal Seleksi</field>
+            <field name="res_model">seleksi.soal</field>
+            <field name="view_mode">list,form</field>
+        </record>
+        <record id="view_penilaian_search" model="ir.ui.view">
+            <field name="name">penilaian.search</field>
+            <field name="model">seleksi.penilaian</field>
+            <field name="arch" type="xml">
+                <search string="Cari Penilaian Seleksi">
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+        <!-- Action untuk Penilaian Seleksi -->
+        <record id="action_penilaian_seleksi" model="ir.actions.act_window">
+            <field name="name">Penilaian Seleksi</field>
+            <field name="res_model">seleksi.penilaian</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+    </data>
+</odoo>

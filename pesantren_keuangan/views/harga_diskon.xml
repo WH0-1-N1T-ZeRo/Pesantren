@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+
+        <!-- cdn.harga_khusus action window -->
+        <record id="cdn_harga_khusus_action" model="ir.actions.act_window">
+            <field name="name">Diskon Khusus / Keringanan</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.harga_khusus</field>
+            <field name="view_mode">list,form</field>
+             <field name="view_id" ref="pesantren_base.cdn_harga_khusus_view_tree" />
+        </record>
+
+        <record id="action_tree_view_cdn_harga_khusus" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2" />
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="pesantren_base.cdn_harga_khusus_view_tree" />
+            <field name="act_window_id" ref="cdn_harga_khusus_action" />
+        </record>
+        <record id="action_form_view_cdn_harga_khusus" model="ir.actions.act_window.view">
+            <field name="sequence" eval="3" />
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="pesantren_base.cdn_harga_khusus_view_form" />
+            <field name="act_window_id" ref="cdn_harga_khusus_action" />
+        </record>
+
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="harga_khusus_keuangan_menu_act" name="Diskon/Keringanan" parent="pengaturan_menu_categ" action="cdn_harga_khusus_action" sequence="20"/>
+        
+    </data>
+</odoo>

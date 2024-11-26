@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- dashboard template -->
+        <record id="ks_template_guru" model="ks_dashboard_ninja.board_template">
+            <field name="name">Template Guru</field>
+            <field name="ks_gridstack_config">
+                [
+                    {"item_id":"pesantren_guru.ks_absensi_item", "data": {"x": 0, "y": 0, "w": 12, "h": 5}},
+                    {"item_id":"pesantren_guru.ks_penugasan_item", "data": {"x": 0, "y": 6, "w": 3, "h": 2}},
+                    {"item_id":"pesantren_guru.ks_penilaian_item", "data": {"x": 3, "y": 6, "w": 3, "h": 2}},
+                    {"item_id":"pesantren_guru.ks_penilaian_akhir_guru_item", "data": {"x": 6, "y": 6, "w": 3, "h": 2}},
+                    {"item_id":"pesantren_guru.ks_penilaian_akhir_item", "data": {"x": 9, "y": 6, "w": 3, "h": 2}}
+                ]
+            </field>
+            <field name="ks_item_count">1</field>
+        </record>
+
+        <!-- items -->
+        <record id="ks_absensi_item" model="ks_dashboard_ninja.item">
+            <field name="name">Absensi Siswa</field>
+            <field name="ks_chart_data_count_type">count</field>
+            <field name="ks_chart_groupby_type">relational_type</field>
+            <field name="ks_model_id" eval="ref('pesantren_guru.model_cdn_absensi_siswa_lines')"/>
+            <field name="ks_chart_relation_groupby" eval="ref('pesantren_guru.field_cdn_absensi_siswa_lines__kelas_id')"/>
+            <field name="ks_chart_relation_sub_groupby" eval="ref('pesantren_guru.field_cdn_absensi_siswa_lines__kehadiran')"/>
+            <field name="ks_semi_circle_chart">1</field>
+            <field name="ks_chart_item_color">cool</field>
+            <field name="ks_record_data_limit">10</field>
+            <field name="ks_show_data_value">1</field>
+            <field name="ks_unit_selection">monetary</field>
+            <field name="ks_dashboard_item_type">ks_bar_chart</field>
+            <field name="ks_company_id" eval="0"/>
+            <field name="ks_date_filter_field" eval="
+                ref('pesantren_guru.field_cdn_absensi_siswa_lines__tanggal')
+            "/>
+            <field name="ks_date_filter_selection">l_none</field>
+            <field name="ks_domain" >
+                [("absensi_id.guru_id.user_id","=","%UID")]
+            </field>
+        </record>
+        <record id="ks_penugasan_item" model="ks_dashboard_ninja.item">
+            <field name="name">Penugasan ditugaskan</field>
+            <field name="ks_dashboard_item_type">ks_tile</field>
+            <field name="ks_record_count_type">count</field>
+            <field name="ks_model_id" eval="ref('pesantren_guru.model_cdn_penugasan')"/>
+            <field name="ks_default_icon">book</field>
+            <field name="ks_dashboard_item_theme">blue</field>
+            <field name="ks_background_color">#1c243c,0.99</field>
+            <field name="ks_font_color">#ffffff,0.99</field>
+            <field name="ks_default_icon_color">#ffffff,0.99</field>
+            <field name="ks_layout">layout5</field>
+            <field name="ks_domain" >
+                [
+                    ("guru_id.user_id","=","%UID"),
+                    ("state","=","proses")
+                ]
+            </field>
+        </record>
+        <record id="ks_penilaian_item" model="ks_dashboard_ninja.item">
+            <field name="name">Penilaian</field>
+            <field name="ks_dashboard_item_type">ks_tile</field>
+            <field name="ks_record_count_type">count</field>
+            <field name="ks_model_id" eval="ref('pesantren_guru.model_cdn_penilaian')"/>
+            <field name="ks_default_icon">pencil</field>
+            <field name="ks_dashboard_item_theme">blue</field>
+            <field name="ks_background_color">#1c243c,0.99</field>
+            <field name="ks_font_color">#ffffff,0.99</field>
+            <field name="ks_default_icon_color">#ffffff,0.99</field>
+            <field name="ks_layout">layout5</field>
+            <field name="ks_domain" >
+                [
+                    ("guru_id.user_id","=","%UID")
+                ]
+            </field>
+        </record>
+        <record id="ks_penilaian_akhir_guru_item" model="ks_dashboard_ninja.item">
+            <field name="name">Penilaian Akhir Guru</field>
+            <field name="ks_dashboard_item_type">ks_tile</field>
+            <field name="ks_record_count_type">count</field>
+            <field name="ks_model_id" eval="ref('pesantren_guru.model_cdn_penilaian_akhir_guru')"/>
+            <field name="ks_default_icon">table</field>
+            <field name="ks_dashboard_item_theme">blue</field>
+            <field name="ks_background_color">#1c243c,0.99</field>
+            <field name="ks_font_color">#ffffff,0.99</field>
+            <field name="ks_default_icon_color">#ffffff,0.99</field>
+            <field name="ks_layout">layout5</field>
+            <field name="ks_domain" >
+                [
+                    ("guru_id.user_id","=","%UID")
+                ]
+            </field>
+        </record>
+        <record id="ks_penilaian_akhir_item" model="ks_dashboard_ninja.item">
+            <field name="name">Raport nilai</field>
+            <field name="ks_dashboard_item_type">ks_tile</field>
+            <field name="ks_record_count_type">count</field>
+            <field name="ks_model_id" eval="ref('pesantren_guru.model_cdn_penilaian_akhir')"/>
+            <field name="ks_default_icon">id-card-o</field>
+            <field name="ks_dashboard_item_theme">blue</field>
+            <field name="ks_background_color">#1c243c,0.99</field>
+            <field name="ks_font_color">#ffffff,0.99</field>
+            <field name="ks_default_icon_color">#ffffff,0.99</field>
+            <field name="ks_layout">layout5</field>
+            <field name="ks_domain" >
+                [
+                    ("walikelas_id.user_id","=","%UID")
+                ]
+            </field>
+        </record>
+    </data>
+    <!-- dashboard guru -->
+    <data noupdate="1">
+        <!-- dashboard -->
+        <record id="ks_guru_dashboard_board" model="ks_dashboard_ninja.board">
+            <field name="name">Dashboard</field>
+            <field name="ks_dashboard_state">Locked</field>
+            <field name="ks_dashboard_menu_name">Dashboard</field>
+            <field name="ks_dashboard_top_menu_id" ref="pesantren_guru.guru_menu_root" />
+            <field name="ks_dashboard_menu_sequence">1</field>
+            <field name="ks_dashboard_active">1</field>
+            <field name="ks_set_interval">15000</field>
+            <field name="ks_dashboard_default_template" ref="pesantren_guru.ks_template_guru" />
+        </record>
+    </data>
+</odoo>

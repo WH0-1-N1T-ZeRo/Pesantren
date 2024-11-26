@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <menuitem id="guruquran_menu_root" name="Guru Quran" sequence="10" groups="pesantren_guruquran.group_guru_quran_user" web_icon="pesantren_base,static/description/logomodulquran.png"/>
+        <menuitem id="guruquran_kepesantrenan_menu_categ" name="Kepesantrenan" parent="guruquran_menu_root" sequence="30"/>
+        <!-- <menuitem id="aktivitas_menu_categ" name="Aktivitas" parent="guruquran_menu_root" sequence="40"/> -->
+        <menuitem id="guruquran_tahfidz_kepesantrenan_menu_categ" name="Tahfidz" parent="guruquran_kepesantrenan_menu_categ" sequence="10"/>
+        <menuitem id="guruquran_tahsin_kepesantrenan_menu_categ" name="Tahsin" parent="guruquran_kepesantrenan_menu_categ" sequence="20"/>
+        <!-- <menuitem id="kepengasuhan_kepesantrenan_menu_categ" name="Kepengasuhan" parent="kepesantrenan_menu_categ" sequence="30"/>       -->
+        <menuitem id="guruquran_data_santri_menu_categ" name="Data Santri" parent="guruquran_menu_root" sequence="50"/>
+    </data>
+</odoo>

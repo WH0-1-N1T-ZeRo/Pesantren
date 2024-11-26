@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- cdn.tahsin_quran list view -->
+        <record id="cdn_tahsin_view_tree" model="ir.ui.view">
+            <field name="name">cdn.tahsin_quran.view.list</field>
+            <field name="model">cdn.tahsin_quran</field>
+            <field name="arch" type="xml">
+                <list default_order="id desc" create="false">
+                    <!-- Add your fields here -->
+                    <field name="tanggal" />
+                    <field name="siswa_id" />
+                    <field name="halaqoh_id" />
+                    <field name="buku_tahsin_id" />
+                    <field name="jilid_tahsin_id" />
+                    <field name="halaman_tahsin" />
+                    <field name="ustadz_id" />
+                    <field name="state" />
+                </list>
+            </field>
+        </record>
+
+        <!-- cdn.tahsin_quran form view -->
+        <record id="cdn_tahsin_quran_view_form" model="ir.ui.view">
+            <field name="name">cdn.tahsin_quran.view.form</field>
+            <field name="model">cdn.tahsin_quran</field>
+            <field name="arch" type="xml">
+                <form string="Tahsin" duplicate="0" create="false">
+                    <header>
+                        <button string="Confirm" type="object" name="action_confirm" invisible="state not in ('draft')" groups="pesantren_kesantrian.group_kesantrian_manager,pesantren_kesantrian.group_kesantrian_staff"/>
+                        <button string="Ubah ke Draf" type="object" name="action_draft" invisible="state not in ('done')" groups="pesantren_kesantrian.group_kesantrian_manager,pesantren_kesantrian.group_kesantrian_staff"/>
+                        <field name="state" widget="statusbar" />
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="No Referensi" />
+                            <h1>
+                                <field name="name" />
+                            </h1>
+                        </div>
+                        <group string="Data Santri Tahsin">
+                            <group>
+                                <field name="tanggal" />
+                                <field name="siswa_id" options="{'no_create_edit':True, 'no_create':True, 'no_open':True}" readonly="1" />
+                                <field name="kelas_id" options="{'no_create_edit':True, 'no_create':True, 'no_open':True}" />
+                            </group>
+                            <group>
+                                <field name="ustadz_id" options="{'no_create_edit':True, 'no_create':True, 'no_open':True}" />
+                                <field name="halaqoh_id" options="{'no_create_edit':True, 'no_create':True}" />
+                            </group>
+                        </group>
+                        <group string="Penilaian Tahsin">
+                            <group>
+                                <field name="buku_tahsin_id" />
+                                <field name="jilid_tahsin_id" domain="[('buku_tahsin_id','=',buku_tahsin_id)]"/>
+                            </group>
+                            <group>
+                                <field name="halaman_tahsin" />
+                                <!-- <field name="nilai_mad" /> -->
+                            </group>
+                        </group>
+                        <group string="Keterangan">
+                            <field name="keterangan" string="Catatan Musyrif/Ustadz" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- cdn.tahsin_quran search view -->
+        <record id="cdn_tahsin_quran_view_search" model="ir.ui.view">
+            <field name="name">cdn.tahsin_quran.view.search</field>
+            <field name="model">cdn.tahsin_quran</field>
+            <field name="arch" type="xml">
+                <search string="Search Description">
+                    <!-- Add your fields here -->
+                    <field name="siswa_id"/>
+                    <group>
+                        <field name="siswa_id"/>
+                        <field name="ustadz_id" />
+                        <field name="level_tahsin_id" />
+                    </group>
+                    <filter string="Hari Ini" name="today" domain="[ ('tanggal','=',(context_today().strftime('%Y-%m-%d'))),
+                    ]" />
+                </search>
+            </field>
+        </record>
+
+        <!-- cdn.tahsin_quran graph view -->
+        <!-- <record id="cdn_tahsin_quran_view_graph" model="ir.ui.view">
+            <field name="name">cdn.tahsin_quran.view.graph</field>
+            <field name="model">cdn.tahsin_quran</field>
+            <field name="arch" type="xml">
+                <graph string="Graph Description" type="pie" stacked="True">
+                    <field name="siswa_id" />
+                </graph>
+            </field>
+        </record> -->
+
+        <!-- cdn.tahsin_quran calendar view -->
+        <record id="cdn_tahsin_quran_view_calendar" model="ir.ui.view">
+            <field name="name">cdn.tahsin_quran.view.calendar</field>
+            <field name="model">cdn.tahsin_quran</field>
+            <field name="arch" type="xml">
+                <calendar string="Tahsin Quran" date_start="tanggal">
+                    <!-- Add your fields here -->
+                    <field name="name" />
+                </calendar>
+            </field>
+        </record>
+
+        <!-- cdn.tahsin_quran action window -->
+        <record id="cdn_tahsin_quran_action" model="ir.actions.act_window">
+            <field name="name">Tahsin Al Qur'an</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.tahsin_quran</field>
+            <field name="view_mode">list,form,calendar,graph</field>
+        </record>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="cdn_tahsin_quran_menu_act" name="Tahsin Al Qur'an" parent="kepesantrenan_tahsin_menu_categ" action="cdn_tahsin_quran_action" sequence="20"/>
+    </data>
+</odoo>

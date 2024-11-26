@@ -1,0 +1,465 @@
+  /** @odoo-module */
+  import { registry } from "@web/core/registry";
+  import { loadJS } from "@web/core/assets";
+  const { Component, onWillStart, useRef, onMounted, onWillUnmount } = owl;
+  import { useService } from "@web/core/utils/hooks";
+
+  export class KeuanganChartRenderer extends Component {
+      static props = {
+          type: { type: String },
+          title: { type: String },
+          startDate: { type: String, optional: true },
+          endDate: { type: String, optional: true }
+      };
+
+      setup() {
+          this.chartRef = useRef("chart");
+          this.orm = useService('orm');
+          this.actionService = useService("action");
+          this.state = {
+              chartData: { labels: [], datasets: [] }
+          };
+          this.refreshInterval = null;
+          this.chartInstance = null;
+
+          onWillStart(async () => {
+              await loadJS("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js");
+              await this.fetchData();
+          });
+
+          onMounted(() => {
+              this.renderChart();
+              this.refreshInterval = setInterval(() => {
+                  this.restartChart();
+              }, 10000); // Refresh every 10 seconds
+          });
+
+          onWillUnmount(() => {
+              if (this.refreshInterval) {
+                  clearInterval(this.refreshInterval);
+              }
+              if (this.chartInstance) {
+                  this.chartInstance.destroy();
+              }
+          });
+      }
+
+      async fetchData(startDate = null, endDate = null) {
+        switch(this.props.title) {
+            case 'Tagihan Siswa':
+                await this.fetchTagihanData(startDate, endDate);
+                break;
+            case 'Uang Saku Masuk':
+                await this.fetchUangSakuMasukData(startDate, endDate);
+                break;
+            case 'Uang Saku Keluar':
+                await this.fetchUangSakuKeluarData(startDate, endDate);
+                break;
+        }
+        if (this.chartRef.el) {
+            this.renderChart();
+        } else {
+            console.error('Chart element not found on fetchData');
+        }
+    }
+
+      async restartChart() {
+          if (this.chartInstance) {
+              this.chartInstance.destroy(); // Destroy the current chart instance
+          }
+          await this.fetchData(); // Fetch new data and re-render the chart
+      }
+
+    formatDate(date) {
+        return date.toISOString().split('.')[0] + 'Z';
+    }
+
+    // Parse date string to Date object considering timezone
+    parseDate(dateStr) {
+        const date = new Date(dateStr);
+        return new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+    }
+
+    getDayBounds(dateStr) {
+        const date = this.parseDate(dateStr);
+        const startOfDay = new Date(date);
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date(date);
+        endOfDay.setHours(23, 59, 59, 999);
+        
+        return {
+            start: this.formatDate(startOfDay),
+            end: this.formatDate(endOfDay)
+        };
+    }
+
+    async fetchTagihanData(startDate = null, endDate = null) {
+        try {
+            const domain = [
+                ['move_id.move_type', 'in', ['out_invoice', 'out_refund', 'in_invoice', 'in_refund']],
+                ['display_type', 'in', ['product']],
+                ['product_id', '!=', false]
+            ];
+
+            if (startDate) {
+                domain.push(['date', '>=', startDate]);
+            }
+            if (endDate) {
+                domain.push(['date', '<=', endDate]);
+            }
+
+            const result = await this.orm.searchRead(
+                'account.move.line',
+                domain,
+                ['date', 'product_id', 'move_id', 'parent_state', 'name', 'quantity'],
+                { order: 'date asc' }
+            );
+
+            if (!result || result.length === 0) {
+                this.state.chartData = { labels: [], datasets: [] };
+                return;
+            }
+            this.processTagihanData(result);
+        } catch (error) {
+            console.error('Error fetching tagihan data:', error);
+            this.state.chartData = { labels: [], datasets: [] };
+        }
+    }
+
+    async fetchUangSakuMasukData(startDate = null, endDate = null) {
+        try {
+            const domain = [['amount_in', '>', 0]];
+            
+            if (startDate) {
+                domain.push(['create_date', '>=', startDate]);
+            }
+            if (endDate) {
+                domain.push(['create_date', '<=', endDate]);
+            }
+
+            const result = await this.orm.searchRead(
+                'cdn.uang_saku',
+                domain,
+                ['create_date', 'amount_in', 'state'],
+                { order: 'create_date asc' }
+            );
+
+            if (!result || result.length === 0) {
+                console.warn('No uang saku masuk data found');
+                this.state.chartData = { labels: [], datasets: [] };
+                return;
+            }
+
+            this.processUangSakuMasukData(result);
+        } catch (error) {
+            console.error('Error fetching uang saku masuk data:', error);
+            this.state.chartData = { labels: [], datasets: [] };
+        }
+    }
+
+    async fetchUangSakuKeluarData(startDate = null, endDate = null) {
+        try {
+            const domain = [['amount_out', '>', 0]];
+            
+            if (startDate) {
+                domain.push(['create_date', '>=', startDate]);
+            }
+            if (endDate) {
+                domain.push(['create_date', '<=', endDate]);
+            }
+
+            const result = await this.orm.searchRead(
+                'cdn.uang_saku',
+                domain,
+                ['create_date', 'amount_out', 'state'],
+                { order: 'create_date asc' }
+            );
+
+            if (!result || result.length === 0) {
+                console.warn('No uang saku keluar data found');
+                this.state.chartData = { labels: [], datasets: [] };
+                return;
+            }
+
+            this.processUangSakuKeluarData(result);
+        } catch (error) {
+            console.error('Error fetching uang saku keluar data:', error);
+            this.state.chartData = { labels: [], datasets: [] };
+        }
+    }
+
+      processTagihanData(data) {
+        // Check if data is valid
+        if (!Array.isArray(data) || data.length === 0) {
+            console.warn('No tagihan data available for processing.');
+            this.state.chartData = { labels: [], datasets: [] }; // Reset chart data
+            return;
+        }
+
+        // Group products and count their status
+        const productStats = data.reduce((acc, record) => {
+            const productName = record.product_id[1];
+            if (!acc[productName]) {
+                acc[productName] = {
+                    lunas: 0,
+                    belumLunas: 0
+                };
+            }
+
+            if (record.parent_state === 'posted') {
+                acc[productName].lunas += record.quantity || 1;
+            } else {
+                acc[productName].belumLunas += record.quantity || 1;
+            }
+
+            return acc;
+        }, {});
+
+        // Sort products by total quantity and get top 10
+        const sortedProducts = Object.entries(productStats)
+            .sort(([, a], [, b]) => (b.lunas + b.belumLunas) - (a.lunas + a.belumLunas))
+            .slice(0, 10);
+
+        const labels = sortedProducts.map(([name]) => name);
+        const lunasData = sortedProducts.map(([, data]) => data.lunas);
+        const belumLunasData = sortedProducts.map(([, data]) => data.belumLunas);
+
+        this.state.chartData = {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Lunas',
+                    data: lunasData,
+                    backgroundColor: 'rgba(75, 192, 92, 0.7)',
+                    borderColor: 'rgba(75, 192, 92, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Belum Lunas',
+                    data: belumLunasData,
+                    backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }
+            ]
+        };
+    }
+
+  processUangSakuMasukData(data) {
+    // Validate data
+    if (!Array.isArray(data) || data.length === 0) {
+        console.warn('No uang saku masuk data available for processing.');
+        this.state.chartData = { labels: [], datasets: [] }; // Reset chart data
+        return;
+    }
+
+    const dateData = this.processDateData(data, 'amount_in');
+    const sortedDates = Object.keys(dateData).sort((a, b) => new Date(a) - new Date(b));
+
+    if (sortedDates.length === 0) {
+        console.warn('No valid dates for Uang Masuk.');
+    }
+
+    this.state.chartData = {
+        labels: sortedDates,
+        datasets: [{
+            label: 'Uang Masuk',
+            data: sortedDates.map(date => dateData[date] || 0), // Default to 0 if undefined
+            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            fill: true,
+            tension: 0.4
+        }]
+    };
+  }
+
+  processUangSakuKeluarData(data) {
+    // Validate data
+    if (!Array.isArray(data) || data.length === 0) {
+        console.warn('No uang saku keluar data available for processing.');
+        this.state.chartData = { labels: [], datasets: [] }; // Reset chart data
+        return;
+    }
+
+    const dateData = this.processDateData(data, 'amount_out');
+    const sortedDates = Object.keys(dateData).sort((a, b) => new Date(a) - new Date(b));
+
+    if (sortedDates.length === 0) {
+        console.warn('No valid dates for Uang Keluar.');
+    }
+
+    this.state.chartData = {
+        labels: sortedDates,
+        datasets: [{
+            label: 'Uang Keluar',
+            data: sortedDates.map(date => dateData[date] || 0), // Default to 0 if undefined
+            borderColor: 'rgba(255, 99, 132, 1)',
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            fill: true,
+            tension: 0.4
+        }]
+    };
+  }
+
+  processDateData(data, field) {
+    return data.reduce((acc, record) => {
+        // Parse the date considering timezone
+        const date = this.parseDate(record.create_date);
+        const dateStr = date.toLocaleDateString('id-ID', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+
+        if (!acc[dateStr]) {
+            acc[dateStr] = 0;
+        }
+        acc[dateStr] += record[field] || 0;
+        return acc;
+    }, {});
+}
+
+  getChartConfig() {
+    const isBar = this.props.type === 'bar';
+    return {
+        type: this.props.type,
+        data: this.state.chartData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: this.props.title,
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    stacked: false, // Changed to false to separate the bars
+                },
+                x: {
+                    stacked: false, // Changed to false to separate the bars
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                }
+            },
+            barPercentage: 0.8, // Controls the width of the bars
+            categoryPercentage: 0.9 // Controls the spacing between bar groups
+        }
+    };
+}
+
+
+
+
+  renderChart() {
+    if (this.chartRef.el) {
+        if (this.chartInstance) {
+            this.chartInstance.destroy(); // Destroy previous chart instance
+        }
+
+        const config = this.getChartConfig();
+        try {
+            this.chartInstance = new Chart(this.chartRef.el, config);
+            this.chartRef.el.onclick = this.onChartClick.bind(this); // Add click event listener
+        } catch (error) {
+            console.error('Error rendering chart:', error);
+        }
+    } else {
+        //
+    }
+  }
+
+  onChartClick(event) {
+    try {
+        const points = this.chartInstance.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true);
+        if (points.length > 0) {
+            const point = points[0];
+            const label = this.state.chartData.labels[point.index];
+            const datasetLabel = this.chartInstance.data.datasets[point.datasetIndex].label;
+
+            if (!label || !datasetLabel) {
+                console.error('Label or dataset label is undefined:', { label, datasetLabel });
+                return;
+            }
+
+            let actionConfig = {
+                type: 'ir.actions.act_window',
+                name: `${this.props.title} - ${datasetLabel}`,
+                view_mode: 'list,form',
+                target: 'current',
+                views: [[false, 'list'], [false, 'form']],
+            };
+
+            // Configure model and domain based on chart type
+            switch (this.props.title) {
+                case 'Tagihan Siswa':
+                    actionConfig.res_model = 'account.move.line';
+                    actionConfig.domain = [
+                        ['product_id', '!=', false],
+                        ['display_type', 'in', ['product']],
+                        ['product_id.name', '=', label],
+                        ['parent_state', datasetLabel === 'Lunas' ? '=' : '!=', 'posted']
+                    ];
+                    break;
+
+                case 'Uang Saku Masuk':
+                case 'Uang Saku Keluar': {
+                    actionConfig.res_model = 'cdn.uang_saku';
+                    
+                    // Parse the clicked date considering local format
+                    const [day, month, year] = label.split('/');
+                    // Create date object for start of day
+                    const startDate = new Date(year, month - 1, day);
+                    startDate.setHours(0, 0, 0, 0);
+                    // Create date object for end of day
+                    const endDate = new Date(year, month - 1, day);
+                    endDate.setHours(23, 59, 59, 999);
+
+                    // Format dates to match Odoo's format
+                    const formattedStartDate = startDate.toISOString().split('.')[0];
+                    const formattedEndDate = endDate.toISOString().split('.')[0];
+
+                    actionConfig.domain = this.props.title === 'Uang Saku Masuk' 
+                        ? [
+                            ['amount_in', '>', 0],
+                            ['create_date', '>=', formattedStartDate],
+                            ['create_date', '<=', formattedEndDate]
+                        ]
+                        : [
+                            ['amount_out', '>', 0],
+                            ['create_date', '>=', formattedStartDate],
+                            ['create_date', '<=', formattedEndDate]
+                        ];
+                    break;
+                }
+
+                default:
+                    console.error('Unknown chart title:', this.props.title);
+                    return;
+            }
+
+            
+            this.actionService.doAction(actionConfig);
+        }
+    } catch (error) {
+        console.error('Error handling chart click:', error, {
+            stack: error.stack,
+            message: error.message
+        });
+    }
+}
+}
+  
+
+  KeuanganChartRenderer.template = 'owl.KeuanganChartRenderer';

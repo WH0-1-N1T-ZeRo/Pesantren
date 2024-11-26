@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- cdn.absen_tahfidz_quran tree view -->
+        <record id="cdn_absen_tahfidz_quran_view_tree" model="ir.ui.view">
+            <field name="name">cdn.absen_tahfidz_quran.view.tree</field>
+            <field name="model">cdn.absen_tahfidz_quran</field>
+            <field name="arch" type="xml">
+                <list default_order="id desc" >
+                    <!-- Add your fields here -->
+                    <field name="name" />
+                    <field name="sesi_id" />
+                    <field name="halaqoh_id" />
+                    <field name="ustadz_id" />
+                    <field name="state" />
+                </list>
+            </field>
+        </record>
+
+        <!-- cdn.absen_tahfidz_quran form view -->
+        <record id="cdn_absen_tahfidz_quran_view_form" model="ir.ui.view">
+            <field name="name">cdn.absen_tahfidz_quran.view.form</field>
+            <field name="model">cdn.absen_tahfidz_quran</field>
+            <field name="arch" type="xml">
+                <form string="Absensi Kehadiran Halaqoh">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="Draft,Proses,Done"/>
+                    <button string="Proses" name="action_proses" type="object" class="btn btn-primary"
+                            invisible="state == 'Proses' or state == 'Done'"/>
+                    <button string="Selesai" name="action_confirm" type="object" class="btn btn-primary"
+                            invisible="state == 'Draft' or state == 'Done'"/>
+                </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" />
+                                <field name="sesi_id" />
+                                <field name="keterangan" />
+                            </group>
+                            <group>
+                                <field name="fiscalyear_id" />
+                                <field name="halaqoh_id" options="{'no_create_edit':True, 'no_create':True, 'no_open': True}" />
+                                <field name="ustadz_id" options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Daftar Halaqoh">
+                                <field colspan="4" name="absen_ids" nolabel="1" widget="one2many_list">
+                                    <list string="" editable="top">
+                                        <field name="siswa_id" />
+                                        <field name="nis" />
+                                        <field name="kehadiran" />
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- cdn.absen_tahfidz_quran search view -->
+        <record id="cdn_absen_tahfidz_quran_view_search" model="ir.ui.view">
+            <field name="name">cdn.absen_tahfidz_quran.view.search</field>
+            <field name="model">cdn.absen_tahfidz_quran</field>
+            <field name="arch" type="xml">
+                <search string="Search Description">
+                    <!-- Add your fields here -->
+                    <field name="ustadz_id" />
+                    <!-- filter -->
+                    <filter string="Hari Ini" name="today" domain="[('name','=',(context_today().strftime('%Y-%m-%d'))),]" />
+                </search>
+            </field>
+        </record>
+
+        <!-- cdn.absen_tahfidz_quran action window -->
+        <record id="cdn_absen_tahfidz_quran_action" model="ir.actions.act_window">
+            <field name="name">Absen Tahfidz Al Qur'an</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.absen_tahfidz_quran</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="absen_tahfidz_quran_menu_act" name="Absen Tahfidz" 
+            parent="kepesantrenan_tahfidz_menu_categ" action="cdn_absen_tahfidz_quran_action" sequence="10"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+
+        <!-- wallet.recharge inherit form view -->
+        <record id="wallet_recharge_form_view_inheritance" model="ir.ui.view">
+            <field name="name">recharge.wallet.inheritance.inherit.view.form</field>
+            <field name="model">recharge.wallet</field>
+            <field name="inherit_id" ref="pos_wallet_odoo.recharge_wallet_view_form"/>
+            <field name="arch" type="xml">
+                <!-- Add your xpath here -->
+                <xpath expr="//field[@name='recharge_amount']" position="after">
+                    <field name="recharge_type" widget="radio"/>
+                </xpath>
+                <xpath expr="//field[@name='journal_id']" position="before">
+                    <field name="siswa_id"/>
+                    <field name="saldo_uang_saku" widget="integer"/>
+                    <field name="wallet_balance" widget="integer"/>
+                </xpath>
+                <xpath expr="//footer" position="inside">
+                    <button name="post" string="Submit" type="object" class="btn-primary"/>
+                     <button string="Cancel" class="btn-default" special="cancel"/>  
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

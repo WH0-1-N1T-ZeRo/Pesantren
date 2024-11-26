@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- cdn.halaqoh list view -->
+        <record id="cdn_halaqoh_view_tree" model="ir.ui.view">
+            <field name="name">cdn.halaqoh.view.list</field>
+            <field name="model">cdn.halaqoh</field>
+            <field name="arch" type="xml">
+                <list expand="1">
+                    <field name="fiscalyear_id"/>
+                    <field name="name"/>
+                    <field name="penanggung_jawab_id" />
+                    <field name="jml_siswa" />
+                    <field name="keterangan" />
+                    <field name="status" />
+                </list>
+            </field>
+        </record>
+
+        <!-- cdn.halaqoh form view -->
+        <record id="cdn_halaqoh_view_form" model="ir.ui.view">
+            <field name="name">cdn.halaqoh.view.form</field>
+            <field name="model">cdn.halaqoh</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button string="Konfirmasi" name="konfirmasi" type="object" class="oe_highlight" invisible="status == 'konfirm'" confirm="Apakah Anda yakin ingin mengkonfirmasi Halaqoh ini?" groups="pesantren_kesantrian.group_kesantrian_staff"/>
+                        <button string="Draft" name="draft" type="object" class="oe_highlight" invisible="status  != 'konfirm'" groups="pesantren_kesantrian.group_kesantrian_staff"/>
+                        <field name="status" widget="statusbar" statusbar_visible="draft,konfirm" />
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Nama Halaqoh"/>
+                            <h1><field name="name" readonly="status ==  'konfirm'"/></h1>
+                        </div>
+                        <group string="Halaqoh">
+                            <field name="fiscalyear_id" options="{'no_create_edit':True, 'no_create':True, 'no_open': True}" readonly="status ==  'konfirm'"/>
+                            <field name="penanggung_jawab_id" domain="[('jns_pegawai', 'in', ['guruquran'])]"
+                                options="{'no_create_edit':True, 'no_create':True, 'no_open': True}" readonly="status == 'konfirm'"/>
+                            <field name="pengganti_ids" widget="many2many_tags"
+                                domain="[
+                                    ('id','!=',penanggung_jawab_id),
+                                    ('jns_pegawai', 'in', ['guruquran','musyrif'])
+                                ]"
+                                options="{'no_create_edit':True, 'no_create':True, 'no_open': True}" readonly="status == 'konfirm'"/>
+                            <field name="jml_siswa" />
+                            <field name="keterangan" readonly="status ==  'konfirm'"/>
+                        </group>
+                      
+                        <notebook>
+							<page string="Siswa">
+								<field name="siswa_ids" readonly="status ==  'konfirm'">
+									<list>
+										<field name="nis"/>
+										<field name="name"/>
+                                        <field name="ruang_kelas_id"/>
+                                        <field name="kamar_id"/>
+                                        <field name="last_tahfidz"/>
+									</list>
+								</field>
+							</page>
+						</notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- cdn.halaqoh search view -->
+        <record id="cdn_halaqoh_view_search" model="ir.ui.view">
+            <field name="name">cdn.halaqoh.view.search</field>
+            <field name="model">cdn.halaqoh</field>
+            <field name="arch" type="xml">
+                <search string="Search Description">
+                    <!-- Add your fields here -->
+                    <filter name="group_by_fiscalyear_id" string="Tahun Ajaran" context="{'group_by': 'fiscalyear_id'}" />
+                </search>
+            </field>
+        </record>
+        
+        <!-- cdn.halaqoh action window -->
+        <record id="cdn_halaqoh_action" model="ir.actions.act_window">
+            <field name="name">Halaqoh</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.halaqoh</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{ "search_default_group_by_fiscalyear_id": 1}</field>
+        </record>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="halaqoh_menu_act" name="Pembagian Halaqoh" parent="pengaturan_halaqoh_dan_kamar_menu_categ" action="cdn_halaqoh_action" sequence="10"/>
+    
+    </data>
+</odoo>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+
+        <!-- <record id="generate_invoice" model="ir.ui.view">
+            <field name="name">generate.invoice.inherit.view.form</field>
+            <field name="model">generate.invoice</field>
+            <field name="inherit_id" ref="pesantren_base.view_wizard_generate_invoice"/>
+            <field name="arch" type="xml">
+                <field name="name" position="attributes">
+                    <attribute name="required">1</attribute>
+                </field>
+            </field>
+        </record>
+
+        <record id="generate_invoice_action" model="ir.actions.act_window">
+            <field name="name">Pembayaran Siswa</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.payment</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="generate_invoice"/>
+        </record>
+        
+        <record id="action_form_view_generate_invoice" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="generate_invoice"/>
+            <field name="act_window_id" ref="generate_invoice_action"/>
+        </record> -->
+    
+        <record id="generate_invoice_view_form" model="ir.ui.view">
+            <field name="name">generate.invoice.view.form</field>
+            <field name="model">generate.invoice</field>
+            <field name="arch" type="xml">
+                <form string="Buat Penetapan Tagihan">
+                    <group>
+                        <group>
+                            <field name="tahunajaran_id"/>
+                            <field name="komponen_id"/>
+                        </group>
+                        <group>
+                            <field name="period_from" domain="[('tahunajaran_id','=', tahunajaran_id)]"/>
+                            <field name="period_to" domain="[('tahunajaran_id','=', tahunajaran_id)]"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="angkatan_id"/>
+                        <field name="name"/>
+                    </group>
+                    <group string="Siswa">
+                        <field name="partner_ids" nolabel="1" colspan="4" domain="[('bebasbiaya','=', False), ('tahunajaran_id','=', angkatan_id)]">
+                            <list>
+                                <field name="name"/>
+                                <field name="nis"/>
+                                <field name="ruang_kelas_id"/>
+                            </list>
+                        </field>
+                    </group>
+                    <footer>
+                        <button name="create_invoice" string="Buat Tagihan" type="object" class="oe_highlight"/>
+                        <span>or</span>
+                        <button string="Batal" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_penetapan_tagihan_view" model="ir.actions.act_window">
+            <field name="name">Penetapan Tagihan</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">generate.invoice</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="penetapan_tagihan_menu_act" name="Penetapan Tagihan" parent="keu_tagihan_menu_categ" action="action_penetapan_tagihan_view" sequence="30"/>
+
+    </data>
+    
+
+</odoo>

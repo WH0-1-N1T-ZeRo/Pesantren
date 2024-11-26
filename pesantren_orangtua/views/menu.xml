@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <menuitem id="orangtua_menu_root" name="Orang Tua" sequence="10" groups="pesantren_kesantrian.group_kesantrian_orang_tua" web_icon="pesantren_base,static/description/ortu.png"/>
+        
+        <menuitem id="akademik_menu_categ" name="Akademik" parent="orangtua_menu_root" sequence="20"/>
+        <menuitem id="kesantrian_menu_categ" name="Kesantrian" parent="orangtua_menu_root" sequence="30"/>
+        <menuitem id="tahfidz_menu_categ" name="Tahfidz" parent="kesantrian_menu_categ" sequence="20"/>
+        <menuitem id="tahsin_menu_categ" name="Tahsin" parent="kesantrian_menu_categ" sequence="30"/>
+        <menuitem id="aktivitas_menu_categ" name="Aktivitas" parent="orangtua_menu_root" sequence="40"/>
+        <menuitem id="keuangan_menu_categ" name="Keuangan" parent="orangtua_menu_root" sequence="50"/>
+        <menuitem id="informasi_menu_categ" name="Informasi" parent="orangtua_menu_root" sequence="60"/>        
+    </data>
+</odoo>

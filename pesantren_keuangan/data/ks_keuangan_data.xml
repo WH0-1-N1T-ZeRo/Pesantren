@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- dashboard template -->
+        <record id="ks_template_keuangan" model="ks_dashboard_ninja.board_template">
+            <field name="name">Template Keuangan</field>
+            <field name="ks_gridstack_config">
+                [
+                    {"item_id":"pesantren_keuangan.ks_tagihan_siswa_item", "data": {"x": 0, "y": 0, "w": 12, "h": 7}},
+                    {"item_id":"pesantren_keuangan.ks_uang_saku_masuk_item", "data": {"x": 0, "y": 8, "w": 6, "h": 7}},
+                    {"item_id":"pesantren_keuangan.ks_uang_saku_keluar_item", "data": {"x": 7, "y": 8, "w": 6, "h": 7}},
+                    {"item_id":"pesantren_keuangan.ks_pos_wallet_transaction_item", "data": {"x": 0, "y": 14, "w": 12, "h": 7}}
+                ]
+            </field>
+            <field name="ks_item_count">1</field>
+        </record>
+
+        <!-- items -->
+        <record id="ks_tagihan_siswa_item" model="ks_dashboard_ninja.item">
+            <field name="name">Tagihan Siswa</field>
+            <field name="ks_chart_data_count_type">count</field>
+            <field name="ks_chart_groupby_type">relational_type</field>
+            <field name="ks_model_id" eval="ref('account.model_account_move')"/>
+            <field name="ks_chart_relation_groupby" eval="ref('pesantren_base.field_account_move__komponen_id')"/>
+            <field name="ks_chart_relation_sub_groupby" eval="ref('account.field_account_move__payment_state')"/>
+            <field name="ks_semi_circle_chart">1</field>
+            <field name="ks_chart_item_color">cool</field>
+            <field name="ks_record_data_limit">10</field>
+            <field name="ks_show_data_value">1</field>
+            <field name="ks_unit_selection">monetary</field>
+            <field name="ks_dashboard_item_type">ks_bar_chart</field>
+            <field name="ks_company_id" eval="0"/>
+            <field name="ks_date_filter_selection">l_none</field>
+        </record>
+        <record id="ks_uang_saku_masuk_item" model="ks_dashboard_ninja.item">
+            <field name="name">Uang Saku Masuk</field>
+            <field name="ks_chart_data_count_type">sum</field>
+            <field name="ks_chart_measure_field" eval="[(6,0,[ref('pesantren_keuangan.field_cdn_uang_saku__amount_in')])]"/>
+            <field name="ks_chart_groupby_type">relational_type</field>
+            <field name="ks_model_id" eval="ref('pesantren_keuangan.model_cdn_uang_saku')"/>
+            <field name="ks_chart_relation_groupby" eval="ref('pesantren_keuangan.field_cdn_uang_saku__tgl_transaksi')"/>
+            <field name="ks_chart_date_groupby">day</field>
+            <field name="ks_semi_circle_chart">1</field>
+            <field name="ks_chart_item_color">cool</field>
+            <field name="ks_record_data_limit">10</field>
+            <field name="ks_show_data_value">1</field>
+            <field name="ks_unit_selection">monetary</field>
+            <field name="ks_dashboard_item_type">ks_line_chart</field>
+            <field name="ks_company_id" eval="0"/>
+            <field name="ks_date_filter_selection">l_none</field>
+        </record>
+        <record id="ks_uang_saku_keluar_item" model="ks_dashboard_ninja.item">
+            <field name="name">Uang Saku Keluar</field>
+            <field name="ks_chart_data_count_type">sum</field>
+            <field name="ks_chart_measure_field" eval="[(6,0,[ref('pesantren_keuangan.field_cdn_uang_saku__amount_out')])]"/>
+            <field name="ks_chart_groupby_type">relational_type</field>
+            <field name="ks_model_id" eval="ref('pesantren_keuangan.model_cdn_uang_saku')"/>
+            <field name="ks_chart_relation_groupby" eval="ref('pesantren_keuangan.field_cdn_uang_saku__tgl_transaksi')"/>
+            <field name="ks_chart_date_groupby">day</field>
+            <field name="ks_semi_circle_chart">1</field>
+            <field name="ks_chart_item_color">warm</field>
+            <field name="ks_record_data_limit">10</field>
+            <field name="ks_show_data_value">1</field>
+            <field name="ks_unit_selection">monetary</field>
+            <field name="ks_dashboard_item_type">ks_line_chart</field>
+            <field name="ks_company_id" eval="0"/>
+            <field name="ks_date_filter_selection">l_none</field>
+        </record>
+        <record id="ks_pos_wallet_transaction_item" model="ks_dashboard_ninja.item">
+            <field name="name">Transaksi Dompet Santri</field>
+            <field name="ks_chart_data_count_type">sum</field>
+            <field name="ks_chart_measure_field" eval="[(6,0,[ref('pesantren_keuangan.field_pos_wallet_transaction__amount_float')])]"/>
+            <field name="ks_chart_groupby_type">relational_type</field>
+            <field name="ks_model_id" eval="ref('pos_wallet_odoo.model_pos_wallet_transaction')"/>
+            <field name="ks_chart_relation_groupby" eval="ref('pos_wallet_odoo.field_pos_wallet_transaction__create_date')"/>
+            <field name="ks_chart_date_groupby">day</field>
+            <field name="ks_chart_relation_sub_groupby" eval="ref('pos_wallet_odoo.field_pos_wallet_transaction__wallet_type')"/>
+            <field name="ks_semi_circle_chart">1</field>
+            <field name="ks_chart_item_color">cool</field>
+            <field name="ks_record_data_limit">10</field>
+            <field name="ks_show_data_value">1</field>
+            <field name="ks_unit_selection">monetary</field>
+            <field name="ks_dashboard_item_type">ks_line_chart</field>
+            <field name="ks_company_id" eval="0"/>
+            <field name="ks_date_filter_selection">l_none</field>
+        </record>
+    </data>
+    <!-- dashboard keuangan -->
+    <data noupdate="1">
+        <!-- dashboard -->
+        <record id="ks_keuangan_dashboard_board" model="ks_dashboard_ninja.board">
+            <field name="name">Dashboard</field>
+            <field name="ks_dashboard_state">Locked</field>
+            <field name="ks_dashboard_menu_name">Dashboard</field>
+            <field name="ks_dashboard_top_menu_id" ref="pesantren_keuangan.keuangan_menu_root" />
+            <field name="ks_dashboard_menu_sequence">1</field>
+            <field name="ks_dashboard_active">1</field>
+            <field name="ks_set_interval">15000</field>
+            <field name="ks_dashboard_default_template" ref="pesantren_keuangan.ks_template_keuangan" />
+        </record>
+    </data>
+</odoo>

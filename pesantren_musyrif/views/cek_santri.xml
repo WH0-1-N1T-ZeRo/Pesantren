@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- cdn.siswa list view  untuk Cek Santri khusus menu Musyrif  -->
+        <record id="musyrif_cek_santri_view_tree" model="ir.ui.view">
+            <field name="name">cdn.siswa.view.list</field>
+            <field name="model">cdn.siswa</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="nis"/>
+                    <field name="name"/>
+                    <field name="ruang_kelas_id"/>
+                    <field name="halaqoh_id"/>
+                    <field name="virtual_account"/>
+                    <field name="va_saku"/>
+                    <field name="saldo_uang_saku"/>
+                </list>
+            </field>
+        </record>
+        <!-- cdn.siswa form view untuk Cek Santri khusus menu Musyrif -->
+        <record id="musyrif_cek_santri_view_form" model="ir.ui.view">
+            <field name="name">cdn.siswa.view.form</field>
+            <field name="model">cdn.siswa</field>
+            <field name="arch" type="xml">
+                <form string="" edit="false" create="false" delete="false">
+                    <header>
+                        <button name="action_recharge" string="Isi Saldo" type="object" class="btn btn-primary" context="{'search_default_partner_id': id}" groups="pesantren_musyrif.group_musyrif_staff"/>
+                        <button name="%(pesantren_musyrif.res_partner_change_pin_action)d"  type="action" class="btn btn-primary"
+                            string="Ubah PIN"/>
+                    </header>
+                    <sheet>
+                        <!-- <div class="oe_button_box" name="button_box">
+                            <button name="action_kesehatan" type="object" class="oe_stat_button" icon="fa-heartbeat">
+                                <field name="kesehatan_count" widget="statinfo" string="Kesehatan" />
+                            </button>
+                            <button name="action_pelanggaran" type="object" class="oe_stat_button" icon="fa-exclamation-triangle">
+                                <field name="pelanggaran_count" widget="statinfo" string="Pelanggaran" />
+                            </button>
+                            <button name="action_prestasi_siswa" type="object" class="oe_stat_button" icon="fa-trophy">
+                                <field name="prestasi_siswa_count" widget="statinfo" string="Prestasi" />
+                            </button>
+                            <button name="action_tahfidz_quran" type="object" class="oe_stat_button" icon="fa-book">
+                                <field name="tahfidz_quran_count" widget="statinfo" string="Tahfidz Al Qur'an" />
+                            </button>
+                        </div> -->
+                        <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_128'}"/>
+                        
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Nama Lengkap Siswa"/>
+                            <h1><field name="name" style="width:50%"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="street" string="Alamat Rumah"/>
+                                <field name="propinsi_id"/>
+                                <field name="kecamatan_id" domain="[('kota_id','=',kota_id)]" />
+                                <field name="jns_partner" readonly="1" string="Jenis Partner"/>
+                                <field name="barcode_santri" />
+                                <field name="barcode"/>
+                            </group>
+                            <group>
+                                <field name="street2" string="RT / RW"/>
+                                <field name="kota_id" domain="[('propinsi_id','=',propinsi_id)]" />
+                                <field name="zip" string="Kode Pos"  />
+                                <field name="last_tahfidz" />
+                            </group>
+                            
+                            
+                        </group>
+
+                        <notebook>
+                            <page name="info_siswa" string="Informasi Siswa">
+                                <group string="Akademik">
+                                    <group>
+                                        <field name="nis"/>
+                                        <field name="tahunajaran_id"/>
+                                        <field name="jenjang"/>
+                                        <field name="jurusan_sma"/>
+                                        <field name="kamar_id" />
+                                        <field name="musyrif_id" />
+                                        <!-- <field name="qr_code" widget="image" style="width: 120px; height: 120px;"/> -->
+                                    </group>
+                                    <group>
+                                        <field name="nisn"/>
+                                        <field name="ruang_kelas_id" readonly="1"/>
+                                        <field name="tingkat" domain="[('jenjang', '=', jenjang)]"
+                                        options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                                        <field name="kewarganegaraan" />
+                                        <field name="halaqoh_id" />
+                                        <field name="penanggung_jawab_id" />
+                                        <field name="pengganti_ids" widget="many2many_tags"/>
+                                    </group>
+                                </group>
+                                <group string="Data Siswa">
+                                    <group>
+                                        <field name="panggilan" />
+                                        <field name="tgl_lahir"/>
+                                        <field name="jns_kelamin" />
+                                        <field name="nik" />
+                                        <field name="jml_saudara_kandung" />
+                                        <field name="hobi"/>
+                                    </group>
+                                    <group>
+                                        <field name="tmp_lahir"/>
+                                        <field name="gol_darah"/>
+                                        <field name="agama" />
+                                        <field name="anak_ke" />
+                                        <field name="bahasa" />
+                                        <field name="cita_cita"/>
+                                    </group>
+                                </group>
+                                
+                                <group string="Uang Saku dan Dompet"> 
+                                <group>
+                                    <field name="virtual_account"/>
+                                    <field name="va_saku"/>
+                                    <field name="saldo_uang_saku" readonly="1"/>
+                                    <field name="wallet_balance" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="wallet_pin" password="True"/>
+                                </group>
+                            </group>
+                            </page>
+                            <page name="ortu" string="Orang Tua" groups="pesantren_kesantrian.group_kesantrian_manager">
+                                <group string="Akun Orang Tua">
+                                    <field name="orangtua_id"/>
+                                </group>
+                                <group string="Identitas Ayah" >
+                                    <group>
+                                        <field name="ayah_nama" />
+                                        <field name="ayah_tgl_lahir" string="Tgl Lahir" />
+                                        <field name="ayah_telp" string="No Telepon/HP"/>
+                                        <field name="ayah_pekerjaan_id" string="Pekerjaan"/>
+                                        <field name="ayah_kantor" string="Alamat Kantor"/>
+                                        <field name="ayah_agama" string="Agama"/>
+                                    </group>
+                                    <group>
+                                        <field name="ayah_tmp_lahir" string="Tempat Lahir"/>
+                                        <field name="ayah_warganegara" string="Kewarganegaraan"/>
+                                        <field name="ayah_email" string="Email" widget="email"/>
+                                        <field name="ayah_pendidikan_id" string="Pendidikan" />
+                                        <field name="ayah_penghasilan" string="Penghasilan/bln"/>
+                                    </group>
+                                </group>
+                                <group string="Identitas Ibu">
+                                    <group>
+                                        <field name="ibu_nama" />
+                                        <field name="ibu_tgl_lahir" string="Tgl Lahir"/>
+                                        <field name="ibu_telp" string="No Telepon/HP" />
+                                        <field name="ibu_pekerjaan_id" string="Pekerjaan" />
+                                        <field name="ibu_kantor" string="Alamat Kantor"/>
+                                        <field name="ibu_agama" string="Agama" />
+                                    </group>
+                                    <group>
+                                        <field name="ibu_tmp_lahir" string="Tempat Lahir" />
+                                        <field name="ibu_warganegara" string="Kewarganegaraan"/>
+                                        <field name="ibu_email" string="Email" widget="email"/>
+                                        <field name="ibu_pendidikan_id" string="Pendidikan"/>
+                                        <field name="ibu_penghasilan" string="Penghasilan/bln"/>
+                                    </group>                 
+                                </group>
+                                <group string="Identitas Wali" >
+                                    <group>
+                                        <field name="wali_nama" />
+                                        <field name="wali_tgl_lahir" string="Tgl Lahir"/>
+                                        <field name="wali_email" string="Email" widget="email"/>
+                                        <field name="wali_hubungan" string="Hubungan dg Siswa" />
+                                    </group>
+                                    <group>
+                                        <field name="wali_tmp_lahir" string="Tempat Lahir"/>
+                                        <field name="wali_telp" string="No Telepon/HP"/>
+                                        <field name="wali_agama" string="Agama" />
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- cdn.siswa action window -->
+        <record id="cek_santri_action" model="ir.actions.act_window">
+            <field name="name">Santri</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.siswa</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_ids" eval="[(5, 0, 0), (0, 0, {'view_mode': 'list', 'view_id': ref('pesantren_musyrif.musyrif_cek_santri_view_tree')}), 
+                (0, 0, {'view_mode': 'form', 'view_id': ref('pesantren_musyrif.musyrif_cek_santri_view_form')})]"
+                />
+        </record>
+       
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="cek_santri_menu_act" name="Cek Santri" parent="musyrif_data_santri_menu_categ" action="cek_santri_action" sequence="10"/>
+    </data>
+</odoo>

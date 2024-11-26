@@ -1,0 +1,25 @@
+<odoo>
+	<data>
+		<record model="ir.module.category" id="module_category_pendaftaran">
+			<field name="name">Pendaftaran</field>
+			<field name="description">Group Pendaftaran</field>
+			<field name="sequence">10</field>
+		</record>
+		<record id="group_pendaftaran_user" model="res.groups">
+			<field name="name">User</field>
+			<field name="category_id" ref="module_category_pendaftaran"/>
+		</record>
+		<record id="group_pendaftaran_admin" model="res.groups">
+			<field name="name">Administrator</field>
+			<field name="category_id" ref="module_category_pendaftaran"/>
+			<field name="implied_ids" eval="[(4, ref('group_pendaftaran_user'))]"/>
+		</record>
+		<record id="group_pendaftaran_manager" model="res.groups">
+			<field name="name">Manager</field>
+			<field name="category_id" ref="module_category_pendaftaran"/>
+			<field name="implied_ids" eval="[(4, ref('group_pendaftaran_admin'))]"/>
+        	<field name="users" eval="[(4, ref('base.user_admin'))]"/>
+		</record>
+
+	</data>
+</odoo>

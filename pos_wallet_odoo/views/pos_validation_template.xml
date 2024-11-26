@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="assets" inherit_id="point_of_sale.assets">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/pos_wallet_odoo/static/src/js/customer_validation.js"></script>
+        </xpath>
+    </template>
+
+    <templates>
+        <t t-name="CustomerValidationButton" owl="1">
+            <div class="control-button o_customer_validation_button">
+                <i class="fa fa-user" role="img" aria-label="Customer Validation" title="Customer Validation"/>
+                <span>Validate Customer</span>
+            </div>
+        </t>
+    </templates>
+</odoo>

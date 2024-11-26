@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- cdn.data_pelanggaran list view -->
+        <record id="cdn_data_pelanggaran_view_tree" model="ir.ui.view">
+            <field name="name">cdn.data_pelanggaran.view.list</field>
+            <field name="model">cdn.data_pelanggaran</field>
+            <field name="arch" type="xml">
+                <list expand="1">
+                    <field name="name"/>
+                    <field name="jns_pelanggaran_id"/>
+                    <field name="kategori"/>
+                    <field name="poin"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- cdn.data_pelanggaran form view -->
+        <record id="cdn_data_pelanggaran_view_form" model="ir.ui.view">
+            <field name="name">cdn.data_pelanggaran.view.form</field>
+            <field name="model">cdn.data_pelanggaran</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                          <field name="name"/>  
+                          <field name="jns_pelanggaran_id"/>
+                          <field name="kategori"/>
+                          <field name="poin"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- cdn.data_pelanggaran search view -->
+        <record id="cdn_data_pelanggaran_view_search" model="ir.ui.view">
+            <field name="name">cdn.data_pelanggaran.view.search</field>
+            <field name="model">cdn.data_pelanggaran</field>
+            <field name="arch" type="xml">
+                <search string="Search Description">
+                    <!-- Add your fields here -->
+                    <filter name="group_by_jns_pelanggaran" string="Jenis Pelanggaran" context="{'group_by': 'jns_pelanggaran_id'}" />
+                </search>
+            </field>
+        </record>
+
+        <!-- cdn.data_pelanggaran action window -->
+        <record id="cdn_data_pelanggaran_action" model="ir.actions.act_window">
+            <field name="name">Data Pelanggaran</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.data_pelanggaran</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'search_default_group_by_jns_pelanggaran':1}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p><p>
+                    <!-- More details about what a user can do with this object will be OK --> 
+                </p>
+            </field>
+        </record>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="data_pelanggaran_menu_act" name="Data Pelanggaran" parent="pengaturan_pelanggaran_menu_categ" action="cdn_data_pelanggaran_action" sequence="10"/>
+    
+    </data>
+</odoo>

@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- cdn.aspek_penilaian list view -->
+        <record id="cdn_aspek_penilaian_view_tree" model="ir.ui.view">
+            <field name="name">cdn.aspek_penilaian.view.list</field>
+            <field name="model">cdn.aspek_penilaian</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="parent_id"/>
+                    <field name="keterangan"/>
+                </list>
+            </field>
+        </record>
+        <!-- cdn.aspek_penilaian form view -->
+        <record id="model_name_view_form" model="ir.ui.view">
+            <field name="name">cdn.aspek_penilaian.view.form</field>
+            <field name="model">cdn.aspek_penilaian</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="parent_id"/>
+                            <field name="keterangan"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- cdn.aspek_penilaian action window -->
+        <record id="cdn_aspek_penilaian_action" model="ir.actions.act_window">
+            <field name="name">Aspek Penilaian</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.aspek_penilaian</field>
+            <field name="view_mode">list,form</field>
+        </record>
+        <!-- This Menu Item must have a parent and an action -->
+        <!-- <menuitem id="aspek_penilaian_menu_act" name="Aspek Penilaian" 
+            parent="pengaturan_akademik_menu_categ" action="cdn_aspek_penilaian_action" sequence="40"/> -->
+    </data>
+</odoo>

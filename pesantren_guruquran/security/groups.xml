@@ -1,0 +1,122 @@
+<odoo>
+	<data>
+		<record model="ir.module.category" id="module_category_guru_quran">
+			<field name="name">Guru Qur'an</field>
+			<field name="description">Group Guru Quran</field>
+			<field name="sequence">10</field>
+		</record>
+		<record id="group_guru_quran_user" model="res.groups">
+			<field name="name">User</field>
+			<field name="category_id" ref="module_category_guru_quran"/>
+		</record>
+        <record id="group_guru_quran_staff" model="res.groups">
+            <field name="name">Staff</field>
+            <field name="category_id" ref="module_category_guru_quran"/>
+            <field name="implied_ids" eval="[(4, ref('group_guru_quran_user'))]"/>
+        </record>
+		<record id="group_guru_quran_manager" model="res.groups">
+			<field name="name">Manager</field>
+			<field name="category_id" ref="module_category_guru_quran"/>
+			<field name="implied_ids" eval="[(4, ref('group_guru_quran_staff'))]"/>
+        	<field name="users" eval="[(4, ref('base.user_admin'))]"/>
+		</record>
+
+		<!-- Rules -->
+
+		<record id="group_guru_quran_user_rule_absen_tahfidz_quran" model="ir.rule">
+			<field name="name">User Rule Absen Tahfidz Quran</field>
+			<field name="model_id" ref="pesantren_kesantrian.model_cdn_absen_tahfidz_quran"/>
+			<field name="domain_force">
+				[
+                    '|',
+                    ('halaqoh_id.penanggung_jawab_id.user_id','=',user.id),
+                    ('halaqoh_id.pengganti_ids.user_id','=',user.id)
+                ]
+			</field>
+			<field name="groups" eval="[(4, ref('group_guru_quran_user'))]"/>
+		</record>
+
+		<record id="group_guru_quran_manager_rule_absen_tahfidz_quran" model="ir.rule">
+			<field name="name">Manager Rule Absen Tahfidz Quran</field>
+			<field name="model_id" ref="pesantren_kesantrian.model_cdn_absen_tahfidz_quran"/>
+			<field name="groups" eval="[(4, ref('group_guru_quran_manager'))]"/>
+		</record>
+
+		<record id="group_guru_quran_user_rule_tahfidz_quran" model="ir.rule">
+			<field name="name">User Rule Tahfidz Quran</field>
+			<field name="model_id" ref="pesantren_kesantrian.model_cdn_tahfidz_quran"/>
+			<field name="domain_force">
+				[
+                    '|',
+                    ('halaqoh_id.penanggung_jawab_id.user_id','=',user.id),
+                    ('halaqoh_id.pengganti_ids.user_id','=',user.id)
+                ]
+			</field>
+			<field name="groups" eval="[(4, ref('group_guru_quran_user'))]"/>
+		</record>
+
+		<record id="group_guru_quran_manager_rule_tahfidz_quran" model="ir.rule">
+			<field name="name">Manager Rule Tahfidz Quran</field>
+			<field name="model_id" ref="pesantren_kesantrian.model_cdn_tahfidz_quran"/>
+			<field name="groups" eval="[(4, ref('group_guru_quran_manager'))]"/>
+		</record>
+
+		<record id="group_guru_quran_user_rule_absen_tahsin_quran" model="ir.rule">
+			<field name="name">User Rule Absen Tahsin Quran</field>
+			<field name="model_id" ref="pesantren_kesantrian.model_cdn_absen_tahsin_quran"/>
+			<field name="domain_force">
+				[
+                    '|',
+                    ('halaqoh_id.penanggung_jawab_id.user_id','=',user.id),
+                    ('halaqoh_id.pengganti_ids.user_id','=',user.id)
+                ]
+			</field>
+			<field name="groups" eval="[(4, ref('group_guru_quran_user'))]"/>
+		</record>
+
+		<record id="group_guru_quran_manager_rule_absen_tahsin_quran" model="ir.rule">
+			<field name="name">Manager Rule Absen Tahsin Quran</field>
+			<field name="model_id" ref="pesantren_kesantrian.model_cdn_absen_tahsin_quran"/>
+			<field name="groups" eval="[(4, ref('group_guru_quran_manager'))]"/>
+		</record>
+
+		<record id="group_guru_quran_user_rule_tahsin_quran" model="ir.rule">
+			<field name="name">User Rule Tahsin Quran</field>
+			<field name="model_id" ref="pesantren_kesantrian.model_cdn_tahsin_quran"/>
+			<field name="domain_force">
+				[
+                    '|',
+                    ('halaqoh_id.penanggung_jawab_id.user_id','=',user.id),
+                    ('halaqoh_id.pengganti_ids.user_id','=',user.id)
+                ]
+			</field>
+			<field name="groups" eval="[(4, ref('group_guru_quran_user'))]"/>
+		</record>
+
+		<record id="group_guru_quran_manager_rule_tahsin_quran" model="ir.rule">
+			<field name="name">Manager Rule Tahsin Quran</field>
+			<field name="model_id" ref="pesantren_kesantrian.model_cdn_tahsin_quran"/>
+			<field name="groups" eval="[(4, ref('group_guru_quran_manager'))]"/>
+		</record>
+
+		<record id="group_guru_quran_user_rule_siswa" model="ir.rule">
+			<field name="name">User Rule Cek Santri</field>
+			<field name="model_id" ref="pesantren_kesantrian.model_cdn_siswa"/>
+			<field name="domain_force">
+				[
+                    '|',
+                    ('halaqoh_id.penanggung_jawab_id.user_id','=',user.id),
+                    ('halaqoh_id.pengganti_ids.user_id','=',user.id)
+                ]
+			</field>
+			<field name="groups" eval="[(4, ref('group_guru_quran_user'))]"/>
+		</record>
+
+		<record id="group_guru_quran_manager_rule_siswa" model="ir.rule">
+			<field name="name">Manager Rule Cek Santri</field>
+			<field name="model_id" ref="pesantren_kesantrian.model_cdn_siswa"/>
+			<field name="groups" eval="[(4, ref('group_guru_quran_manager'))]"/>
+		</record>
+
+	</data>
+</odoo>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="owl.PelanggaranCardList" owl="1">
+    <div class="card dashboard-card">
+        <div class="card-header">
+            <h3 class="card-title">Pelanggaran Santri</h3>
+        </div>
+        <div class="card-body p-0" style="height: 50vh;">
+            <div class="h-100">
+                <t t-if="state.isLoading">
+                    <div class="d-flex align-items-center justify-content-center h-100">
+                        <div>
+                            <i class="fa fa-spinner fa-spin"></i>
+                            <span class="ms-2">Loading...</span>
+                        </div>
+                    </div>
+                </t>
+                <t t-elif="state.hasData">
+                    <div class="table-responsive h-100" style="max-height: 400px; overflow-y: auto; overflow-x: auto;">
+                        <table class="table table-hover table-striped mb-0">
+                            <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
+                                <tr>
+                                    <th>Nama Santri</th>
+                                    <th>Pelanggaran</th>
+                                    <th>Kategori</th>
+                                    <th>Poin</th>
+                                    <th>Tanggal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="state.pelanggarans" t-as="pelanggaran" t-key="pelanggaran_index">
+                                    <tr>
+                                        <td><t t-esc="pelanggaran.student_name"/></td>
+                                        <td><t t-esc="pelanggaran.pelanggaran_name"/></td>
+                                        <td><t t-esc="pelanggaran.kategori"/></td>
+                                        <td><t t-esc="pelanggaran.points"/></td>
+                                        <td><t t-esc="pelanggaran.tanggal"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="d-flex align-items-center justify-content-center h-100">
+                        <p class="text-muted mb-0">Belum ada data yang bisa ditampilkan.</p>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </div>
+</t>
+
+    <t t-name="owl.TahfidzCardList" owl="1">
+    <div class="card dashboard-card">
+        <div class="card-header">
+            <h3 class="card-title">Top 5 Hafalan Terbanyak</h3>
+        </div>
+        <div class="card-body p-0" style="height: 400px;">
+            <div class="h-100">
+                <t t-if="state.isLoading">
+                    <div class="d-flex align-items-center justify-content-center h-100">
+                        <div>
+                            <i class="fa fa-spinner fa-spin"></i>
+                            <span class="ms-2">Loading...</span>
+                        </div>
+                    </div>
+                </t>
+                <t t-elif="state.hasData">
+                    <div class="table-responsive h-100" style="max-height: 400px; overflow-y: auto;">
+                        <table class="table table-hover table-striped mb-0">
+                            <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nama Santri</th>
+                                    <th>Kelas</th>
+                                    <th>Total Baris</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <t t-foreach="state.topTahfidz" t-as="tahfidz" t-key="tahfidz_index">
+                                    <tr>
+                                        <td><t t-esc="tahfidz.number"/></td>
+                                        <td><t t-esc="tahfidz.name"/></td>
+                                        <td><t t-esc="tahfidz.kelas"/></td>
+                                        <td><t t-esc="tahfidz.total_baris"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="d-flex align-items-center justify-content-center h-100">
+                        <p class="text-muted mb-0">Belum ada data yang bisa ditampilkan.</p>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </div>
+</t>
+</templates>

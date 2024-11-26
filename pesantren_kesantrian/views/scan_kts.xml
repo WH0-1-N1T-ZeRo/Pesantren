@@ -1,0 +1,49 @@
+<!-- <template id="popup_scan_kts_template" inherit_id="web.assets_frontend">
+    <xpath expr="." position="inside">
+        <script type="module">
+            const { Component, useState } = owl;
+            const { Dialog } = require("web.Dialog");
+
+            class PopupScan extends Component {
+                static template = "popup_scan_kts_template";
+                constructor() {
+                    super(...arguments);
+                    this.state = useState({ scanResult: null });
+                }
+
+                async startScan() {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({
+                            video: { facingMode: "environment" },
+                        });
+                        const video = this.el.querySelector("#camera");
+                        video.srcObject = stream;
+                        video.play();
+
+                        // QR/Barcode scanner logic (gunakan library seperti jsQR atau zxing)
+                        video.addEventListener("loadedmetadata", () => {
+                            console.log("Camera loaded. Ready to scan!");
+                            // Implementasi scanning di sini.
+                        });
+                    } catch (error) {
+                        console.error("Camera error: ", error);
+                        alert("Kamera tidak bisa diakses.");
+                    }
+                }
+            }
+
+            owl.utils.whenReady().then(() => {
+                PopupScan.mount(document.body);
+            });
+        </script>
+
+        <div t-name="popup_scan_kts_template">
+            <div class="o_dialog">
+                <h3>Scan Barcode</h3>
+                <video id="camera" autoplay="autoplay"></video>
+                <button t-on-click="startScan">Start Scan</button>
+                <p>Hasil: <span t-esc="state.scanResult" /></p>
+            </div>
+        </div>
+    </xpath>
+</template> -->

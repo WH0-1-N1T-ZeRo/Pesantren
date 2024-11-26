@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+  <data>
+    <!-- cdn.penugasan list view -->
+    <record id="cdn_penugasan_view_tree" model="ir.ui.view">
+      <field name="name">cdn.penugasan.view.list</field>
+      <field name="model">cdn.penugasan</field>
+      <field name="arch" type="xml">
+        <list>
+          <!-- Add your fields here -->
+          <field name="kelas_id"/>
+          <field name="tugas_ujian"/>
+          <field name="tanggal"/>
+          <field name="deadline"/>
+        </list>
+      </field>
+    </record>
+
+    <!-- cdn.penugasan form view -->
+    <record id="cdn_penugasan_view_form" model="ir.ui.view">
+      <field name="name">cdn.penugasan.view.form</field>
+      <field name="model">cdn.penugasan</field>
+      <field name="arch" type="xml">
+        <form string="">
+          <header>
+            <button string="Proses" name="action_proses" type="object" class="oe_highlight"  invisible="state != 'draft'"/>
+            <button string="Selesai" name="action_done" type="object" class="oe_highlight" invisible="state != 'proses'" />
+            <field name="state" widget="statusbar" />
+          </header>
+          <sheet>
+            <group>
+              <!-- Add your fields here -->
+              <group>
+                <field name="kelas_id"/>
+                <field name="tingkat_id"/>
+                <field name="tanggal"/>
+                <field name="deadline"/>
+              </group>
+              <group>
+                <field name="tugas_ujian" />
+                <field name="matpel_id"/>
+                <field name="guru_id"
+                  options="{
+                    'no_create_edit':True, 
+                    'no_create':True
+                  }"/>
+                        
+              </group>
+            </group>
+            <notebook>
+              <page string="Siswa">
+                  <field name="tugas_line_ids" nolable="1" colspan="4">
+                      <list editable="bottom">
+                          <field name="siswa_id"
+                                options="{
+                                  'no_create_edit':True, 
+                                  'no_create':True
+                                }"/>
+                                <field name="state" invisible="1"/>
+                                <field name="nilai" widget="integer" invisible="state in ('draft')"/>
+                                <field name="keterangan" invisible="state in ('draft')"/>
+                        </list>
+                  </field>
+              </page>
+          </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- cdn.penugasan action window -->
+    <record id="cdn_penugasan_action" model="ir.actions.act_window">
+      <field name="name">Penugasan</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">cdn.penugasan</field>
+      <field name="view_mode">list,form</field>
+      <field name="domain">
+      [
+          ('guru_id.user_id','=',uid)
+      ]
+      </field>
+    </record>
+    
+    <!-- This Menu Item must have a parent and an action -->
+    <menuitem id="penugasan_menu_act" name="Penugasan" parent="aktivitas_menu_categ" action="cdn_penugasan_action" sequence="30"/>
+  
+  </data>
+  
+</odoo>

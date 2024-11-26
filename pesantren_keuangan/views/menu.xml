@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <menuitem id="keuangan_menu_root" name="Keuangan" sequence="10" groups="pesantren_keuangan.group_keuangan_staff" web_icon="pesantren_base,static/description/keuangan.png"/>
+        <menuitem id="aktivitas_menu_categ" name="Aktivitas" parent="keuangan_menu_root" sequence="20">
+            <!-- This Menu Item Must have a parent -->
+            <menuitem id="keu_tagihan_menu_categ" name="Tagihan" sequence="10"/>
+            <menuitem id="keu_pembayaran_menu_categ" name="Pembayaran" sequence="20"/>
+            <menuitem id="keu_saku_wallet_menu_categ" name="Uang Saku dan Dompet" sequence="30"/>
+        </menuitem>
+        <menuitem id="pengaturan_menu_categ" name="Pengaturan" parent="keuangan_menu_root" groups="pesantren_keuangan.group_keuangan_manager" sequence="30"/>
+    </data>
+</odoo>

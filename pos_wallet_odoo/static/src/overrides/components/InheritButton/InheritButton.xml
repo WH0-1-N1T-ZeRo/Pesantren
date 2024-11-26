@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos_wallet_odoo.NumpadCustom" t-inherit="point_of_sale.Numpad" t-inherit-mode="extension">
+        <!-- Mengganti tombol numpad jika diperlukan -->
+        <xpath expr="//t[@t-as='button']" position="replace">
+            <t t-foreach="buttons.map((b) => typeof b === 'object' ? b : { value: b })" t-as="button" t-key="button.value">
+                <span t-if="Object.keys(button).length === 0"/>
+                <button 
+                    t-attf-class="numpad-button btn btn-light btn-lg fs-3 lh-lg m-1 {{ button.class or '' }}"
+                    t-att-value="button.value === '+10' ? '00' : button.value === '+20' ? '000' : button.value === '+50' ? '0000' : button.value"
+                    t-on-click="() => this.onClick(button.value === '+10' ? '00' : button.value === '+20' ? '000' : button.value === '+50' ? '0000' : button.value)"
+                    t-att-disabled="button.disabled"
+                    t-esc="button.value === '+10' ? '00' : button.value === '+20' ? '.000' : button.value === '+50' ? '0.000' : button.value === 'quantity' ? 'Kuantitas' : button.value === 'discount' ? 'Diskon' : button.value === 'price' ? 'Harga' : button.value === 'Backspace' ? 'Hapus' : button.value "
+                />
+            </t>
+        </xpath>
+    </t>
+    <t t-name="pos_wallet_odoo.CustomActionpadWidget" t-inherit="point_of_sale.ActionpadWidget" t-inherit-mode="extension">
+        <xpath expr="//button[@class='button mobile-more-button btn btn-light btn-lg flex-fill']" position="replace">
+            <button class="button mobile-more-button btn btn-light btn-lg flex-fill" t-if="props.onClickMore" t-on-click="props.onClickMore">
+                <span>Aktivitas</span>
+            </button>
+        </xpath>
+    </t>
+    <t t-name="pos_wallet_odoo.CustomControlButtons" t-inherit="point_of_sale.ControlButtons" t-inherit-mode="extension">
+        <xpath expr="//button[@class='btn btn-light btn-lg flex-shrink-0 ms-auto']" position="replace">
+            <button class="btn btn-light btn-lg flex-shrink-0 ms-auto" t-if="!props.showRemainingButtons and !ui.isSmall and props.onClickMore" t-on-click="props.onClickMore">
+            Aktivitas
+        </button>
+        </xpath>
+    </t>
+</templates>

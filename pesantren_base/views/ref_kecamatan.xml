@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- list view -->
+        <record id="view_cdn_ref_kecamatan_tree" model="ir.ui.view">
+            <field name="name">cdn_ref_kecamatan_tree</field>
+            <field name="model">cdn.ref_kecamatan</field>
+            <field name="type">list</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <list string="Ref kecamatan">
+                    <field name="name" />
+                    <field name="keterangan" />
+                    <field name="kota_id" />
+                </list>
+            </field>
+        </record>
+        <!-- form view -->
+        <record id="view_cdn_ref_kecamatan_form" model="ir.ui.view">
+            <field name="name">cdn_ref_kecamatan_form</field>
+            <field name="model">cdn.ref_kecamatan</field>
+            <field name="type">form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Ref kecamatan">
+                    <header>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <!--button type="object" name="action_view_detail" class="oe_stat_button" icon="fa-pencil-square-o"-->
+                                <!--field name="detail_count" widget="statinfo" string="Detail(s)"/-->
+                                <!--field name="detail_ids" invisible="1"/-->
+                            <!--/button-->
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Nama Kecamatan"/>
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="keterangan" />
+                            </group>
+                            <group>
+                                <field name="kota_id" />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- search -->
+        <record id="view_cdn_ref_kecamatan_search" model="ir.ui.view">
+            <field name="name">cdn_ref_kecamatan</field>
+            <field name="model">cdn.ref_kecamatan</field>
+            <field name="arch" type="xml">
+                <search string="Ref kecamatan">
+
+                    <filter string="Nama" name="filter_by_name" domain="[('name','=','')]" />
+                    <filter string="Keterangan" name="filter_by_keterangan" domain="[('keterangan','=','')]" />
+                    <field name="name" select="True"/>
+                    <field name="keterangan" select="True"/>
+                    <field name="kota_id" select="True"/>
+                    <group string="Group By..">
+                        <filter string="Kota" domain="[]" name="group_by_kota_id" context="{'group_by':'kota_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- action window -->
+        <record id="action_cdn_ref_kecamatan" model="ir.actions.act_window">
+            <field name="name">Ref kecamatan</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.ref_kecamatan</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{"search_default_fieldname":1}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                Click to add a new Ref kecamatan
+                </p><p>
+                Click the Create button to add a new Ref kecamatan
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_cdn_ref_kecamatan" name="Kecamatan" parent="pengaturan_ref_menu_categ" action="action_cdn_ref_kecamatan" sequence="30"/>
+    </data>
+</odoo>

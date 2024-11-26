@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <data>
+            <!-- cdn.prestasi_siswa list view -->
+            <record id="cdn_prestasi_siswa_view_tree" model="ir.ui.view">
+                <field name="name">cdn.prestasi_siswa.view.list</field>
+                <field name="model">cdn.prestasi_siswa</field>
+                <field name="arch" type="xml">
+                    <list default_order="id desc" >
+                        <field name="name"/>
+                        <field name="tgl_prestasi"/>
+                        <field name="siswa_id"/>
+                        <field name="jns_prestasi_id"/>
+                        <field name="tingkat_prestasi"/>
+                        <field name="joara"/>
+                    </list>
+                </field>
+            </record>   
+
+            <!-- cdn.prestasi_siswa form view -->
+            <record id="cdn_prestasi_siswa_view_form" model="ir.ui.view">
+                <field name="name">cdn.prestasi_siswa.view.form</field>
+                <field name="model">cdn.prestasi_siswa</field>
+                <field name="arch" type="xml">
+                    <form string="">
+                        <sheet>
+                            <div class="oe_title">
+                                <label for="name" class="oe_edit_only" string="No. Referensi (AUTO)"/>
+                                <h1><field name="name" placeholder="Auto"/></h1>
+                            </div>
+                            <group>
+                                <group>
+                                    <field name="tgl_prestasi"/>
+                                    <field name="siswa_id" option="{'no_create_edit':True, 'no_create':True}"/>
+                                    <field name="jns_prestasi_id"/>
+                                </group>
+                                <group>
+                                    <field name="tingkat_prestasi"/>
+                                    <field name="joara"/>
+                                    <field name="keterangan"/>
+                                </group>
+                                <group string="Bukti">
+                                    <field name="foto" widget="image"/>
+                                </group>
+                            </group>
+                        </sheet>
+                    </form>
+                </field>
+            </record>
+
+            <!-- cdn.prestasi_siswa kanban view -->
+            <record id="cdn_orestasi_siswa_view_kanban" model="ir.ui.view">
+                <field name="name">cdn.prestasi_siswa.view.kanban</field>
+                <field name="model">cdn.prestasi_siswa</field>
+                <field name="arch" type="xml">
+                    <kanban string="Kanban Description">
+                        <field name="id"/>
+                        <field name="siswa_id"/>
+                        <field name="jns_prestasi_id"/>
+                        <field name="tingkat_prestasi"/>
+                        <field name="joara"/>
+                        <field name="foto"/>
+                        <templates>
+                            <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click o_kanban_record_has_image_fill"> 
+                                <t t-if="record.foto.raw_value">
+                                    <div class="o_kanban_image_fill_left d-none d-md-block" t-attf-style="background-image:url('#{kanban_image('cdn.prestasi_siswa','foto', record.id.raw_value)}')"/>
+                                </t>
+                                <div class="oe_kanban_details">
+                                    <h4>
+                                        <field name="siswa_id"/>
+                                    </h4>
+                                    <ul>
+                                    <li>
+                                        <span class="text-muted">Jenis Prestasi :</span> <field name="jns_prestasi_id"></field>
+                                    </li>
+                                    <li>
+                                        <span class="text-muted">Tingkat Prestasi :</span> <field name="tingkat_prestasi"></field>
+                                    </li>
+                                    <li>
+                                        <span class="text-muted">Juara :</span> <field name="joara"></field>
+                                    </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            </t>
+                        </templates>
+                    </kanban>
+                </field>
+            </record>
+
+            <record id="sequence_prestasi_siswa" model="ir.sequence">
+                <field name="name">prestasi_siswa</field>
+                <field name="code">cdn.prestasi_siswa</field>
+                <field name="prefix">PR/%(y)s.%(month)s/</field>
+                <field name="padding">4</field>
+                <field name="number_increment">1</field>
+                <field name="implementation">standard</field>
+           </record>
+
+           <record id="cdn_prestasi_siswa_view_calendar" model="ir.ui.view">
+            <field name="name">cdn.prestasi_siswa.view.calendar</field>
+            <field name="model">cdn.prestasi_siswa</field>
+            <field name="arch" type="xml">
+                <calendar string="Prestasi Siswa" date_start="tgl_prestasi" color="tgl_prestasi">
+                    <field name="jns_prestasi_id"/>
+                    <field name="siswa_id"/>
+                    <field name="tingkat_prestasi"/>
+                </calendar>
+            </field>
+           </record>
+
+           <!-- <record id="cdn_prestasi_siswa_view_graph" model="ir.ui.view">
+            <field name="name">cdn.prestasi_siswa.view.graph</field>
+            <field name="model">cdn.prestasi_siswa</field>
+            <field name="arch" type="xml">
+                <graph string="Prestasi Siswa" type="bar">
+                    <field name="siswa_id" can_create="true" can_write="true" modifiers="{}"/>
+                    <field name="jns_prestasi_id" can_create="true" can_write="true" modifiers="{}"/>
+                    <field name="tingkat_prestasi" can_create="true" can_write="true" modifiers="{}"/>
+
+
+                </graph>
+            </field>
+           </record> -->
+
+           <!-- cdn.prestasi_siswa action window -->
+           <record id="cdn_prestasi_siswa_action" model="ir.actions.act_window">
+            <field name="name">Prestasi Siswa</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.prestasi_siswa</field>
+            <field name="view_mode">list,form,kanban,graph,calendar</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p><p>
+                    <!-- More details about what a user can do with this object will be OK --> 
+                </p>
+            </field>
+           </record>
+           <!-- This Menu Item must have a parent and an action -->
+           <menuitem id="prestasi_siswa_menu_act" name="Prestasi Siswa" parent="aktivitas_kesantrian_menu_categ" action="cdn_prestasi_siswa_action" sequence="30"/>
+        </data>
+
+</odoo>

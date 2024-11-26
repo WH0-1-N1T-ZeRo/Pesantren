@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_wizard_search_siswa_form" model="ir.ui.view">
+        <field name="name">wizard.search.siswa.form</field>
+        <field name="model">wizard.search.siswa</field>
+        <field name="arch" type="xml">
+            <form string="Search Siswa">
+                <group>
+                    <field name="nis"/>
+                </group>
+                <group>
+                    <field name="name" readonly="1"/>
+                    <field name="tmp_lahir" readonly="1"/>
+                    <field name="tgl_lahir" readonly="1"/>
+                </group>
+                <footer>
+                    <button string="Cari" type="object" name="button_search" class="btn-primary"/>
+                    <button string="Batal" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_wizard_search_siswa" model="ir.actions.act_window">
+        <field name="name">Cari Siswa</field>
+        <field name="res_model">wizard.search.siswa</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_wizard_search_siswa_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_wizard_search_siswa" name="Cari Siswa" parent="sekolah_top_menu" action="action_wizard_search_siswa" sequence="20"/>
+</odoo>

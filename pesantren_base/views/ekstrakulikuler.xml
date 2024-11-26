@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+    
+        <!-- cdn.ekstrakulikuler list view -->
+        <record id="cdn_ekstrakulikuler_view_tree" model="ir.ui.view">
+            <field name="name">cdn.ekstrakulikuler.view.list</field>
+            <field name="model">cdn.ekstrakulikuler</field>
+            <field name="arch" type="xml">
+                <list>
+                    <!-- Add your fields here -->
+                    <field name="name"/>
+                    <field name="is_wajib"/>
+                    <field name="tingkat_ids"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- cdn.ekstrakulikuler form view -->
+        <record id="cdn_ekstrakulikuler_view_form" model="ir.ui.view">
+            <field name="name">cdn.ekstrakulikuler.view.form</field>
+            <field name="model">cdn.ekstrakulikuler</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <!-- Add your fields here -->
+                            <field name="name"/>
+                            <field name="is_wajib"/>
+                            <field name="tingkat_ids" widget="many2many_tags" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- cdn.ekstrakulikuler action window -->
+        <record id="cdn_ekstrakulikuler_action" model="ir.actions.act_window">
+            <field name="name">Ekstrakulikuler</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.ekstrakulikuler</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="cdn_ekstrakulikuler_menu_act" name="Ekstrakulikuler" parent="pengaturan_akademik_menu_categ" action="cdn_ekstrakulikuler_action" sequence="40"/>
+    
+    </data>
+    
+</odoo>

@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="guru_employee_form_inherit" model="ir.ui.view">
+			<field name="name">hr.employee.from.inherit</field>
+			<field name="model">hr.employee</field>
+			<field name="inherit_id" ref="hr.view_employee_form"/>
+			<field name="arch" type="xml">
+				<field name="department_id" position="before">
+				</field>
+				<field name="coach_id" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+                <field name="job_title" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+				<field name="category_ids" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>				
+				<!-- Add your xpath here -->
+                <xpath expr="//field[@name='work_email']" position="after">
+                    <!-- job_id from data xml -->
+                    <field name="jns_pegawai" />
+                </xpath>
+                <xpath expr="//page[@name='personal_information']//group[1]//group[4]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//page[@name='personal_information']//group[1]//group[3]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//page[@name='personal_information']//group[1]//group[1]" position="attributes">
+                    <attribute name="string">Data Kontak</attribute>
+                </xpath>
+
+			</field>
+		</record>
+
+		<!-- model.name action window -->
+		<record id="hr_employee_guru_action" model="ir.actions.act_window">
+            <field name="name">Guru</field>
+            <field name="res_model">hr.employee</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="hr.view_employee_tree"/>
+            <!-- default value for job_id -->
+            <field name="context" eval="{'default_jns_pegawai': 'ustadz'}"/>
+            <field name="domain" eval="[('jns_pegawai', 'in', ['ustadz','guru'])]"/>
+        </record>
+
+        <record id="hr_employee_guru_form_action_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="hr.view_employee_tree"/>
+            <field name="act_window_id" ref="hr_employee_guru_action"/>
+        </record>
+
+        <record id="hr_employee_guru_form_action" model="ir.actions.act_window.view">
+            <field name="sequence" eval="3"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="guru_employee_form_inherit"/>
+            <field name="act_window_id" ref="hr_employee_guru_action"/>
+        </record>
+
+        <menuitem id="menu_guru" name="Guru" parent="data_kesantrian_menu_categ" action="hr_employee_guru_action" sequence="30"/>
+    
+    </data>
+</odoo>

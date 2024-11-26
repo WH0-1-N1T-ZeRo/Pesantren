@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="pos_wallet_odoo.ProductCardCustom" t-inherit="point_of_sale.ProductCard" t-inherit-mode="extension">
+        <xpath expr="//article[@tabindex='0']" position="replace">
+            <article tabindex="0"
+            t-attf-class="{{props.class}} {{props.color ? `o_colorlist_item_color_transparent_${props.color}` : ''}} product position-relative btn btn-light d-flex align-items-stretch p-0 m-0 rounded-3 text-start cursor-pointer transition-base"
+            t-on-keypress="(event) => event.code === 'Space' ? props.onClick(event) : ()=>{}"
+            t-on-click="props.onClick"
+            t-att-data-product-id="props.productId"
+            t-attf-aria-labelledby="article_product_{{props.productId}}">
+                <div class="product-content d-flex flex-column justify-content-between p-2 rounded-bottom rounded-3 flex-shrink-1 h-100">
+                    <div class="overflow-hidden lh-sm product-name mb-2"
+                    t-attf-id="article_product_{{props.productId}}"
+                    t-esc="props.name" />
+                    <div class="overflow-hidden product-name"
+                    t-attf-id="article_product_{{props.productId}}"
+                    t-esc="props.price" />
+            </div>
+            </article>
+        </xpath>
+    </t>
+</templates>

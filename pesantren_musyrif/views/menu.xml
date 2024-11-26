@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <menuitem id="musyrif_menu_root" name="Musyrif" sequence="10" groups="pesantren_musyrif.group_musyrif_user" web_icon="pesantren_base,static/description/musyrif.png"/>
+        <menuitem id="musyrif_perijinan_santri_menu_categ" name="Perijinan Santri" parent="musyrif_menu_root" sequence="20"/>
+        <menuitem id="musyrif_aktivitas_menu_categ" name="Aktivitas" parent="musyrif_menu_root" sequence="40"/>
+        <menuitem id="musyrif_data_santri_menu_categ" name="Data Santri" parent="musyrif_menu_root" sequence="50"/>
+    </data>
+</odoo>

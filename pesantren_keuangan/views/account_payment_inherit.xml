@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- model.name inherit tree view -->
+        <record id="account_payment_inherit_tree_view" model="ir.ui.view">
+            <field name="name">account.payment.inherit.view.tree</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_tree"/>
+            <field name="arch" type="xml">
+                <field name="payment_method_line_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+
+                <field name="state" position="replace">
+                    <field name="state" string="Status" widget="badge"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="account_payment_inherit_form_view" model="ir.ui.view">
+            <field name="name">account.payment.inherit.view.form</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+                <!-- Jika ingin menggunakan bagian ini, uncomment line berikut -->
+                <!-- <field name="is_internal_transfer" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field> -->
+                <field name="cheque_reference" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+            </field>
+        </record>
+
+        <record id="account_payment_action" model="ir.actions.act_window">
+            <field name="name">Pembayaran</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.payment</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('memo', 'not ilike', 'POS')]</field>
+            <!-- <field name="view_id" ref="account_payment_inherit_tree_view"/> -->
+        </record>
+
+        <record id="action_tree_view_account_payment" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">list</field>
+            <!-- <field name="view_id" ref="account_payment_inherit_tree_view"/> -->
+            <field name="view_id" ref="account.view_account_supplier_payment_tree"/>
+        </record>
+
+        <record id="action_form_view_account_payment" model="ir.actions.act_window.view">
+            <field name="sequence" eval="3"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="account_payment_inherit_form_view"/>
+            <!-- <field name="act_window_id" ref="account_payment_action"/> -->
+        </record>
+
+        <menuitem id="account_payment_menu_act" name="Pembayaran" parent="keu_pembayaran_menu_categ" action="account_payment_action" sequence="10"/>
+    </data>
+</odoo>

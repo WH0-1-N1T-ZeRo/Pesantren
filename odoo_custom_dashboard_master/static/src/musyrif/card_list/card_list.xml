@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="owl.MusyrifPerijinanCardList" owl="1">
+    <div class="card dashboard-card">
+        <div class="card-header">
+            <h3 class="card-title">Pengajuan Perijinan Santri</h3>
+        </div>
+        <div class="card-body p-0" style="height: 400px;">
+            <div class="h-100">
+                <t t-if="state.isLoading">
+                    <div class="d-flex align-items-center justify-content-center h-100">
+                        <div>
+                            <i class="fa fa-spinner fa-spin"></i>
+                            <span class="ms-2">Loading...</span>
+                        </div>
+                    </div>
+                </t>
+                <t t-elif="state.hasData">
+                    <div class="table-responsive h-100" style="max-height: 400px; overflow-y: auto;">
+                        <table class="table table-hover table-striped mb-0">
+                            <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
+                                <tr>
+                                    <th>Santri</th>
+                                    <th>Tgl Ijin</th>
+                                    <th>Kembali</th>
+                                    <th>Keperluan</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <t t-foreach="state.perijinans" t-as="perijinan" t-key="perijinan_index">
+                                <tr>
+                                    <td><t t-esc="perijinan.student_name"/></td>
+                                    <td><t t-esc="perijinan.tgl_ijin"/></td>
+                                    <td><t t-esc="perijinan.tgl_kembali"/></td>
+                                    <td><t t-esc="perijinan.keperluan"/></td>
+                                    <td>
+                                        <span t-if="perijinan.state === 'Draft'" class="badge bg-secondary">Pengajuan</span>
+                                        <span t-elif="perijinan.state === 'Check'" class="badge bg-info">Diperiksa</span>
+                                    </td>
+                                    <td>
+                                        <div class="" role="group">
+                                            <button 
+                                                class="btn btn-sm btn-success"
+                                                t-on-click="() => this.handleApprove(perijinan.id,perijinan.student_name)"
+                                                t-att-disabled="perijinan.state === 'Approved'">
+                                                <i class="fa fa-check"></i> Setuju
+                                            </button>
+                                            <button 
+                                                class="btn btn-sm btn-danger ms-1"
+                                                t-on-click="() => this.handleReject(perijinan.id)"
+                                                t-att-disabled="perijinan.state === 'Rejected'">
+                                                <i class="fa fa-times"></i> Tolak
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="d-flex align-items-center justify-content-center h-100">
+                        <p class="text-muted mb-0">Belum ada data yang bisa ditampilkan.</p>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </div>
+</t>
+</templates>

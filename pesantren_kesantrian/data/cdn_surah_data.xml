@@ -1,0 +1,803 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record model="cdn.surah" id="surah_1">
+            <field name="id_name">سُورَةُ ٱلْفَاتِحَةِ</field>
+            <field name="number">1</field>
+            <field name="name">Al-Fatihah</field>
+            <field name="id_translation">Pembukaan</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_2">
+            <field name="id_name">سُورَةُ البَقَرَةِ</field>
+            <field name="number">2</field>
+            <field name="name">Al-Baqarah</field>
+            <field name="id_translation">Sapi</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_3">
+            <field name="id_name">سُورَةُ آلِ عِمۡرَانَ</field>
+            <field name="number">3</field>
+            <field name="name">Ali 'Imran</field>
+            <field name="id_translation">Keluarga Imran</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_4">
+            <field name="id_name">سُورَةُ النِّسَاءِ</field>
+            <field name="number">4</field>
+            <field name="name">An-Nisa'</field>
+            <field name="id_translation">Wanita</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_5">
+            <field name="id_name">سُورَةُ المَائـِدَةِ</field>
+            <field name="number">5</field>
+            <field name="name">Al-Ma'idah</field>
+            <field name="id_translation">Hidangan</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_6">
+            <field name="id_name">سُورَةُ الأَنۡعَامِ</field>
+            <field name="number">6</field>
+            <field name="name">Al-An'am</field>
+            <field name="id_translation">Binatang Ternak</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_7">
+            <field name="id_name">سُورَةُ الأَعۡرَافِ</field>
+            <field name="number">7</field>
+            <field name="name">Al-A'raf</field>
+            <field name="id_translation">Tempat Tertinggi</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_8">
+            <field name="id_name">سُورَةُ الأَنفَالِ</field>
+            <field name="number">8</field>
+            <field name="name">Al-Anfal</field>
+            <field name="id_translation">Rampasan Perang</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_9">
+            <field name="id_name">سُورَةُ التَّوۡبَةِ</field>
+            <field name="number">9</field>
+            <field name="name">At-Taubah</field>
+            <field name="id_translation">Pengampunan</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_10">
+            <field name="id_name">سُورَةُ يُونُسَ</field>
+            <field name="number">10</field>
+            <field name="name">Yunus</field>
+            <field name="id_translation">Yunus</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_11">
+            <field name="id_name">سُورَةُ هُودٍ</field>
+            <field name="number">11</field>
+            <field name="name">Hud</field>
+            <field name="id_translation">Hud</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_12">
+            <field name="id_name">سُورَةُ يُوسُفَ</field>
+            <field name="number">12</field>
+            <field name="name">Yusuf</field>
+            <field name="id_translation">Yusuf</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_13">
+            <field name="id_name">سُورَةُ الرَّعۡدِ</field>
+            <field name="number">13</field>
+            <field name="name">Ar-Ra'd</field>
+            <field name="id_translation">Guruh</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_14">
+            <field name="id_name">سُورَةُ إِبۡرَاهِيمَ</field>
+            <field name="number">14</field>
+            <field name="name">Ibrahim</field>
+            <field name="id_translation">Ibrahim</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_15">
+            <field name="id_name">سُورَةُ الحِجۡرِ</field>
+            <field name="number">15</field>
+            <field name="name">Al-Hijr</field>
+            <field name="id_translation">Hijr</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_16">
+            <field name="id_name">سُورَةُ النَّحۡلِ</field>
+            <field name="number">16</field>
+            <field name="name">An-Nahl</field>
+            <field name="id_translation">Lebah</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_17">
+            <field name="id_name">سُورَةُ الإِسۡرَاءِ</field>
+            <field name="number">17</field>
+            <field name="name">Al-Isra'</field>
+            <field name="id_translation">Memperjalankan Malam Hari</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_18">
+            <field name="id_name">سُورَةُ الكَهۡفِ</field>
+            <field name="number">18</field>
+            <field name="name">Al-Kahf</field>
+            <field name="id_translation">Goa</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_19">
+            <field name="id_name">سُورَةُ مَرۡيَمَ</field>
+            <field name="number">19</field>
+            <field name="name">Maryam</field>
+            <field name="id_translation">Maryam</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_20">
+            <field name="id_name">سُورَةُ طه</field>
+            <field name="number">20</field>
+            <field name="name">Taha</field>
+            <field name="id_translation">Taha</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_21">
+            <field name="id_name">سُورَةُ الأَنبِيَاءِ</field>
+            <field name="number">21</field>
+            <field name="name">Al-Anbiya'</field>
+            <field name="id_translation">Para Nabi</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_22">
+            <field name="id_name">سُورَةُ الحَجِّ</field>
+            <field name="number">22</field>
+            <field name="name">Al-Hajj</field>
+            <field name="id_translation">Haji</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_23">
+            <field name="id_name">سُورَةُ المُؤۡمِنُونَ</field>
+            <field name="number">23</field>
+            <field name="name">Al-Mu'minun</field>
+            <field name="id_translation">Orang-Orang Mukmin</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_24">
+            <field name="id_name">سُورَةُ النُّورِ</field>
+            <field name="number">24</field>
+            <field name="name">An-Nur</field>
+            <field name="id_translation">Cahaya</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_25">
+            <field name="id_name">سُورَةُ الفُرۡقَانِ</field>
+            <field name="number">25</field>
+            <field name="name">Al-Furqan</field>
+            <field name="id_translation">Pembeda</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_26">
+            <field name="id_name">سُورَةُ الشُّعَرَاءِ</field>
+            <field name="number">26</field>
+            <field name="name">Asy-Syu'ara'</field>
+            <field name="id_translation">Para Penyair</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_27">
+            <field name="id_name">سُورَةُ النَّمۡلِ</field>
+            <field name="number">27</field>
+            <field name="name">An-Naml</field>
+            <field name="id_translation">Semut-semut</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_28">
+            <field name="id_name">سُورَةُ القَصَصِ</field>
+            <field name="number">28</field>
+            <field name="name">Al-Qasas</field>
+            <field name="id_translation">Kisah-Kisah</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_29">
+            <field name="id_name">سُورَةُ العَنكَبُوتِ</field>
+            <field name="number">29</field>
+            <field name="name">Al-'Ankabut</field>
+            <field name="id_translation">Laba-Laba</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_30">
+            <field name="id_name">سُورَةُ الرُّومِ</field>
+            <field name="number">30</field>
+            <field name="name">Ar-Rum</field>
+            <field name="id_translation">Romawi</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_31">
+            <field name="id_name">سُورَةُ لُقۡمَانَ</field>
+            <field name="number">31</field>
+            <field name="name">Luqman</field>
+            <field name="id_translation">Luqman</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_32">
+            <field name="id_name">سُورَةُ السَّجۡدَةِ</field>
+            <field name="number">32</field>
+            <field name="name">As-Sajdah</field>
+            <field name="id_translation">Sajdah</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_33">
+            <field name="id_name">سُورَةُ الأَحۡزَابِ</field>
+            <field name="number">33</field>
+            <field name="name">Al-Ahzab</field>
+            <field name="id_translation">Golongan Yang Bersekutu</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_34">
+            <field name="id_name">سُورَةُ سَبَإٍ</field>
+            <field name="number">34</field>
+            <field name="name">Saba'</field>
+            <field name="id_translation">Saba'</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_35">
+            <field name="id_name">سُورَةُ فَاطِرٍ</field>
+            <field name="number">35</field>
+            <field name="name">Fatir</field>
+            <field name="id_translation">Maha Pencipta</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_36">
+            <field name="id_name">سُورَةُ يسٓ</field>
+            <field name="number">36</field>
+            <field name="name">Yasin</field>
+            <field name="id_translation">Yasin</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_37">
+            <field name="id_name">سُورَةُ الصَّافَّاتِ</field>
+            <field name="number">37</field>
+            <field name="name">As-Saffat</field>
+            <field name="id_translation">Barisan-Barisan</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_38">
+            <field name="id_name">سُورَةُ صٓ</field>
+            <field name="number">38</field>
+            <field name="name">Sad</field>
+            <field name="id_translation">Sad</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_39">
+            <field name="id_name">سُورَةُ الزُّمَرِ</field>
+            <field name="number">39</field>
+            <field name="name">Az-Zumar</field>
+            <field name="id_translation">Rombongan</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_40">
+            <field name="id_name">سُورَةُ غَافِرٍ</field>
+            <field name="number">40</field>
+            <field name="name">Gafir</field>
+            <field name="id_translation">Maha Pengampun</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_41">
+            <field name="id_name">سُورَةُ فُصِّلَتۡ</field>
+            <field name="number">41</field>
+            <field name="name">Fussilat</field>
+            <field name="id_translation">Yang Dijelaskan</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_42">
+            <field name="id_name">سُورَةُ الشُّورَىٰ</field>
+            <field name="number">42</field>
+            <field name="name">Asy-Syura</field>
+            <field name="id_translation">Musyawarah</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_43">
+            <field name="id_name">سُورَةُ الزُّخۡرُفِ</field>
+            <field name="number">43</field>
+            <field name="name">Az-Zukhruf</field>
+            <field name="id_translation">Perhiasan</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_44">
+            <field name="id_name">سُورَةُ الدُّخَانِ</field>
+            <field name="number">44</field>
+            <field name="name">Ad-Dukhan</field>
+            <field name="id_translation">Kabut</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_45">
+            <field name="id_name">سُورَةُ الجَاثِيَةِ</field>
+            <field name="number">45</field>
+            <field name="name">Al-Jasiyah</field>
+            <field name="id_translation">Berlutut</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_46">
+            <field name="id_name">سُورَةُ الأَحۡقَافِ</field>
+            <field name="number">46</field>
+            <field name="name">Al-Ahqaf</field>
+            <field name="id_translation">Bukit Pasir</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_47">
+            <field name="id_name">سُورَةُ مُحَمَّدٍ</field>
+            <field name="number">47</field>
+            <field name="name">Muhammad</field>
+            <field name="id_translation">Muhammad</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_48">
+            <field name="id_name">سُورَةُ الفَتۡحِ</field>
+            <field name="number">48</field>
+            <field name="name">Al-Fath</field>
+            <field name="id_translation">Kemenangan</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_49">
+            <field name="id_name">سُورَةُ الحُجُرَاتِ</field>
+            <field name="number">49</field>
+            <field name="name">Al-Hujurat</field>
+            <field name="id_translation">Kamar-Kamar</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_50">
+            <field name="id_name">سُورَةُ قٓ</field>
+            <field name="number">50</field>
+            <field name="name">Qaf</field>
+            <field name="id_translation">Qaf</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_51">
+            <field name="id_name">سُورَةُ الذَّارِيَاتِ</field>
+            <field name="number">51</field>
+            <field name="name">Az-Zariyat</field>
+            <field name="id_translation">Angin yang Menerbangkan</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_52">
+            <field name="id_name">سُورَةُ الطُّورِ</field>
+            <field name="number">52</field>
+            <field name="name">At-Tur</field>
+            <field name="id_translation">Bukit Tursina</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_53">
+            <field name="id_name">سُورَةُ النَّجۡمِ</field>
+            <field name="number">53</field>
+            <field name="name">An-Najm</field>
+            <field name="id_translation">Bintang</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_54">
+            <field name="id_name">سُورَةُ القَمَرِ</field>
+            <field name="number">54</field>
+            <field name="name">Al-Qamar</field>
+            <field name="id_translation">Bulan</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_55">
+            <field name="id_name">سُورَةُ الرَّحۡمَٰن</field>
+            <field name="number">55</field>
+            <field name="name">Ar-Rahman</field>
+            <field name="id_translation">Maha Pengasih</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_56">
+            <field name="id_name">سُورَةُ الوَاقِعَةِ</field>
+            <field name="number">56</field>
+            <field name="name">Al-Waqi'ah</field>
+            <field name="id_translation">Hari Kiamat</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_57">
+            <field name="id_name">سُورَةُ الحَدِيدِ</field>
+            <field name="number">57</field>
+            <field name="name">Al-Hadid</field>
+            <field name="id_translation">Besi</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_58">
+            <field name="id_name">سُورَةُ المُجَادلَةِ</field>
+            <field name="number">58</field>
+            <field name="name">Al-Mujadalah</field>
+            <field name="id_translation">Gugatan</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_59">
+            <field name="id_name">سُورَةُ الحَشۡرِ</field>
+            <field name="number">59</field>
+            <field name="name">Al-Hasyr</field>
+            <field name="id_translation">Pengusiran</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_60">
+            <field name="id_name">سُورَةُ المُمۡتَحنَةِ</field>
+            <field name="number">60</field>
+            <field name="name">Al-Mumtahanah</field>
+            <field name="id_translation">Wanita Yang Diuji</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_61">
+            <field name="id_name">سُورَةُ الصَّفِّ</field>
+            <field name="number">61</field>
+            <field name="name">As-Saff</field>
+            <field name="id_translation">Barisan</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_62">
+            <field name="id_name">سُورَةُ الجُمُعَةِ</field>
+            <field name="number">62</field>
+            <field name="name">Al-Jumu'ah</field>
+            <field name="id_translation">Jumat</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_63">
+            <field name="id_name">سُورَةُ المُنَافِقُونَ</field>
+            <field name="number">63</field>
+            <field name="name">Al-Munafiqun</field>
+            <field name="id_translation">Orang-Orang Munafik</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_64">
+            <field name="id_name">سُورَةُ التَّغَابُنِ</field>
+            <field name="number">64</field>
+            <field name="name">At-Tagabun</field>
+            <field name="id_translation">Pengungkapan Kesalahan</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_65">
+            <field name="id_name">سُورَةُ الطَّلَاقِ</field>
+            <field name="number">65</field>
+            <field name="name">At-Talaq</field>
+            <field name="id_translation">Talak</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_66">
+            <field name="id_name">سُورَةُ التَّحۡرِيمِ</field>
+            <field name="number">66</field>
+            <field name="name">At-Tahrim</field>
+            <field name="id_translation">Pengharaman</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_67">
+            <field name="id_name">سُورَةُ المُلۡكِ</field>
+            <field name="number">67</field>
+            <field name="name">Al-Mulk</field>
+            <field name="id_translation">Kerajaan</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_68">
+            <field name="id_name">سُورَةُ القَلَمِ</field>
+            <field name="number">68</field>
+            <field name="name">Al-Qalam</field>
+            <field name="id_translation">Pena</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_69">
+            <field name="id_name">سُورَةُ الحَاقَّةِ</field>
+            <field name="number">69</field>
+            <field name="name">Al-Haqqah</field>
+            <field name="id_translation">Hari Kiamat</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_70">
+            <field name="id_name">سُورَةُ المَعَارِجِ</field>
+            <field name="number">70</field>
+            <field name="name">Al-Ma'arij</field>
+            <field name="id_translation">Tempat Naik</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_71">
+            <field name="id_name">سُورَةُ نُوحٍ</field>
+            <field name="number">71</field>
+            <field name="name">Nuh</field>
+            <field name="id_translation">Nuh</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_72">
+            <field name="id_name">سُورَةُ الجِنِّ</field>
+            <field name="number">72</field>
+            <field name="name">Al-Jinn</field>
+            <field name="id_translation">Jin</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_73">
+            <field name="id_name">سُورَةُ المُزَّمِّلِ</field>
+            <field name="number">73</field>
+            <field name="name">Al-Muzzammil</field>
+            <field name="id_translation">Orang Yang Berselimut</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_74">
+            <field name="id_name">سُورَةُ المُدَّثِّرِ</field>
+            <field name="number">74</field>
+            <field name="name">Al-Muddassir</field>
+            <field name="id_translation">Orang Yang Berkemul</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_75">
+            <field name="id_name">سُورَةُ القِيَامَةِ</field>
+            <field name="number">75</field>
+            <field name="name">Al-Qiyamah</field>
+            <field name="id_translation">Hari Kiamat</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_76">
+            <field name="id_name">سُورَةُ الإِنسَانِ</field>
+            <field name="number">76</field>
+            <field name="name">Al-Insan</field>
+            <field name="id_translation">Manusia</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_77">
+            <field name="id_name">سُورَةُ المُرۡسَلَاتِ</field>
+            <field name="number">77</field>
+            <field name="name">Al-Mursalat</field>
+            <field name="id_translation">Malaikat Yang Diutus</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_78">
+            <field name="id_name">سُورَةُ النَّبَإِ</field>
+            <field name="number">78</field>
+            <field name="name">An-Naba'</field>
+            <field name="id_translation">Berita Besar</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_79">
+            <field name="id_name">سُورَةُ النَّازِعَاتِ</field>
+            <field name="number">79</field>
+            <field name="name">An-Nazi'at</field>
+            <field name="id_translation">Malaikat Yang Mencabut</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_80">
+            <field name="id_name">سُورَةُ عَبَسَ</field>
+            <field name="number">80</field>
+            <field name="name">'Abasa</field>
+            <field name="id_translation">Bermuka Masam</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_81">
+            <field name="id_name">سُورَةُ التَّكۡوِيرِ</field>
+            <field name="number">81</field>
+            <field name="name">At-Takwir</field>
+            <field name="id_translation">Penggulungan</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_82">
+            <field name="id_name">سُورَةُ الانفِطَارِ</field>
+            <field name="number">82</field>
+            <field name="name">Al-Infitar</field>
+            <field name="id_translation">Terbelah</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_83">
+            <field name="id_name">سُورَةُ المُطَفِّفِينَ</field>
+            <field name="number">83</field>
+            <field name="name">Al-Mutaffifin</field>
+            <field name="id_translation">Orang-Orang Curang</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_84">
+            <field name="id_name">سُورَةُ الانشِقَاقِ</field>
+            <field name="number">84</field>
+            <field name="name">Al-Insyiqaq</field>
+            <field name="id_translation">Terbelah</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_85">
+            <field name="id_name">سُورَةُ البُرُوجِ</field>
+            <field name="number">85</field>
+            <field name="name">Al-Buruj</field>
+            <field name="id_translation">Gugusan Bintang</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_86">
+            <field name="id_name">سُورَةُ الطَّارِقِ</field>
+            <field name="number">86</field>
+            <field name="name">At-Tariq</field>
+            <field name="id_translation">Yang Datang Di Malam Hari</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_87">
+            <field name="id_name">سُورَةُ الأَعۡلَىٰ</field>
+            <field name="number">87</field>
+            <field name="name">Al-A'la</field>
+            <field name="id_translation">Maha Tinggi</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_88">
+            <field name="id_name">سُورَةُ الغَاشِيَةِ</field>
+            <field name="number">88</field>
+            <field name="name">Al-Gasyiyah</field>
+            <field name="id_translation">Hari Kiamat</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_89">
+            <field name="id_name">سُورَةُ الفَجۡرِ</field>
+            <field name="number">89</field>
+            <field name="name">Al-Fajr</field>
+            <field name="id_translation">Fajar</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_90">
+            <field name="id_name">سُورَةُ البَلَدِ</field>
+            <field name="number">90</field>
+            <field name="name">Al-Balad</field>
+            <field name="id_translation">Negeri</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_91">
+            <field name="id_name">سُورَةُ الشَّمۡسِ</field>
+            <field name="number">91</field>
+            <field name="name">Asy-Syams</field>
+            <field name="id_translation">Matahari</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_92">
+            <field name="id_name">سُورَةُ اللَّيۡلِ</field>
+            <field name="number">92</field>
+            <field name="name">Al-Lail</field>
+            <field name="id_translation">Malam</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_93">
+            <field name="id_name">سُورَةُ الضُّحَىٰ</field>
+            <field name="number">93</field>
+            <field name="name">Ad-Duha</field>
+            <field name="id_translation">Duha</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_94">
+            <field name="id_name">سُورَةُ الشَّرۡحِ</field>
+            <field name="number">94</field>
+            <field name="name">Asy-Syarh</field>
+            <field name="id_translation">Lapang</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_95">
+            <field name="id_name">سُورَةُ التِّينِ</field>
+            <field name="number">95</field>
+            <field name="name">At-Tin</field>
+            <field name="id_translation">Buah Tin</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_96">
+            <field name="id_name">سُورَةُ العَلَقِ</field>
+            <field name="number">96</field>
+            <field name="name">Al-'Alaq</field>
+            <field name="id_translation">Segumpal Darah</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_97">
+            <field name="id_name">سُورَةُ القَدۡرِ</field>
+            <field name="number">97</field>
+            <field name="name">Al-Qadr</field>
+            <field name="id_translation">Kemuliaan</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_98">
+            <field name="id_name">سُورَةُ البَيِّنَةِ</field>
+            <field name="number">98</field>
+            <field name="name">Al-Bayyinah</field>
+            <field name="id_translation">Bukti Nyata</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_99">
+            <field name="id_name">سُورَةُ الزَّلۡزَلَةِ</field>
+            <field name="number">99</field>
+            <field name="name">Az-Zalzalah</field>
+            <field name="id_translation">Guncangan</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_100">
+            <field name="id_name">سُورَةُ العَادِيَاتِ</field>
+            <field name="number">100</field>
+            <field name="name">Al-'Adiyat</field>
+            <field name="id_translation">Kuda Yang Berlari Kencang</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_101">
+            <field name="id_name">سُورَةُ القَارِعَةِ</field>
+            <field name="number">101</field>
+            <field name="name">Al-Qari'ah</field>
+            <field name="id_translation">Hari Kiamat</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_102">
+            <field name="id_name">سُورَةُ التَّكَاثُرِ</field>
+            <field name="number">102</field>
+            <field name="name">At-Takasur</field>
+            <field name="id_translation">Bermegah-Megahan</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_103">
+            <field name="id_name">سُورَةُ العَصۡرِ</field>
+            <field name="number">103</field>
+            <field name="name">Al-'Asr</field>
+            <field name="id_translation">Asar</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_104">
+            <field name="id_name">سُورَةُ الهُمَزَةِ</field>
+            <field name="number">104</field>
+            <field name="name">Al-Humazah</field>
+            <field name="id_translation">Pengumpat</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_105">
+            <field name="id_name">سُورَةُ الفِيلِ</field>
+            <field name="number">105</field>
+            <field name="name">Al-Fil</field>
+            <field name="id_translation">Gajah</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_106">
+            <field name="id_name">سُورَةُ قُرَيۡشٍ</field>
+            <field name="number">106</field>
+            <field name="name">Quraisy</field>
+            <field name="id_translation">Quraisy</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_107">
+            <field name="id_name">سُورَةُ المَاعُونِ</field>
+            <field name="number">107</field>
+            <field name="name">Al-Ma'un</field>
+            <field name="id_translation">Barang Yang Berguna</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_108">
+            <field name="id_name">سُورَةُ الكَوۡثَرِ</field>
+            <field name="number">108</field>
+            <field name="name">Al-Kausar</field>
+            <field name="id_translation">Pemberian Yang Banyak</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_109">
+            <field name="id_name">سُورَةُ الكَافِرُونَ</field>
+            <field name="number">109</field>
+            <field name="name">Al-Kafirun</field>
+            <field name="id_translation">Orang-Orang kafir</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_110">
+            <field name="id_name">سُورَةُ النَّصۡرِ</field>
+            <field name="number">110</field>
+            <field name="name">An-Nasr</field>
+            <field name="id_translation">Pertolongan</field>
+            <field name="revelation_type">madinah</field>
+        </record>
+        <record model="cdn.surah" id="surah_111">
+            <field name="id_name">سُورَةُ المَسَدِ</field>
+            <field name="number">111</field>
+            <field name="name">Al-Lahab</field>
+            <field name="id_translation">Api Yang Bergejolak</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_112">
+            <field name="id_name">سُورَةُ الإِخۡلَاصِ</field>
+            <field name="number">112</field>
+            <field name="name">Al-Ikhlas</field>
+            <field name="id_translation">Ikhlas</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_113">
+            <field name="id_name">سُورَةُ الفَلَقِ</field>
+            <field name="number">113</field>
+            <field name="name">Al-Falaq</field>
+            <field name="id_translation">Subuh</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+        <record model="cdn.surah" id="surah_114">
+            <field name="id_name">سُورَةُ النَّاسِ</field>
+            <field name="number">114</field>
+            <field name="name">An-Nas</field>
+            <field name="id_translation">Manusia</field>
+            <field name="revelation_type">mekah</field>
+        </record>
+    </data>
+</odoo>

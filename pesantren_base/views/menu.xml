@@ -1,0 +1,21 @@
+<odoo>
+	<data>
+		<menuitem id="sekolah_top_menu" name="Sekolah" sequence="20" web_icon="pesantren_base,static/description/icon.png" groups="pesantren_base.group_sekolah_admin" />
+		<menuitem id="sekolah_sub_menu" name="Operations" sequence="40" parent="sekolah_top_menu" />
+		<menuitem id="sekolah_config_menu" name="Pengaturan" sequence="60" parent="sekolah_top_menu" />
+		<!-- This Menu Item Must have a parent -->
+		<menuitem id="siswa_menu_categ" name="Siswa" parent="sekolah_top_menu" sequence="10"/>
+		<!-- This Menu Item Must have a parent -->
+		<menuitem id="guru_menu_categ" name="Guru" parent="sekolah_top_menu" sequence="20"/>
+		<!-- This Menu Item Must have a parent -->
+		<menuitem id="pengaturan_umum_menu_categ" name="Pengaturan Umum" parent="sekolah_config_menu" sequence="10"/>
+		<menuitem id="pengaturan_ref_menu_categ" name="Data Referensi" parent="sekolah_config_menu" sequence="20"/>
+		<menuitem id="pengaturan_admkeu_menu_categ" name="Administrasi Keuangan" parent="sekolah_config_menu" sequence="30"/>
+		<menuitem id="pengaturan_akademik_menu_categ" name="Pengaturan Akademik" parent="sekolah_config_menu" sequence="40"/>
+		<menuitem id="pengaturan_mobile_menu_categ" name="Mobile Apps" parent="sekolah_config_menu" sequence="50"/>
+		<!-- Kategori Aktivitas -->
+        <menuitem id="tu_aktivitas" name="Aktivitas" parent="sekolah_top_menu" sequence="50"/>
+        <menuitem id="tu_aktivitas_tagihan" name="Keuangan Siswa" parent="tu_aktivitas" sequence="10"/>
+		<menuitem id="tu_aktivitas_akademik" name="Akademik" parent="tu_aktivitas" sequence="20"/>
+	</data>
+</odoo>

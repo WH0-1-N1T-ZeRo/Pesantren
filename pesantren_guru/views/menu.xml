@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <menuitem id="guru_menu_root" name="Guru" sequence="10" web_icon="pesantren_base,static/description/guru.png" groups="pesantren_guru.group_guru_staff"/>
+        <menuitem id="aktivitas_menu_categ" name="Aktivitas" parent="guru_menu_root" sequence="20"/>
+        <menuitem id="aktivitas_penilaian_menu_categ" name="Penilaian" parent="aktivitas_menu_categ" sequence="40"/>
+        <menuitem id="pengaturan_menu_categ" name="Pengaturan" parent="guru_menu_root" sequence="30"/>
+    </data>
+</odoo>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="owl.GuruquranChartRenderer" owl="1">
+        <div class="chart-container">
+            <t t-if="props.type === 'donutChart'">
+                <div t-ref="donutChart" class="h-full w-full"/>
+            </t>
+            <t t-if="props.type === 'donutChart2'">
+                <div t-ref="donutChart2" />
+            </t>
+        </div>
+    </t>
+</templates>

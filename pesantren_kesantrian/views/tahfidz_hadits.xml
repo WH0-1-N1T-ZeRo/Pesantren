@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- cdn.tahfidz_hadits list view -->
+        <record id="cdn_tahfidz_hadits_view_tree" model="ir.ui.view">
+            <field name="name">cdn.tahfidz_hadits.view.list</field>
+            <field name="model">cdn.tahfidz_hadits</field>
+            <field name="arch" type="xml">
+                <list default_order="id desc">
+                    <!-- Add your fields here -->
+                    <field name="name"/>
+                    <field name="tanggal"/>
+                    <field name="siswa_id"/>
+                    <field name="kelas_id"/>
+                    <field name="hadits_id"/>
+                    <field name="nilai"/>
+                    <field name="nilai_id"/>
+                    <field name="guru_id"/>
+                    <field name="keterangan"/>
+                </list>
+            </field>
+        </record>
+        <!-- cdn.tahfidz_hadits form view -->
+        <record id="cdn_tahfidz_hadits_view_form" model="ir.ui.view">
+            <field name="name">cdn.tahfidz_hadits.view.form</field>
+            <field name="model">cdn.tahfidz_hadits</field>
+            <field name="arch" type="xml">
+                <form string="Tahfidz hadits" edit="false">
+                    <header>
+                        <button string="Proses" name="action_proses" type="object" class="oe_highlight"
+                            groups="
+                                pesantren_kesantrian.group_kesantrian_manager
+                            "
+                             invisible="state != 'Draft'"/>
+                        <button string="Selesai" name="action_selesai" type="object" class="oe_highlight"
+                            groups="
+                                pesantren_kesantrian.group_kesantrian_manager
+                            "
+                            invisible="state != 'Proses'"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                        <div class="oe_button_box" name="button_box">
+                        </div>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="No Referensi"/>
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group string="Data Santri">
+                            <group>
+                                <field name="tanggal"/>
+                                <field name="siswa_id" options="{'no_create_edit':True, 'no_create':True}"/>
+                            </group>
+                            <group>
+                                <field name="guru_id" options="{'no_create_edit':True, 'no_create':True, 'no_open':True}"/>
+                                <field name="kelas_id"/>
+                            </group>
+                        </group>
+                        <group string="Penilaian Tahfidz">
+                            <group>
+                                <field name="hadits_id" options="{'no_create_edit':True, 'no_create':True}"/>
+                                <field name="nilai_id" string="Predikat Nilai" options="{'no_create_edit':True, 'no_create':True}"/>
+                            </group>
+                            <group>
+                                <field name="nilai" widget="integer"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="keterangan"/>   
+                        </group>
+                        <notebook>
+                        </notebook>
+                    </sheet>
+                </form>
+            
+            </field>
+        </record>
+        <record id="cdn_tahfidz_hadits_view_calendar" model="ir.ui.view">
+            <field name="name">cdn.tahfidz_hadits.view.calendar</field>
+            <field name="model">cdn.tahfidz_hadits</field>
+            <field name="arch" type="xml">
+                <calendar string="Tahfidz hadits" date_start="tanggal">
+                    <field name="name"/>
+                </calendar>
+            </field>
+        </record>
+
+        <record id="cdn_tahfidz_hadits_view_search" model="ir.ui.view">
+            <field name="name">cdn.tahfidz_hadits.view.search</field>
+            <field name="model">cdn.tahfidz_hadits</field>
+            <field name="arch" type="xml">
+                <search string="Tahfidz hadits">
+                    <filter string="Nama" name="filter_by_name" domain="[('name','=','')]"/>
+                    <filter string="Tanggal" name="filter_by_tanggal" domain="[('tanggal','=','')]"/>
+                    <filter string="Nilai" name="filter_by_nilai" domain="[('nilai','=','')]"/>
+                    <filter string="Keterangan" name="filter_by_keterangan" domain="[('keterangan','=','')]"/>
+                    <!-- <filter string="State" name="filter_by_state" domain="[('state','=','')]"/> -->
+                    <field name="name" select="True"/>
+                    <field name="tanggal" select="True"/>
+                    <field name="nilai" widget="integer" select="True"/>
+                    <field name="keterangan" select="True"/>
+                    <!-- <field name="state" select="True"/> -->
+                    <field name="hadits_id" select="True"/>
+                    <field name="siswa_id" select="True"/>
+                    <field name="guru_id" select="True"/>
+                    <field name="nilai_id" select="True"/>
+                    <group string="Group By..">
+                        <filter string="Hadits" domain="[]" name="group_by_hadits_id" context="{'group_by':'hadits_id'}"/>
+                        <filter string="Siswa" domain="[]" name="group_by_siswa_id" context="{'group_by':'siswa_id'}"/>
+                        <filter string="Guru" domain="[]" name="group_by_guru_id" context="{'group_by':'guru_id'}"/>
+                        <filter string="Nilai" domain="[]" name="group_by_nilai_id" context="{'group_by':'nilai_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+         <!-- <record id="cdn_tahfidz_hadits_view_graph" model="ir.ui.view">
+            <field name="name">cdn.tahfidz_hadits.view.graph</field>
+            <field name="model">cdn.tahfidz_hadits</field>
+            <field name="arch" type="xml">
+                <graph string="Tahfidz hadits" type="bar">
+                    <field name="hadits_id" can_create="true" can_write="true" modifiers="{}"/>
+                </graph>
+            </field>
+         </record>    -->
+
+        <!-- cdn.tahfidz_hadits action window -->
+        <record id="cdn_tahfidz_hadits_action" model="ir.actions.act_window">
+            <field name="name">Tahfidz Al Hadits</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.tahfidz_hadits</field>
+            <field name="view_mode">list,calendar,graph,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p><p>
+                    <!-- More details about what a user can do with this object will be OK --> 
+                </p>
+            </field>
+        </record>
+        <!-- <menuitem id="tahfidz_hadits_menu_act" name="Tahfidz Al Hadits" parent="kepesantrenan_hadits_menu_categ" action="cdn_tahfidz_hadits_action" sequence="10"/> -->
+    </data>
+</odoo>

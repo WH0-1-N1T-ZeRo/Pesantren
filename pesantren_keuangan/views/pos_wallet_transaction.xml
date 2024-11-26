@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+    
+        <!-- pos.wallet.transaction inherit tree view -->
+        <!-- <record id="view_id" model="ir.ui.view">
+            <field name="name">pos.wallet.transaction.inherit.view.list</field>
+            <field name="model">pos.wallet.transaction</field>
+            <field name="inherit_id" ref="pos_wallet_odoo.wallet_transaction_view_tree"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="create_date" />
+                </field>
+            </field>
+        </record> -->
+    
+    </data>
+    
+</odoo>

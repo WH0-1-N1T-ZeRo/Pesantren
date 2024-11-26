@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- cdn.perijinan inherit form view -->
+        <record id="musyrif_cdn_perijinan_inherit_view_form" model="ir.ui.view">
+            <field name="name">musyrif.cdn.perijinan.inherit.view.form</field>
+            <field name="model">cdn.perijinan</field>
+            <field name="inherit_id" ref="pesantren_kesantrian.cdn_perijinan_view_form"/>
+            <field name="arch" type="xml">
+                <!-- Tambahkan Hak Akses button Check/Ijin diperiksa utk Musyrif Staff -->
+                <xpath expr="//button[@name='action_checked']" position="replace">
+                    <button string="Ijin Diperiksa" type="object" name="action_checked" groups="pesantren_musyrif.group_musyrif_staff" invisible="state != 'Draft'" />
+                </xpath>
+                <!-- Tambahkan Hak Akses button Ijin Diterima utk Musyrif Manager -->
+                <xpath expr="//button[@name='action_approved']" position="replace">
+                    <button string="Ijin Diterima" type="object" name="action_approved" groups="pesantren_musyrif.group_musyrif_staff" invisible="state != 'Check'" />
+
+                </xpath>
+                <!-- Tambahkan Hak Akses button Ijin Ditolak utk Musyrif Manager -->
+                <xpath expr="//button[@name='action_rejected']" position="replace">
+                    <button string="Ijin Ditolak" type="object" name="action_rejected" groups="pesantren_musyrif.group_musyrif_staff" invisible="state != 'Check'" />
+                </xpath>
+
+
+            </field>
+        </record>
+
+        <record id="musyrif_perijinan_action" model="ir.actions.act_window">
+            <field name="name">Periksa Ijin Santri</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.perijinan</field>
+            <field name="view_mode">list,form</field>            <!-- This should remain as is -->
+            <!-- <field name="view_ids" eval="[(4, ref('pesantren_kesantrian.cdn_perijinan_view_tree')), (4, ref('pesantren_kesantrian.cdn_perijinan_view_form'))]"/> -->
+        </record>
+
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="cdn_perijinan_menu_act" name="Ijin Santri" parent="musyrif_perijinan_santri_menu_categ" action="musyrif_perijinan_action" sequence="10"/>
+    </data>
+</odoo>

@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+    
+        <!-- cdn.buku_tahsin list view -->
+        <record id="cdn_buku_tahsin_view_tree" model="ir.ui.view">
+            <field name="name">cdn.buku_tahsin.view.list</field>
+            <field name="model">cdn.buku_tahsin</field>
+            <field name="arch" type="xml">
+                <list>
+                    <!-- Add your fields here -->
+                    <field name="name" />
+                    <field name="keterangan" />
+                </list>
+            </field>
+        </record>
+        <!-- cdn.buku_tahsin form view -->
+        <record id="cdn_buku_tahsin_view_form" model="ir.ui.view">
+            <field name="name">cdn.buku_tahsin.view.form</field>
+            <field name="model">cdn.buku_tahsin</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Buku Tahsin"/>
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group>
+                            <field name="keterangan"/>
+                        </group>
+                        <notebook>
+                            <page name="jilid" string="Jilid Tahsin">
+                                <field name="jilid_ids">
+                                    <list string="Jilid Tahsin" editable="bottom">
+                                        <field name="name"/>
+                                        <field name="keterangan"/>
+                                    </list>
+                                    <form string="Jilid Tahsin">
+                                        <group>
+                                            <field name="name"/>
+                                            <field name="buku_tahsin_id"/>
+                                            <field name="keterangan"/>
+                                        </group>
+                                    </form>
+                                </field>
+                                
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- cdn.buku_tahsin action window -->
+        <record id="cdn_buku_tahsin_action" model="ir.actions.act_window">
+            <field name="name">Buku Tahsin</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.buku_tahsin</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p><p>
+                    <!-- More details about what a user can do with this object will be OK --> 
+                </p>
+            </field>
+        </record>
+        <!-- cdn.buku_tahsin search view -->
+        <record id="cdn_buku_tahsin_view_search" model="ir.ui.view">
+            <field name="name">cdn.buku_tahsin.view.search</field>
+            <field name="model">cdn.buku_tahsin</field>
+            <field name="arch" type="xml">
+                <search string="Level tahsin">
+                    <filter string="Nama" name="filter_by_name" domain="[('name','=','')]"/>
+                    <filter string="Keterangan" name="filter_by_keterangan" domain="[('keterangan','=','')]"/>
+                    <field name="name" select="True"/>
+                    <field name="keterangan" select="True"/>
+                    <group string="Group By..">
+                    </group>
+                </search>
+            </field>
+        </record>
+        <menuitem id="buku_tahsin_menu_act" name="Buku Tahsin" parent="pengaturan_tahsin_menu_categ" action="cdn_buku_tahsin_action" sequence="10"/>
+
+    
+    </data>
+    
+</odoo>

@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- list view -->
+        <record id="view_ubig_pendafataran_list" model="ir.ui.view">
+            <field name="name">ubig_pendafataran_list</field>
+            <field name="model">ubig.pendaftaran</field>
+            <field name="type">list</field>
+            <field name="priority" eval="8" />
+            <field name="arch" type="xml">
+                <list string="Data Pendaftaran">
+                    <field name="nomor_pendaftaran" />
+                    <field name="name" />
+                    <field name="jenjang_id" />
+                    <field name="total_nilai" />
+                    <field name="state" widget="badge"
+                        decoration-success="state in ['diterima']"
+                        decoration-danger="state in ['ditolak', 'batal']"
+                        decoration-info="state in ['terdaftar']"
+                        decoration-warning="state in ['draft', 'seleksi']" />
+                </list>
+            </field>
+        </record>
+
+        <!-- ubig.pendaftaran form view -->
+        <record id="pendaftaran_santri_view_form" model="ir.ui.view">
+            <field name="name">ubig.pendaftaran.view.form</field>
+            <field name="model">ubig.pendaftaran</field>
+            <field name="arch" type="xml">
+                <form string="Pendaftaran Santri" duplicate="0">
+                    <header>
+                        <button name="action_terdaftar" type="object" string="Konfirmasi"
+                            invisible="state in ['seleksi', 'terdaftar', 'diterima', 'batal', 'ditolak']"
+                            confirm="Apakah Data Yang Sudah Diinputkan Sudah Benar" />
+                        <button name="action_seleksi" type="object" string="Seleksi"
+                            invisible="state in ['seleksi', 'diterima', 'ditolak', 'batal', 'draft']" />
+                        <button name="action_diterima" type="object" string="Diterima"
+                            invisible="state in ['terdaftar','diterima', 'ditolak', 'batal', 'draft']" />
+                        <button name="action_ditolak" type="object" string="Ditolak"
+                            invisible="state in ['terdaftar','diterima', 'ditolak', 'batal', 'draft']" />
+                        <button name="action_batal" type="object" string="Batal"
+                            invisible="state in ['batal', 'diterima', 'ditolak']" />
+                        <button name="action_draft" type="object" string="Draft"
+                            invisible="state in ['terdaftar','diterima', 'ditolak', 'batal', 'seleksi', 'draft']" />
+                        <field name="state" widget="statusbar"
+                            statusbar_visible="draft, terdaftar, seleksi, diterima, ditolak, batal" />
+                        <button name="action_report_pendaftaran" type="object"
+                            string="Cetak Biaya Daftar Ulang" class="oe_highlight"
+                            invisible="state in ['draft', 'terdaftar', 'ditolak', 'batal', 'seleksi']" />
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Nomor Pendaftaran" />
+                            <h1>
+                                <field name="nomor_pendaftaran" readonly="1" />
+                            </h1>
+                            <label for="tanggal_daftar" class="oe_edit_only"
+                                string="Tanggal Pendaftaran" />
+                            <h3>
+                                <field name="tanggal_daftar"
+                                    readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                            </h3>
+                        </div>
+                        
+                        <group string="User">
+                            <group>
+                                <field name="name"
+                                    readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                <field name="siswa_id" invisible="state in 'draft,terdaftar'"
+                                    required="False" />
+                            </group>
+                            <group>
+                                <field name="nis"
+                                    invisible="state in 'draft','terdaftar','ditolak','batal'" />
+                            </group>
+                        </group>
+                        <group string="Data Pilihan Pendidikan">
+                            <group>
+                                <field name="jenjang_id"
+                                    readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                <field name="keterangan"
+                                    readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                            </group>
+                            <group>
+                                <field name="biaya"
+                                    readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                            </group>
+                        </group>
+                        <group string="Virtual Account" invisible="state in 'draft'">
+                            <group>
+                                <field name="partner_id"
+                                    readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'"
+                                    invisible="state in 'draft'" />
+                                <field name="jns_partner"
+                                    readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'"
+                                    invisible="state in 'draft'" />
+                            </group>
+                            <group>
+                                <field name="virtual_account" readonly="state in 'diterima'"
+                                    invisible="state in 'draft,terdaftar,seleksi,ditolak,batal'" />
+                                <field name="va_saku" readonly="state in 'diterima'"
+                                    invisible="state in 'draft,terdaftar,seleksi,ditolak,batal'" />
+                                <field name="bank" invisible="1" />
+                                <field name="petunjuk_pembayaran" invisible="1" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Data Diri Calon Santri">
+                                <group string="Data Calon Santri">
+                                    <group>
+                                        <field name="gender"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="tanggal_lahir"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="kota_lahir"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="golongan_darah"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="nik"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'"
+                                            required="False" />
+                                        <field name="kewarganegaraan"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="nisn"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                    </group>
+                                    <group>
+                                        <field name="alamat"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="provinsi_id"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="kota_id"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="kecamatan_id"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="anak_ke"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="jml_saudara_kandung"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="cita_cita"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Data Orang Tua">
+                                <group string="Identitas Ayah" class="o_group">
+                                    <group>
+                                        <field name="orangtua_id"
+                                            invisible="state in 'draft,terdaftar'" required="False" />
+                                        <field name="nama_ayah"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="tanggal_lahir_ayah"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="ktp_ayah"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="telepon_ayah"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="pekerjaan_ayah"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                    </group>
+                                    <group>
+                                        <field name="penghasilan_ayah"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="email_ayah"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="agama_ayah"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="kewarganegaraan_ayah"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="pendidikan_ayah"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                    </group>
+                                </group>
+                                <group string="identitas Ibu" class="o_group">
+                                    <group>
+                                        <field name="nama_ibu"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="tanggal_lahir_ibu"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="ktp_ibu"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="telepon_ibu"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="pekerjaan_ibu"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                    </group>
+                                    <group>
+                                        <field name="penghasilan_ibu"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="email_ibu"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="agama_ibu"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="kewarganegaraan_ibu"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="pendidikan_ibu"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                    </group>
+                                </group>
+                                <group string="Identitas Wali">
+                                    <group>
+                                        <field name="wali_nama" />
+                                        <field name="wali_tgl_lahir" string="Tanggal Lahir"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="wali_email" string="Email" widget="email"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="wali_hubungan" string="Hubungan dg Siswa"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                    </group>
+                                    <group>
+                                        <field name="wali_tmp_lahir" string="Tempat Lahir"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="wali_telp" string="No Telepon/HP"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="wali_agama" string="Agama"
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Data Pendidikan">
+                                <group>
+                                    <field name="asal_sekolah"
+                                        readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                    <field name="alamat_asal_sek"
+                                        readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                    <field name="status_sekolah_asal"
+                                        readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                    <field name="telp_asal_sek"
+                                        readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                    <field name="npsn"
+                                        readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                </group>
+                            </page>
+                            <page string="Dokumen Pendaftaran">
+                                <group> 
+                                    <group string="Dokumen Anak" class="o_group">
+                                        <field name="akta_kelahiran"
+                                            filename="akta_kelahiran_filename" />
+                                        <field name="kartu_keluarga"
+                                            filename="kartu_keluarga_filename" />
+                                    </group>
+                                    <group string="Dokumen Orang tua">
+                                        <field name="ktp_ortu" filename="ktp_ortu_filename" />
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Dokumen Pendidikan" class="o_group">
+                                        <field name="ijazah" filename="ijazah_filename" />
+                                        <field name="raport_terakhir"
+                                            filename="raport_terakhir_filename" />
+                                        <field name="skhun" filename="skhun_filename" />
+                                        <field name="pas_foto" filename="pas_foto_filename" />
+                                    </group>
+                                    <group string="Dokumen Kesehatan" class="o_group">
+                                        <field name="surat_kesehatan"
+                                            filename="surat_kesehatan_filename" />
+                                    </group>
+                                </group>  
+                            </page>
+                            <page string="Nilai Seleksi" invisible="state in 'draft,terdaftar,batal'" >
+                                <group string="Detail Penilaian">
+                                    <field name="soal_ids" string="">
+                                        <list editable="bottom">
+                                            <field name="name" options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
+                                            <field name="daftar_soal"/>
+                                            <field name="nilai"/>
+                                        </list>
+                                    </field>
+                                    <field name="total_nilai" readonly="1"/>
+                                </group>
+                            </page>
+                            <page string="Akun">
+                                <group string="Akun Login OrangTua" class="o_group">
+                                    <field name="email"
+                                        readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                    <field name="password" password="True"
+                                        readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                </group> 
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter" groups="pesantren_base.group_sekolah_manager">
+                        <chatter>
+                            <field name="message_follower_ids" widget="mail_followers" />
+                            <field name="activity_ids" widget="mail_activity" />
+                            <field name="message_ids" widget="mail_thread"
+                                options="{'display_log_button': True}" />
+                        </chatter>
+                    </div>
+                </form>
+
+            </field>
+        </record>
+
+        <!-- <record id="view_virtual_account_wizard_form" model="ir.ui.view">
+            <field name="name">virtual.account.wizard.form</field>
+            <field name="model">ubig.pendaftaran</field>
+            <field name="arch" type="xml">
+                <form string="Generate Virtual Account">
+                    <group>
+                        <field name="bank_id" required="1"/>
+                        <field name="virtual_account" readonly="1"/>
+                        <field name="petunjuk_pembayaran" readonly="1"/>
+                    </group>
+                    <footer>
+                        <button name="action_bayar" type="object" string="Bayar" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record> -->
+
+        <!-- action window -->
+        <record id="action_pendaftaran" model="ir.actions.act_window">
+            <field name="name">Pendaftaran Santri</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ubig.pendaftaran</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'search_default_group_by_jenjang': 1}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Klik tombol Buat untuk mendaftarkan calon santri.
+                </p>
+            </field>
+        </record>
+
+        
+    </data>
+</odoo>

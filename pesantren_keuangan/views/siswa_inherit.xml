@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- cdn.siswa inherit form view -->
+        <record id="cdn_siswa_form_inherit" model="ir.ui.view">
+            <field name="name">cdn.siswa.inherit.view.form</field>
+            <field name="model">cdn.siswa</field>
+            <field name="inherit_id" ref="pesantren_base.view_cdn_siswa_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='info_siswa']" position="inside">
+                    <group string="Uang Saku dan Dompet">
+                        <group>
+                            <field name="virtual_account"/>
+                            <field name="va_saku"/>
+                            <field name="saldo_uang_saku" readonly="1" widget="integer"/>
+                            <field name="wallet_balance" readonly="1" widget="integer"/>
+                        </group>
+                        <group string="Isi Ulang Saldo" name="wallet balance">
+                            <field name="wallet_pin" password="True" groups="pesantren_base.group_sekolah_manager"/>
+                            <div>
+                                <button name="action_recharge" string="Isi Dompet" type="object" class="btn btn-secondary" context="{'search_default_partner_id': id}" groups="pesantren_base.group_sekolah_manager"/>
+                            </div>
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+
+
+
+        <!-- cdn.siswa inherit form view -->
+        <record id="cdn_siswa_inherit_view_form_pos" model="ir.ui.view">
+            <field name="name">cdn.siswa.inherit.view.form.pos</field>
+            <field name="model">cdn.siswa</field>
+            <field name="inherit_id" ref="pesantren_kesantrian.cdn_siswa_inherit_form_view"/>
+            <field name="arch" type="xml">
+                <!-- Add your xpath here -->
+                <xpath expr="//button[@name='action_saldo_tagihan']" position="after">
+                    <button class="oe_stat_button" type="object" name="action_view_pos_order" groups="point_of_sale.group_pos_user,pesantren_kesantrian.group_kesantrian_orang_tua" context="{'default_partner_id': id}" invisible="0" icon="fa-shopping-bag">
+                        <field string="PoS Orders" name="pos_order_count" widget="statinfo"/>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_cdn_siswa_form_inherit" model="ir.ui.view">
+            <field name="name">cdn.siswa.form.inherit</field>
+            <field name="model">cdn.siswa</field>
+            <field name="inherit_id" ref="pesantren_base.view_cdn_siswa_form"/>
+            <!-- Ganti 'module_name' dengan nama modul yang berisi view form siswa -->
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button name="create_data_account" string="Buat Akun VA" type="object" class="btn-primary" invisible="virtual_account == ''" groups="pesantren_kesantrian.group_kesantrian_staff"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

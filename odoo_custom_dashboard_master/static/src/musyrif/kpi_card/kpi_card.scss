@@ -1,0 +1,32 @@
+.kpi-value {
+    font-size: 2rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    transform: scale(1);  
+}
+
+.kpi-card:hover .kpi-value {
+    transform: scale(1.2);
+}
+
+.card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+}
+
+.bg-success {
+    background-color: #28a745 !important; /* Atau kode warna hijau custom lainnya */
+}
+
+.text-success {
+    color: #28a745 !important;
+}
+
+.icon-circle {
+    background-color: #28a745; /* Sesuaikan warna */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}

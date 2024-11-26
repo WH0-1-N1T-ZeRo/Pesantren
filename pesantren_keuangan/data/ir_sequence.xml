@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="1">
+        <record id="sequence_uang_saku" model="ir.sequence">
+            <field name="name">Uang Saku</field>
+            <field name="code">cdn.uang_saku</field>
+            <field name="prefix">SA/%(y)s.%(month)s/</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="implementation">standard</field>
+            <field name="active">True</field>
+        </record>
+
+
+        <!-- Payment Method Kas -->
+        <record id="pos_payment_method_kas" model="pos.payment.method">
+            <field name="name">Kas</field>
+            <field name="is_cash_count" eval="False"/> <!-- This makes it a cash method -->
+            <field name="split_transactions" eval="False"/>
+            <field name="use_payment_terminal" eval="False"/>
+        </record>
+
+        <!-- Payment Method Dompet Santri -->
+        <record id="pos_payment_method_dompet_santri" model="pos.payment.method">
+            <field name="name">Dompet Santri</field>
+            <field name="is_cash_count" eval="False"/> <!-- Not a cash method -->
+            <field name="split_transactions" eval="False"/>
+            <field name="use_payment_terminal" eval="False"/>
+        </record>
+    </data>
+
+</odoo>

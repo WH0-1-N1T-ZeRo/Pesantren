@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="action_musyrif_dashboard" model="ir.actions.client">
+            <field name="name">Dashboard</field>
+            <field name="tag">owl.musyrif_dashboard</field>
+        </record>
+        <menuitem name="Dashboard" id="menu_musyrif_dashboard" sequence="0" parent="pesantren_musyrif.musyrif_menu_root" action="action_musyrif_dashboard"/>
+    </data>
+</odoo>

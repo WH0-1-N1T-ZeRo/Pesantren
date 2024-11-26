@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <odoo>
+        <!-- cdn.organisasi list view -->
+        <record id="cdn_organisasi_view_tree" model="ir.ui.view">
+            <field name="name">cdn.organisasi.view.list</field>
+            <field name="model">cdn.organisasi</field>
+            <field name="arch" type="xml">
+                <list>
+                    <!-- Add your fields here -->
+                    <field name="name"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- cdn.organisasi form view -->
+        <record id="cdn_organisasi_view_form" model="ir.ui.view">
+            <field name="name">cdn.organisasi.view.form</field>
+            <field name="model">cdn.organisasi</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <!-- Add your fields here -->
+                            <field name="name"/>
+                        </group>
+                        <group string="Struktur">
+                            <field name="anggota_ids">
+                                <list editable="bottom">
+                                    <field name="position"/>
+                                    <field name="partner_id"/>
+                                </list>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+
+        </record>
+        <!-- cdn.organisasi action window -->
+        <record id="cdn_organisasi_action" model="ir.actions.act_window">
+            <field name="name">Organisasi</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.organisasi</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="cdn_organisasi_menu_act" name="Organisasi" parent="pengaturan_umum_menu_categ" action="cdn_organisasi_action" sequence="40"/>
+    </odoo>
+</odoo>

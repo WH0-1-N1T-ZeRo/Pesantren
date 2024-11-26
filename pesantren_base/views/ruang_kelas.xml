@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- list view -->
+        <record id="view_cdn_ruang_kelas_tree" model="ir.ui.view">
+            <field name="name">cdn_ruang_kelas_tree</field>
+            <field name="model">cdn.ruang_kelas</field>
+            <field name="type">list</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <list string="Ruang kelas" expand="1">
+                    <field name="tahunajaran_id" />
+                    <field name="name" />
+                    <field name="keterangan" />
+                    <field name="jenjang"/>
+                    <field name="tingkat"/>
+                    <field name="walikelas_id" />
+                    <field name="jml_siswa" />
+                    <field name="status" />
+                </list>
+            </field>
+        </record>
+        <!-- form view -->
+        <record id="view_cdn_ruang_kelas_form" model="ir.ui.view">
+            <field name="name">cdn_ruang_kelas_form</field>
+            <field name="model">cdn.ruang_kelas</field>
+            <field name="type">form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Ruang kelas">
+                    <header>
+                        <!-- <button name="update_kelas_siswa" type="object" string="Update Kelas Siswa" class="oe_highlight"/> -->
+                        <button string="Konfirmasi" name="konfirmasi" type="object" class="oe_highlight" invisible="status == 'konfirm'" confirm="Apakah Anda yakin ingin mengkonfirmasi Kamar ini?" groups="pesantren_kesantrian.group_kesantrian_staff"/>
+                        <button string="Draft" name="draft" type="object" class="oe_highlight" invisible="status != 'konfirm'" groups="pesantren_kesantrian.group_kesantrian_staff"/>
+                        <field name="status" widget="statusbar" statusbar_visible="draft,konfirm" />
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <!--button type="object" name="action_view_detail" class="oe_stat_button" icon="fa-pencil-square-o"-->
+                                <!--field name="detail_count" widget="statinfo" string="Detail(s)"/-->
+                                <!--field name="detail_ids" invisible="1"/-->
+                            <!--/button-->
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Ruang Kelas"/>
+                            <h1><field name="name" readonly="status == 'konfirm'"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <!-- <field name="master_kelas_id" /> -->
+                                <field name="tahunajaran_id" readonly="status == 'konfirm'"/>
+                                <field name="jenjang" readonly="status == 'konfirm'"/>
+                                <field name="tingkat" domain="[('jenjang', '=', jenjang)]"
+                                    options="{'no_create_edit':True, 'no_create':True, 'no_open': True}" readonly="status == 'konfirm'"/>
+                            </group>
+                            <group>
+                                <field name="jurusan_id" readonly="status == 'konfirm'" invisible="jenjang != 'sma'" />
+                                <field name="walikelas_id" readonly="status == 'konfirm'"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="keterangan" readonly="status == 'konfirm'"/>
+                            <field name="jml_siswa" />
+                        </group>
+                        <notebook>
+                            <page string="Siswa">
+                                <field name="siswa_ids" colspan="4" readonly="status == 'konfirm'">
+                                    <list>
+                                        <field name="nis"/>
+                                        <field name="name"/>
+                                        <field name="nisn"/>
+                                        <field name="jns_kelamin"/>
+                                        <field name="tgl_lahir"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- search -->
+        <record id="view_cdn_ruang_kelas_search" model="ir.ui.view">
+            <field name="name">cdn_ruang_kelas</field>
+            <field name="model">cdn.ruang_kelas</field>
+            <field name="arch" type="xml">
+                <search string="Ruang kelas">
+
+                    <filter string="Nama" name="filter_by_name" domain="[('name','=','')]" />
+                    <filter string="Keterangan" name="filter_by_keterangan" domain="[('keterangan','=','')]" />
+                    <field name="name" select="True"/>
+                    <field name="keterangan" select="True"/>
+                    <field name="tahunajaran_id" select="True"/>
+                    <field name="walikelas_id" select="True"/>
+                    <group string="Group By..">
+                        <filter string="Tahun Ajaran" domain="[]" name="group_by_tahunajaran_id" context="{'group_by':'tahunajaran_id'}"/>
+                        <filter string="Walikelas" domain="[]" name="group_by_walikelas_id" context="{'group_by':'walikelas_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+  
+        <!-- action window -->
+        <record id="action_cdn_ruang_kelas" model="ir.actions.act_window">
+            <field name="name">Ruang kelas</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.ruang_kelas</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{"search_default_fieldname":1, "search_default_group_by_tahunajaran_id": 1}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                Click to add a new Ruang kelas
+                </p><p>
+                Click the Create button to add a new Ruang kelas
+                </p>
+            </field>
+        </record>
+
+        <!-- Message Wizard -->
+        <record id="message_wizard_form" model="ir.ui.view">
+            <field name="name">message.wizard.form</field>
+            <field name="model">message.wizard</field>
+            <field name="arch" type="xml">
+                <form >
+                    <p class="text-center">
+                        <h3><field name="message" readonly="1"/></h3>
+                    </p>
+                    <footer>
+                        <button name="action_ok" string="Ok" type="object" default_focus="1" class="oe_highlight"/> 
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <menuitem id="menu_cdn_ruang_kelas" name="Ruang Kelas" parent="pengaturan_umum_menu_categ" action="action_cdn_ruang_kelas" sequence="30"/>
+    </data>
+</odoo>

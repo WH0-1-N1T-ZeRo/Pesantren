@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+  <data>
+    <!-- cdn.kesehatan list view -->
+    <record id="cdn_kesehatan_view_tree" model="ir.ui.view">
+      <field name="name">cdn.kesehatan.view.list</field>
+      <field name="model">cdn.kesehatan</field>
+      <field name="arch" type="xml">
+        <list default_order="id desc">
+          <!-- Add your fields here -->
+          <field name="name"/>
+          <field name="tgl_diperiksa"/>
+          <field name="siswa_id"/>
+          <field name="kelas_id"/>
+          <field name="keluhan"/>
+          <field name="obat"/>
+          <field name="diperiksa_oleh"/>
+          <field name="state"/>
+          <field name="catatan"/>
+        </list>
+      </field>
+    </record>
+
+    <!-- cdn.kesehatan form view -->
+    <record id="cdn_kesehatan_view_form" model="ir.ui.view">
+      <field name="name">cdn.kesehatan.view.form</field>
+      <field name="model">cdn.kesehatan</field>
+      <field name="arch" type="xml">
+        <form string="">
+          <header>
+            <button string="Periksa" name="action_periksa" type="object" class="btn-primary" state="periksa" invisible="state not in ('draft')" groups="pesantren_kesantrian.group_kesantrian_kesehatan,
+                            pesantren_kesantrian.group_kesantrian_manager" />
+            <button string="Pengobatan" name="action_pengobatan" type="object" class="btn-primary" state="pengobatan" invisible="state not in ('periksa')" groups="pesantren_kesantrian.group_kesantrian_kesehatan,
+                            pesantren_kesantrian.group_kesantrian_manager" />
+            <button string="Perawatan" name="action_rawat" type="object" class="btn-primary" state="rawat" invisible="state not in ('periksa','pengobatan')" groups="pesantren_kesantrian.group_kesantrian_kesehatan,
+                            pesantren_kesantrian.group_kesantrian_manager" />
+            <button string="Pasien Sembuh" name="action_sembuh" type="object" class="btn-primary" state="sembuh" invisible="state not in ('periksa','pengobatan','rawat')" groups="pesantren_kesantrian.group_kesantrian_kesehatan,
+                            pesantren_kesantrian.group_kesantrian_manager" />
+            <field name="state" widget="statusbar"/>
+          </header>
+          <sheet>
+            <!-- Add your fields here -->
+            <div class="oe_title">
+              <label for="name" class="oe_edit_only" string="No Referensi (AUTO)"/>
+              <h1>
+                <field name="name"/>
+              </h1>
+            </div>
+            <group string="Data Santri">
+              <field name="tgl_diperiksa" invisible="state in ('draft')" readonly="state not in('periksa')"/>
+              <field name="siswa_id" readonly="state not in ('draft')"/>
+              <field name="kelas_id"/>
+            </group>
+            <group string="Kondisi Kesehatan">
+              <field name="keluhan" readonly="state not in ('draft')"/>
+            </group>
+            <group string="Tindakan" invisible="state in ('draft')">
+              <field name="diperiksa_oleh" readonly="state not in ('periksa')"/>
+              <field name="diagnosa" readonly="state not in ('periksa')"/>
+            </group>
+            <group string="Pengobatan" invisible="state in ('draft', 'periksa')">
+              <field name="obat" readonly="state not in ('pengobatan')"/>
+              <field name="catatan" readonly="state not in ('pengobatan')"/>
+            </group>
+            <group string="Perawatan" invisible="state in ('draft', 'periksa', 'pengobatan')">
+              <field name="lokasi_rawat" readonly="state not in ('rawat')"/>
+              <field name="keterangan_rawat" readonly="state not in ('rawat')"/>
+            </group>
+            <group string="Pasien Sembuh" invisible="state in ('draft', 'periksa', 'pengobatan', 'rawat')">
+              <field name="tgl_selesai"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- cdn.kesehatan calendar view -->
+    <record id="cdn_kesehatan_view_calendar" model="ir.ui.view">
+      <field name="name">cdn.kesehatan.view.calendar</field>
+      <field name="model">cdn.kesehatan</field>
+      <field name="arch" type="xml">
+        <calendar string="Kesehatan" date_start="tgl_diperiksa">
+          <field name="name"/>
+        </calendar>
+      </field>
+    </record>
+
+    <!-- cdn.kesehatan search view -->
+    <record id="cdn_kesehatan_view_search" model="ir.ui.view">
+      <field name="name">cdn.kesehatan.view.search</field>
+      <field name="model">cdn.kesehatan</field>
+      <field name="arch" type="xml">
+        <search string="Kesehatan">
+          <filter string="Nama" name="filter_by_name" domain="[('name','=','')]"/>
+          <filter string="Tgl Periksa" name="filter_by_tgl_diperiksa" domain="[('tgl_diperiksa','=','')]"/>
+          <filter string="Tgl Selesai" name="filter_by_tgl_selesai" domain="[('tgl_selesai','=','')]"/>
+          <field name="siswa_id" select="True"/>
+          <field name="name" select="True"/>
+          <field name="tgl_diperiksa" select="True"/>
+          <field name="tgl_selesai" select="True"/>
+          <field name="keterangan_rawat" select="True"/>
+          <field name="keluhan" select="True"/>
+          <field name="diagnosa" select="True"/>
+          <field name="obat" select="True"/>
+          <field name="lokasi_rawat" select="True"/>
+          <field name="diperiksa_oleh" select="True"/>
+          <group string="Group By..">
+            <filter string="Siswa" domain="[]" name="group_by_siswa_id" context="{'group_by':'siswa_id'}"/>
+          </group>
+        </search>
+      </field>
+    </record>
+
+    <!-- cdn.kesehatan graph view -->
+    <!-- <record id="cdn_kesehatan_view_graph" model="ir.ui.view">
+      <field name="name">cdn.kesehatan.view.graph</field>
+      <field name="model">cdn.kesehatan</field>
+      <field name="arch" type="xml">
+        <graph string="Kesehatan" type="bar">
+          <field name="siswa_id" modifiers="{}"/>
+          <field name="health_score" type="measure" modifiers="{}"/>
+        </graph>
+      </field>
+    </record> -->
+
+
+
+    <!-- cdn.kesehatan action window -->
+    <record id="cdn_kesehatan_action" model="ir.actions.act_window">
+      <field name="name">Kesehatan</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">cdn.kesehatan</field>
+      <field name="view_mode">list,calendar,graph,form</field>
+      <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+          <!-- Add Text Here -->
+        </p>
+        <p>
+          <!-- More details about what a user can do with this object will be OK -->
+        </p>
+      </field>
+    </record>
+
+    <!-- This Menu Item must have a parent and an action -->
+    <menuitem id="kesehatan_menu_act" name="Kondisi Kesehatan" parent="aktivitas_kesantrian_menu_categ" action="cdn_kesehatan_action" sequence="20"/>
+  </data>
+
+
+</odoo>

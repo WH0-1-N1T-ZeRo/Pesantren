@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+    
+        <!-- cdn.level_tahsin list view -->
+        <record id="cdn_level_tahsin_view_tree" model="ir.ui.view">
+            <field name="name">cdn.level_tahsin.view.list</field>
+            <field name="model">cdn.level_tahsin</field>
+            <field name="arch" type="xml">
+                <list>
+                    <!-- Add your fields here -->
+                    <field name="name" />
+                    <field name="keterangan" />
+                    
+                </list>
+            </field>
+        </record>
+        <!-- cdn.level_tahsin form view -->
+        <record id="cdn_level_tahsin_view_form" model="ir.ui.view">
+            <field name="name">cdn.level_tahsin.view.form</field>
+            <field name="model">cdn.level_tahsin</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Level Tahsin"/>
+                            <h1><field name="name"/></h1>
+                        </div>
+                         <group>
+                            <group>
+                                <field name="keterangan"/>
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                        <notebook>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- cdn.level_tahsin action window -->
+        <record id="cdn_level_tahsin_action" model="ir.actions.act_window">
+            <field name="name">Level Tahsin</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.level_tahsin</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p><p>
+                    <!-- More details about what a user can do with this object will be OK --> 
+                </p>
+            </field>
+        </record>
+        <!-- cdn.level_tahsin search view -->
+        <record id="cdn_level_tahsin_view_search" model="ir.ui.view">
+            <field name="name">cdn.level_tahsin.view.search</field>
+            <field name="model">cdn.level_tahsin</field>
+            <field name="arch" type="xml">
+                <search string="Level tahsin">
+                    <filter string="Nama" name="filter_by_name" domain="[('name','=','')]"/>
+                    <filter string="Keterangan" name="filter_by_keterangan" domain="[('keterangan','=','')]"/>
+                    <field name="name" select="True"/>
+                    <field name="keterangan" select="True"/>
+                    <group string="Group By..">
+                    </group>
+                </search>
+            </field>
+        </record>
+        <menuitem id="level_tahsin_menu_act" name="Level Tahsin" parent="pengaturan_tahfidz_menu_categ" action="cdn_level_tahsin_action" sequence="40"/>
+
+    
+    </data>
+    
+</odoo>

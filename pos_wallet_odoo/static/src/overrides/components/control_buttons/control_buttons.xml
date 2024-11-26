@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <!-- Mewarisi dari PaymentScreenValidate -->
+    <t t-name="pos_wallet_odoo.ValidateBaypas" t-inherit="point_of_sale.PaymentScreenValidate" t-inherit-mode="extension">
+        <!-- Mengganti tombol validate -->
+        <!-- Mengganti tombol lain jika diperlukan (misalnya tombol validasi dalam mode kecil) -->
+        <xpath expr="//t[(@t-if='ui.isSmall')]" position="replace">
+            <t t-if="ui.isSmall">
+                <button class="btn-switchpane validation-button btn btn-primary btn-lg flex-fill py-3 lh-lg" t-att-class="{ secondary: !(currentOrder.is_paid() and currentOrder._isValidEmptyOrder()) }" t-on-click="() => this.clickSetSubTotal()">
+                    <span>Validate</span>
+                </button>
+            </t>
+        </xpath>
+        <xpath expr="//button[@class='button next validation btn btn-primary btn-lg w-50 py-3 lh-lg']" position="replace">
+            <button class="button next validation btn btn-primary btn-lg w-50 py-3 lh-lg" t-attf-class="{{currentOrder.is_paid() and currentOrder._isValidEmptyOrder() ? 'highlight' : 'disabled'}}" t-on-click="() => this.clickSetSubTotal()">
+                <span class="next_text">Validate</span>
+            </button>
+        </xpath>
+
+    </t>
+</templates>

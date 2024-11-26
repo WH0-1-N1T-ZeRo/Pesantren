@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- list view -->
+        <record id="view_cdn_orangtua_tree" model="ir.ui.view">
+            <field name="name">cdn_orangtua_tree</field>
+            <field name="model">cdn.orangtua</field>
+            <field name="type">list</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <list string="Orangtua">
+                    <field name="name" />
+                    <field name="nik" />
+                    <field name="street"/>
+                    <field name="mobile" string="No. HP"/>
+                    <field name="email"/>
+                    <field name="hubungan" />
+                </list>
+            </field>
+        </record>
+        <!-- form view -->
+        <record id="view_cdn_orangtua_form" model="ir.ui.view">
+            <field name="name">cdn_orangtua_form</field>
+            <field name="model">cdn.orangtua</field>
+            <field name="type">form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Orangtua">
+                    <header>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <!--button type="object" name="action_view_detail" class="oe_stat_button" icon="fa-pencil-square-o"-->
+                                <!--field name="detail_count" widget="statinfo" string="Detail(s)"/-->
+                                <!--field name="detail_ids" invisible="1"/-->
+                            <!--/button-->
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" string="Nama Lengkap Orang Tua" />
+                            <h1><field name="name" width="250"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="street" string="Alamat"/>
+                                <field name="city" string="Kota"/>
+                                <field name="mobile" string="No. HP"/>
+                            </group>
+                            <group>
+                                <field name="street2" string="RT/RW"/>
+                                <field name="phone" string="No. Telepon"/>
+                                <field name="email" string="Email"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="nik" />
+                                <field name="jns_partner" readonly="1" string="Jenis Partner"/>
+                            </group>
+                            <group>
+                                <field name="hubungan" />
+                                <field name="user_id" string="Pengguna" groups="pesantren_base.group_sekolah_manager"/>
+                                <field name="partner_id" groups="pesantren_base.group_sekolah_manager"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Siswa">
+                                <field name="siswa_ids" nolabel="1" widget="one2many_tree">
+                                    <list create="false" edit="false" delete="false">
+                                        <field name="nis"/>
+                                        <field name="name"/>
+                                        <field name="jns_kelamin"/>
+                                        <field name="tmp_lahir"/>
+                                        <field name="tgl_lahir"/>
+                                        <field name="tahunajaran_id"/>
+                                        <field name="orangtua_id" invisible="1"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- search -->
+        <record id="view_cdn_orangtua_search" model="ir.ui.view">
+            <field name="name">cdn_orangtua</field>
+            <field name="model">cdn.orangtua</field>
+            <field name="arch" type="xml">
+                <search string="Orangtua">
+
+                    <filter string="Nama" name="filter_by_name" domain="[('name','=','')]" />
+                    <filter string="Nik" name="filter_by_nik" domain="[('nik','=','')]" />
+                    <filter string="Hubungan" name="filter_by_hubungan" domain="[('hubungan','=','')]" />
+                    <field name="name" select="True"/>
+                    <field name="nik" select="True"/>
+                    <field name="hubungan" select="True"/>
+                    <group string="Group By..">
+                    </group>
+                </search>
+            </field>
+        </record>
+   
+        <!-- action window -->
+        <record id="action_cdn_orangtua" model="ir.actions.act_window">
+            <field name="name">Orangtua</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.orangtua</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{"search_default_fieldname":1}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                Click to add a new Orangtua
+                </p><p>
+                Click the Create button to add a new Orangtua
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_cdn_orangtua" name="Orangtua" parent="siswa_menu_categ" action="action_cdn_orangtua" sequence="30"/>
+    </data>
+</odoo>

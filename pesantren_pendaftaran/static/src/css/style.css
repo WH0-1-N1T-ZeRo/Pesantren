@@ -1,0 +1,7 @@
+form .o_field_widget.o_field_datetime {
+    display: block !important;
+}
+form .o_field_widget.o_field_datetime input[type="time"] {
+    display: none !important;
+}
+

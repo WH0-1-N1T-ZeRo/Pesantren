@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- cdn.kesehatan action window -->
+        <record id="cdn_kesehatan_action" model="ir.actions.act_window">
+            <field name="name">Kesehatan</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.kesehatan</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="pesantren_kesantrian.cdn_kesehatan_view_tree" />
+            <field name="domain">
+                [
+                    '|',
+                    ('siswa_id.halaqoh_id.penanggung_jawab_id.user_id','=',uid),
+                    ('siswa_id.halaqoh_id.pengganti_ids.user_id','=',uid)
+                ]
+            </field>
+        </record>
+        <record id="action_tree_view_cdn_kesehatan" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2" />
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="pesantren_kesantrian.cdn_kesehatan_view_tree" />
+            <field name="act_window_id" ref="cdn_kesehatan_action" />
+        </record>
+        <record id="action_form_view_cdn_kesehatan" model="ir.actions.act_window.view">
+            <field name="sequence" eval="3" />
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="pesantren_kesantrian.cdn_kesehatan_view_form" />
+            <field name="act_window_id" ref="cdn_kesehatan_action" />
+        </record>
+        <!-- This Menu Item must have a parent and an action -->
+        <!-- <menuitem id="cdn_kesehatan_menu_act" name="Kondisi Kesehatan" parent="aktivitas_menu_categ" action="cdn_kesehatan_action" sequence="20"/> -->
+    </data>
+</odoo>

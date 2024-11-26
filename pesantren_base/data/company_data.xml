@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data noupdate="0">
+        <!-- Company Setting -->
+        <record id="base.main_company" model="res.company">
+            <field name="name">Daarul Qur'an Istiqomah</field>
+            <field name="email">info@dqi.sch.id</field>
+            <!-- <field name="website">http://localhost:8070</field> -->
+            <field name="street">MA Tahfizh Bilingual Daarul Qur'an Istiqomah</field>
+            <field name="street2">Jl. Ambawang, RT.03/RW.01, Karang Taruna, Kec. Pelaihari, Kabupaten Tanah Laut, Kalimantan Selatan </field>
+            <field name="city">Kabupaten Tanah Laut</field> 
+            <field name="zip">70815</field>
+            <field name="phone">+6282252079785</field>
+            <field name="mobile">+6285390511124</field>
+            <field name="country_id" ref="base.id"/>
+            <field name="logo" type="base64" file="pesantren_base/static/description/dqi.png"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,431 @@
+/** @odoo-module */
+import { registry } from "@web/core/registry";
+import { loadJS } from "@web/core/assets";
+const { Component, onWillStart, useRef, onMounted, onWillUnmount, onWillUpdateProps } = owl;
+import { useService } from "@web/core/utils/hooks";
+import { session } from "@web/session";
+
+export class MusyrifChartRenderer extends Component {
+    static props = {
+        type: { type: String },
+        period: { type: String, optional: true },
+        startDate: { type: String, optional: true },
+        endDate: { type: String, optional: true },
+    };
+
+    setup() {
+        this.chartRef = useRef("chart");
+        this.orm = useService("orm");
+        this.actionService = useService("action");
+        this.state = {
+            chartData: { series: [], labels: [], stateIds: {} },
+            selectedPeriod: this.props.period || 'all',
+            currentStartDate: this.props.startDate,
+            currentEndDate: this.props.endDate,
+            isLoading: false,
+            totalPermissions: 0,
+            isFiltered: !!(this.props.startDate && this.props.endDate)
+        };
+        this.chartInstance = null;
+        this.countdownInterval = null;
+        this.countdownTime = 10;
+        this.isCountingDown = false;
+
+        if (this.props.startDate && this.props.endDate) {
+            this.state.currentStartDate = this.props.startDate;
+            this.state.currentEndDate = this.props.endDate;
+        }
+
+        onWillUpdateProps(async (nextProps) => {
+            if (nextProps.startDate !== this.props.startDate || 
+                nextProps.endDate !== this.props.endDate) {
+                this.state.currentStartDate = nextProps.startDate;
+                this.state.currentEndDate = nextProps.endDate;
+                this.state.isFiltered = !!(nextProps.startDate && nextProps.endDate);
+                await this.fetchData(this.state.currentStartDate, this.state.currentEndDate);
+            }
+        });
+
+        onWillStart(async () => {
+            await loadJS("https://cdn.jsdelivr.net/npm/apexcharts");
+            await this.fetchData(this.state.currentStartDate, this.state.currentEndDate);
+        });
+
+        onMounted(() => {
+            this.renderChart();
+            this.attachEventListeners();
+        });
+
+        onWillUnmount(() => {
+            this.cleanup();
+        });
+    }
+
+    cleanup() {
+        if (this.chartInstance) {
+            this.chartInstance.destroy();
+            this.chartInstance = null;
+        }
+        this.clearIntervals();
+    }
+
+    clearIntervals() {
+        if (this.countdownInterval) clearInterval(this.countdownInterval);
+        if (this.refreshInterval) clearInterval(this.refreshInterval);
+    }
+
+    toggleCountdown() {
+        if (this.isCountingDown) {
+            this.clearIntervals();
+            document.getElementById("timerIcon").className = "fas fa-stopwatch";
+            document.getElementById("timerCountdown").textContent = "";
+        } else {
+            this.startCountdown();
+            document.getElementById("timerIcon").className = "fas fa-stop d-none";
+        }
+        this.isCountingDown = !this.isCountingDown;
+    }
+
+    startCountdown() {
+        this.countdownTime = 10;
+        this.updateCountdownDisplay();
+        this.countdownInterval = setInterval(() => {
+            this.countdownTime--;
+            if (this.countdownTime < 0) {
+                this.countdownTime = 10;
+                this.refreshChart();
+            }
+            this.updateCountdownDisplay();
+        }, 1000);
+    }
+
+    updateCountdownDisplay() {
+        document.getElementById("timerCountdown").textContent = this.countdownTime;
+    }
+
+    attachEventListeners() {
+        const timerButton = document.getElementById("timerButton");
+        if (timerButton) {
+            timerButton.addEventListener("click", this.toggleCountdown.bind(this));
+        }
+
+        // Add date filter listeners
+        const startDateInput = document.querySelector('input[name="start_date"]');
+        const endDateInput = document.querySelector('input[name="end_date"]');
+
+        if (startDateInput && endDateInput) {
+            startDateInput.addEventListener('change', () => this.handleDateFilter());
+            endDateInput.addEventListener('change', () => this.handleDateFilter());
+        }
+    }
+
+
+    async handleDateFilter() {
+        const startDateInput = document.querySelector('input[name="start_date"]');
+        const endDateInput = document.querySelector('input[name="end_date"]');
+
+        if (startDateInput && endDateInput) {
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+
+            if (startDate && endDate) {
+                const formattedStartDate = this.formatDateToOdoo(startDate);
+                const formattedEndDate = this.formatDateToOdoo(endDate);
+
+                this.state.currentStartDate = formattedStartDate;
+                this.state.currentEndDate = formattedEndDate;
+                this.state.isFiltered = true;
+
+                // Add animation when filtering
+                if (this.chartInstance) {
+                    // Animate to zero
+                    this.chartInstance.updateSeries([...this.state.chartData.series.map(() => 0)], {
+                        animate: true,
+                        duration: 500
+                    });
+                }
+
+                await this.fetchData(formattedStartDate, formattedEndDate);
+                
+                // Animate to new values
+                setTimeout(() => {
+                    this.chartInstance.updateSeries(this.state.chartData.series, {
+                        animate: true,
+                        duration: 800
+                    });
+                }, 600);
+            } else {
+                this.state.currentStartDate = null;
+                this.state.currentEndDate = null;
+                this.state.isFiltered = false;
+                await this.refreshChart();
+            }
+        }
+    }
+
+    formatDateToOdoo(dateString) {
+        const date = new Date(dateString);
+        return date.toISOString().split('.')[0] + 'Z';
+    }
+
+
+    async refreshChart() {
+        const startDate = this.state.isFiltered ? this.state.currentStartDate : null;
+        const endDate = this.state.isFiltered ? this.state.currentEndDate : null;
+        
+        await this.fetchData(startDate, endDate);
+        
+        if (this.chartInstance) {
+            this.chartInstance.updateOptions({
+                series: this.state.chartData.series,
+                labels: this.state.chartData.labels
+            }, true, true);
+        }
+    }
+
+    getChartConfig() {
+        return {
+            chart: {
+                type: 'donut',
+                height: 300,
+                fontFamily: 'Inter, sans-serif',
+                background: 'transparent',
+                animations: {
+                    enabled: true,
+                    easing: 'easeinout',
+                    speed: 800,
+                    animateGradually: {
+                        enabled: true,
+                        delay: 150
+                    },
+                    dynamicAnimation: {
+                        enabled: true,
+                        speed: 350
+                    }
+                }
+            },
+  
+            colors: ['#15803d', '#22c55e', '#86efac', '#4ade80', '#166534'],
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '65%',
+                        labels: {
+                            show: true,
+                            name: {
+                                show: true,
+                                fontSize: '22px',
+                                fontFamily: 'Inter, sans-serif',
+                                offsetY: -10,
+                                color: '#1f2937'
+                            },
+                            value: {
+                                show: true,
+                                fontSize: '16px',
+                                fontFamily: 'Inter, sans-serif',
+                                color: '#1f2937',
+                                formatter: (val) => `${val} Siswa`
+                            },
+                            total: {
+                                show: true,
+                                fontSize: '16px',
+                                fontFamily: 'Inter, sans-serif',
+                                color: '#1f2937',
+                                label: 'Total Siswa',
+                                formatter: (w) => {
+                                    return `${w.globals.seriesTotals.reduce((a, b) => a + b, 0)} Siswa`;
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            states: {
+                hover: {
+                    filter: {
+                        type: 'none'
+                    }
+                },
+                active: {
+                    filter: {
+                        type: 'none'
+                    }
+                }
+            },
+            stroke: {
+                width: 0
+            },
+            legend: {
+                position: 'top',
+                horizontalAlign: 'center',
+                fontSize: '14px',
+                fontFamily: 'Inter, sans-serif',
+                labels: {
+                    colors: '#1f2937'
+                },
+                markers: {
+                    width: 10,
+                    height: 10,
+                    radius: 6
+                },
+                itemMargin: {
+                    horizontal: 15,
+                    vertical: 8
+                },
+                onItemClick: {
+                    toggleDataSeries: false
+                },
+                onItemHover: {
+                    highlightDataSeries: false
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            tooltip: {
+                enabled: true,
+                theme: 'dark',
+                style: {
+                    fontSize: '14px',
+                    fontFamily: 'Inter, sans-serif'
+                },
+                y: {
+                    formatter: (value) => `${value} Siswa`,
+                    title: {
+                        formatter: (seriesName) => seriesName
+                    }
+                }
+            },
+                noData: {
+                    text: 'Tidak ada data',
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    style: {
+                        color: '#1f2937',
+                        fontSize: '16px',
+                        fontFamily: 'Inter'
+                    }
+                }
+        };
+    }
+
+    async fetchData(startDate = null, endDate = null) {
+
+        const domain = [
+          ["musyrif_id", "ilike", session.partner_display_name]
+      ];
+        
+        if (startDate && endDate) {
+            domain.push(["create_date", ">=", this.formatDateToOdoo(startDate)]);
+            domain.push(["create_date", "<=", this.formatDateToOdoo(endDate)]);
+        }
+
+        try {
+            const data = await this.orm.call(
+                "cdn.perijinan",
+                "search_read",
+                [domain, ["state","musyrif_id"]],
+            );
+
+            // Group data by state
+            const stateGroups = {};
+            const stateIds = {};
+            
+            data.forEach((record) => {
+                const state = this.getStateLabel(record.state);
+                if (!stateGroups[state]) {
+                    stateGroups[state] = 0;
+                    stateIds[state] = [];
+                }
+                stateGroups[state]++;
+                stateIds[state].push(record.id);
+            });
+
+            this.state.chartData = {
+                series: Object.values(stateGroups),
+                labels: Object.keys(stateGroups),
+                stateIds: stateIds
+            };
+
+            this.state.totalPermissions = data.length;
+            this.updateChart();
+        } catch (error) {
+            console.error("Error fetching permission data:", error);
+            this.state.chartData = { series: [], labels: [], stateIds: {} };
+            this.state.totalPermissions = 0;
+        }
+    }
+
+    getStateLabel(state) {
+        const stateMap = {
+            'Draft': 'Pengajuan',
+            'Check': 'Diperiksa',
+            'Approved': 'Disetujui',
+            'Rejected': 'Ditolak',
+            'Permission': 'Ijin Keluar',
+            'Return': 'Kembali'
+        };
+        return stateMap[state] || state;
+    }
+
+    updateChart() {
+        if (this.chartInstance) {
+            this.chartInstance.updateOptions({
+                xaxis: {
+                    categories: this.state.chartData.labels
+                },
+                series: this.state.chartData.series
+            });
+        }
+    }
+
+    renderChart() {
+        if (!this.chartRef.el) return;
+
+        if (this.chartInstance) {
+            this.chartInstance.destroy();
+            this.chartInstance = null;
+        }
+
+        this.chartRef.el.innerHTML = '';
+
+        const config = {
+            ...this.getChartConfig(),
+            series: this.state.chartData.series,
+            labels: this.state.chartData.labels,
+            chart: {
+                ...this.getChartConfig().chart,
+                events: {
+                    dataPointSelection: (event, chartContext, config) => {
+                        if (event.target.classList.contains('apexcharts-legend-text')) {
+                            return;
+                        }
+                        
+                        const selectedLabel = this.state.chartData.labels[config.dataPointIndex];
+                        const selectedIds = this.state.chartData.stateIds[selectedLabel] || [];
+                        
+                        if (selectedIds.length > 0) {
+                            this.actionService.doAction({
+                                type: 'ir.actions.act_window',
+                                name: `Perizinan - ${selectedLabel}`,
+                                res_model: 'cdn.perijinan',
+                                domain: [['id', 'in', selectedIds]],
+                                views: [[false, 'list'], [false, 'form']],
+                                target: 'current',
+                            });
+                        }
+                    }
+                }
+            }
+        };
+
+        try {
+            this.chartInstance = new ApexCharts(this.chartRef.el, config);
+            this.chartInstance.render();
+        } catch (error) {
+            console.error('Error rendering chart:', error);
+        }
+    }
+}
+
+MusyrifChartRenderer.template = "owl.MusyrifChartRenderer";

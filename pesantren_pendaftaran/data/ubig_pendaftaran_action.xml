@@ -1,0 +1,9 @@
+<odoo>
+    <record id="action_report_pendaftaran" model="ir.actions.report">
+        <field name="name">Cetak Biaya Daftar Ulang</field>
+        <field name="model">ubig.pendaftaran</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">pesantren_pendaftaran.ubig_pendaftaran_report_template</field>
+        <field name="report_file">pesantren_pendaftaran.ubig_pendaftaran_report_template</field>
+    </record>
+</odoo>

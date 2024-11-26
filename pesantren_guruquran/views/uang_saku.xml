@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <!-- cdn.uang_saku list view -->
+        <record id="cdn_uang_saku_view_tree" model="ir.ui.view">
+            <field name="name">cdn.uang_saku.view.list</field>
+            <field name="model">cdn.uang_saku</field>
+            <field name="arch" type="xml">
+                <list delete="false">
+                    <field name="name"/>
+                    <field name="tgl_transaksi"/>
+                    <field name="siswa_id"/>
+                    <field name="va_saku"/>
+                    <field name="amount_in" widget="integer"/>
+                    <field name="amount_out" widget="integer"/>
+                </list>
+            </field>
+        </record>
+        <!-- cdn.uang_saku form view -->
+        <record id="cdn_uang_saku_view_form" model="ir.ui.view">
+            <field name="name">cdn.uang_saku.view.form</field>
+            <field name="model">cdn.uang_saku</field>
+            <field name="arch" type="xml">
+                <form string="" create="false" edit="false" delete="false">
+                    <header>
+                        <button name="action_confirm" string="Confirm" type="object" class="btn-primary" invisible="state == ('draft')"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="tgl_transaksi"
+                                readonly="state not in ('draft')"/>
+                            <field name="siswa_id"
+                                options="{'no_create': True, 'no_create_edit': True, 'no_open': True}"
+                                readonly="state not in ('draft')"/>
+                            <field name="va_saku"/>
+                            <field name="saldo_awal"/>
+                        </group>
+                        <group>
+                            <field name="jns_transaksi"
+                                readonly="state not in ('draft')"/>
+                            <field name="amount_in" widget="integer"
+                                invisible="jns_transaksi != 'masuk'" readonly="state not in ('draft')"/>
+                            <field name="amount_out" widget="integer"
+                                invisible=" jns_transaksi != 'keluar'" readonly="state not in ('draft')"/>
+                        </group>
+                        <group>
+                            <field name="validasi_id"/>
+                            <field name="validasi_time"/>
+                            <field name="keterangan"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- cdn.uang_saku action window -->
+        <record id="uang_saku_action" model="ir.actions.act_window">
+            <field name="name">Uang Saku Santri</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cdn.uang_saku</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="cdn_uang_saku_view_tree" />
+            <field name="domain">
+            [
+                '|',
+                ('siswa.halaqoh_id.penanggung_jawab_id.user_id','=',uid),
+                ('siswa.halaqoh_id.pengganti_ids.user_id','=',uid)
+            ]
+            </field>
+        </record>
+        <record id="action_tree_view_uang_saku" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2" />
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="cdn_uang_saku_view_tree" />
+            <field name="act_window_id" ref="uang_saku_action" />
+        </record>
+        <record id="action_form_view_uang_saku" model="ir.actions.act_window.view">
+            <field name="sequence" eval="3" />
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="cdn_uang_saku_view_form" />
+            <field name="act_window_id" ref="uang_saku_action" />
+        </record>
+        <!-- This Menu Item must have a parent and an action -->
+        <!-- <menuitem id="uang_saku_menu_act" name="Uang Saku Santri" parent="data_santri_menu_categ" action="uang_saku_action" sequence="20"/> -->
+    </data>
+</odoo>
