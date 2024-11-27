@@ -36,6 +36,7 @@ class UangSaku(models.Model):
         readonly=True,
         store=True
     )
+    musyrif_id = fields.Many2one('hr.employee', string='Musyrif', related='siswa.musyrif_id', readonly=True)
 
     # override
     @api.model

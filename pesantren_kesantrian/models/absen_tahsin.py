@@ -33,6 +33,7 @@ class AbsenTahsinQuran(models.Model):
         ('Proses', 'Proses'),
         ('Done','Selesai'),
     ], default='Draft', string='Status')
+    penanggung_jawab_id = fields.Many2one('hr.employee', string='Penanggung Jawab', related='halaqoh_id.penanggung_jawab_id', readonly=True, store=True)
 
 
     def action_proses(self):
@@ -99,6 +100,6 @@ class AbsenTahsinQuranLine(models.Model):
         ('Sakit', 'Sakit'),
         ('Alpa', 'Alpa'),
     ], string='Kehadiran', required=True)
+    penanggung_jawab_id = fields.Many2one('hr.employee', string='Penanggung Jawab', related='halaqoh_id.penanggung_jawab_id', readonly=True, store=True)
     
-
 

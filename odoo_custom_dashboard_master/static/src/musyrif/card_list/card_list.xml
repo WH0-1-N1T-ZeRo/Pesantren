@@ -5,7 +5,7 @@
         <div class="card-header">
             <h3 class="card-title">Pengajuan Perijinan Santri</h3>
         </div>
-        <div class="card-body p-0" style="height: 400px;">
+        <div class="card-body p-0" style="height: 50vh;">
             <div class="h-100">
                 <t t-if="state.isLoading">
                     <div class="d-flex align-items-center justify-content-center h-100">

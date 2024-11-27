@@ -5,7 +5,7 @@
             <div class="row g-4">
                 <t t-foreach="state.kpiData" t-as="kpi" t-key="kpi.name">
                     <div class="col-lg-3 col-md-6">
-                        <div class="card h-100 kpi-card border-0 rounded-3 shadow-sm"
+                        <div class="card h-100 kpi-card border-0 rounded-3 shadow-sm clickable"
                              t-att-data-name="kpi.name"
                              t-on-click="handleKpiCardClick">
                             <div class="card-body p-4">

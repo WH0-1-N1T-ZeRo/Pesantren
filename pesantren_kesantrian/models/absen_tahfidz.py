@@ -34,6 +34,7 @@ class AbsenTahfidzQuran(models.Model):
         ('Proses', 'Proses'),
         ('Done','Selesai'),
     ], default='Draft', string='Status')
+    penanggung_jawab_id = fields.Many2one('hr.employee', string='Penanggung Jawab', related='halaqoh_id.penanggung_jawab_id', readonly=True, store=True)
 
     def action_proses(self):
         self.state = 'Proses'
@@ -116,15 +117,4 @@ class AbsenTahfidzQuranLine(models.Model):
         ('Sakit', 'Sakit'),
         ('Alpa', 'Alpa'),
     ], string='Kehadiran', required=True)
-    
-    pengganti_ids = fields.Many2many(
-        comodel_name='hr.employee',
-        string='Pengganti Musyrif',
-        readonly=True,
-        store=True
-    )
-
-    @api.depends('halaqoh_id')
-    def _compute_pengganti_ids(self):
-        for record in self:
-            record.pengganti_ids = record.halaqoh_id.pengganti_ids if record.halaqoh_id else False
+    penanggung_jawab_id = fields.Many2one('hr.employee', string='Penanggung Jawab', related='halaqoh_id.penanggung_jawab_id', readonly=True, store=True)

@@ -1,19 +1,16 @@
-/* Base Card Styling */
+/* Styling Card agar menyatu dengan Dashboard */
 .dashboard-card {
     border: none;
-    background: #ffffff;
+    background: #ffffff; /* Background putih */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 80%;
-    overflow: hidden; /* Ensure no content bleeds outside card */
 }
 
 .dashboard-card .card-header {
-    background: linear-gradient(135deg, #00a65a, #008d4c);
+    background: #0cba3e;
     color: white;
     border-radius: 12px 12px 0 0;
     text-align: center;
     padding: 1rem;
-    border-bottom: none;
 }
 
 .dashboard-card .card-title {
@@ -26,49 +23,15 @@
     padding: 1.5rem;
 }
 
-/* Table Styling */
-.table {
-    margin-bottom: 0;
-    width: 100%;
-}
-
-.table > :not(:first-child) {
-    border-top: none;
-}
-
-.table > tbody > tr:last-child > td {
-    border-bottom: none;
-}
-
-/* Table Cell Padding */
-.table td:first-child,
-.table th:first-child {
-    padding-left: 1.5rem;
-}
-
-.table td:last-child,
-.table th:last-child {
-    padding-right: 1.5rem;
-}
-
-/* Table Visual Effects */
 .table-hover tbody tr:hover {
-    background-color: #f0fff4;
+    background-color: #f0fff4; /* Efek hijau terang */
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
-    background-color: #f9f9f9;
+    background-color: #f9f9f9; /* Alternating row color */
 }
 
-/* Table Header Styling */
-thead {
-    position: sticky;
-    top: 0;
-    background-color: white;
-    z-index: 1;
-}
-
-/* Loading Spinner */
+/* Loading Spinner Styling */
 .fa-spinner {
     color: #00a65a;
 }
@@ -78,75 +41,66 @@ thead {
     color: #6c757d;
 }
 
-/* Responsive Table Container */
-.table-responsive {
-    width: 100%;
-    margin-bottom: 1rem;
-    -webkit-overflow-scrolling: touch;
+/* Hover effect for table */
+.table tbody tr:hover {
+    background-color: #e6f7ee;
 }
 
-/* Mobile Responsive Styles */
-@media (max-width: 768px) {
-    /* Reset sticky header for mobile */
-    thead {
-        position: relative !important;
-    }
-    
-    /* Handle horizontal overflow */
-    .table-responsive {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: thin;
-        max-width: 100vw;
-    }
-    
-    /* Hide scrollbar while maintaining functionality */
-    .table-responsive::-webkit-scrollbar {
-        height: 6px;
-    }
-    
-    .table-responsive::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-    
-    .table-responsive::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 3px;
-    }
-    
-    /* Adjust card padding for mobile */
-    .dashboard-card .card-body {
-        padding: 1rem;
-    }
-    
-    /* Ensure table cells don't break */
-    .table td, 
-    .table th {
-        white-space: nowrap;
-        min-width: 100px; /* Minimum width for cells */
-    }
-    
-    /* Adjust specific column widths for better mobile display */
-    .table td:first-child,
-    .table th:first-child {
-        padding-left: 1rem;
-    }
-    
-    .table td:last-child,
-    .table th:last-child {
-        padding-right: 1rem;
-    }
+/* Override default table styles */
+.table {
+margin-bottom: 0;
 }
 
-/* Custom styles for very small screens */
-@media (max-width: 480px) {
-    .dashboard-card .card-title {
-        font-size: 0.9rem;
-    }
-    
-    .table td, 
-    .table th {
-        padding: 0.5rem;
-        font-size: 0.9rem;
-    }
+.table > :not(:first-child) {
+border-top: none;
 }
+
+.table > tbody > tr:last-child > td {
+border-bottom: none;
+}
+
+/* Custom padding for first and last columns */
+.table td:first-child,
+.table th:first-child {
+padding-left: 1.5rem;
+}
+
+.table td:last-child,
+.table th:last-child {
+padding-right: 1.5rem;
+}
+
+/* Remove border from header */
+.card-header {
+border-bottom: none;
+}
+
+/* Override default table styles */
+.table {
+margin-bottom: 0;
+}
+
+.table > :not(:first-child) {
+border-top: none;
+}
+
+.table > tbody > tr:last-child > td {
+border-bottom: none;
+}
+
+/* Custom padding for first and last columns */
+.table td:first-child,
+.table th:first-child {
+padding-left: 1.5rem;
+}
+
+.table td:last-child,
+.table th:last-child {
+padding-right: 1.5rem;
+}
+
+/* Remove border from header */
+.card-header {
+border-bottom: none;
+}
+

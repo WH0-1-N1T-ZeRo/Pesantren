@@ -38,9 +38,11 @@ class hr_employee(models.Model):
         if self.jns_pegawai == 'guruquran':
             groups_to_add.append(self.env.ref('pesantren_guruquran.group_guru_quran_staff'))
             groups_to_add.append(self.env.ref('pesantren_kesantrian.group_kesantrian_user'))
+            groups_to_add.append(self.env.ref('pesantren_base.group_sekolah_user'))
         elif self.jns_pegawai == 'guru':
             groups_to_add.append(self.env.ref('pesantren_guru.group_guru_staff'))
             groups_to_add.append(self.env.ref('pesantren_base.group_sekolah_user'))
+            groups_to_add.append(self.env.ref('hr.group_hr_user'))
         elif self.jns_pegawai in ['musyrif', 'ustadz']:
             groups_to_add.append(self.env.ref('pesantren_musyrif.group_musyrif_staff'))
             groups_to_add.append(self.env.ref('pesantren_kesantrian.group_kesantrian_user'))

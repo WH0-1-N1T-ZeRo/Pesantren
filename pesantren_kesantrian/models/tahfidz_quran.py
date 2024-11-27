@@ -22,13 +22,8 @@ class TahfidzQuran(models.Model):
     nilai_id        = fields.Many2one('cdn.nilai_tahfidz', string='Nilai', states={'done': [('readonly', True)]})
     keterangan      = fields.Char(string='Keterangan', states={'done': [('readonly', True)]})
     state           = fields.Selection([('draft', 'Draft'),('done', 'Done')], default='draft', string='Status')
-    musyrif_id = fields.Many2one(
-    comodel_name='hr.employee', 
-    string='Musyrif', 
-    related='siswa_id.musyrif_id', 
-    readonly=True, 
-    store=True
-)
+    penanggung_jawab_id = fields.Many2one('hr.employee', string='Penanggung Jawab', related='halaqoh_id.penanggung_jawab_id', readonly=True, store=True)
+    
     def get_last_tahfidz(self):
         last_tahfidz = self.env['cdn.tahfidz_quran'].search([
             ('siswa_id', '=', self.siswa_id.id),
@@ -71,4 +66,3 @@ class TahfidzQuran(models.Model):
                     )
                 ))
         return result
-

@@ -14,19 +14,23 @@
 }
 
 .bg-success {
-    background-color: #28a745 !important; 
+    background-color: #0cba3e !important; 
 }
 
 .text-success {
-    color: #28a745 !important;
+    color: #0cba3e !important;
 }
 
 .icon-circle {
-    background-color: #28a745; 
+    background-color: #0cba3e; 
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
     width: 40px;
     height: 40px;
+}
+
+.clickable {
+    cursor: pointer;
 }

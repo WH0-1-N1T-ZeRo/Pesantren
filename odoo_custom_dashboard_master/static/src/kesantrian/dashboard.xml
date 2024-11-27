@@ -8,13 +8,22 @@
                     <div class="p-4">
                         <div class="d-flex flex-wrap align-items-center justify-content-between">
                             <h2 class="text-primary fw-bold">Dashboard Kesantrian</h2>
-                            <div class="d-flex align-items-center">
+                            <div class="d-md-flex align-items-center justify-content-center">
                                 <!-- Dropdown Periode -->
                                 <div class="dropdown me-3">
                                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <span t-esc="getPeriodLabel(state.selectedPeriod)"/>
                                     </button>
                                     <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item d-flex justify-content-between align-items-center" 
+                                            href="#" 
+                                            id="selectionFilter"
+                                            t-on-click.prevent="() => this.setPeriod('all')">
+                                                Default
+                                                <i class="fas fa-check" t-att-class="{'invisible': !isPeriodSelected('all')}"></i>
+                                            </a>
+                                        </li>
                                         <li>
                                             <a class="dropdown-item d-flex justify-content-between align-items-center" href="#" id="selectionFilter" t-on-click.prevent="() => this.setPeriod('today')">
                                                 Hari Ini
@@ -79,7 +88,7 @@
 
                                 <!-- Timer Button -->
                                 <button id="timerButton" class="btn btn-outline-secondary">
-                                    <i id="timerIcon" class="fas fa-stopwatch"></i>                                    <!-- Icon timer -->
+                                    <i id="timerIcon" class="fas fa-stopwatch"></i>
                                     <span id="timerCountdown"></span>
                                 </button>
                             </div>
@@ -120,31 +129,46 @@
 
             <!-- Charts -->
             <div class="row mx-0 my-3">
-                <div class="col-lg-4 col-md-12 col-sm-12 m-0 p-2">
+                <div class="col-lg-6 col-md-12 col-sm-12 m-0 p-2">
                     <div class="shadow-sm border p-4 bg-white h-100">
                         <h2 class="mb-5">Absen Tahfidz per Kehadiran</h2>
                         <ChartRenderer type="'donutChart'" period="state.selectedPeriod" startDate="state.selectedDateRange?.start" endDate="state.selectedDateRange?.end"/>
                     </div>
                 </div>
-                <div class="col-lg-8 col-md-12 col-sm-12 m-0 p-2">
+                <div class="col-lg-6 col-md-12 col-sm-12 m-0 p-2">
                     <div class="shadow-sm border p-4 bg-white h-100">
-                        <h2>Absen Tahfidz per Halaqoh</h2>
-                        <ChartRenderer type="'chart'" period="state.selectedPeriod" startDate="state.selectedDateRange?.start" endDate="state.selectedDateRange?.end"/>
+                        <h2 class="mb-5">Absen Tahsin per Kehadiran</h2>
+                        <ChartRenderer type="'donutChart2'" period="state.selectedPeriod" startDate="state.selectedDateRange?.start" endDate="state.selectedDateRange?.end"/>
                     </div>
                 </div>
             </div>
 
-            <div class="dashboard mx-0 my-3">
+            <div class="row mx-0 my-3">
+                <div class="col-lg-6 col-md-12 col-sm-12 m-0 p-2">
+                    <div class="shadow-sm border p-4 bg-white h-100">
+                        <h2 class="mb-5">Absen Tahfidz per Halaqoh</h2>
+                        <ChartRenderer type="'chart'" period="state.selectedPeriod" startDate="state.selectedDateRange?.start" endDate="state.selectedDateRange?.end"/>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12 m-0 p-2">
+                    <div class="shadow-sm border p-4 bg-white h-100">
+                        <h2 class="mb-5">Absen Tahsin per Halaqoh</h2>
+                        <ChartRenderer type="'chart2'" period="state.selectedPeriod" startDate="state.selectedDateRange?.start" endDate="state.selectedDateRange?.end"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mx-0 my-3">
                 <!-- Pelanggaran Card -->
-                <div class="p-2">
-                    <div class="shadow-sm border bg-white h-auto">
+                <div class="col-lg-6 col-md-12 col-sm-12 m-0 p-2">
+                    <div class="shadow-sm bg-white h-100" style="border-radius: 0.375rem; overflow: hidden;">
                         <PelanggaranCardList startDate="state.selectedDateRange?.start" endDate="state.selectedDateRange?.end"/>
                     </div>
                 </div>
 
                 <!-- Tahfidz Card -->
-                <div class="p-2">
-                    <div class="shadow-sm border bg-white h-auto">
+                <div class="col-lg-6 col-md-12 col-sm-12 m-0 p-2">
+                    <div class="shadow-sm bg-white h-100" style="border-radius: 0.375rem; overflow: hidden;">
                         <TahfidzCardList startDate="state.selectedDateRange?.start" endDate="state.selectedDateRange?.end"/>
                     </div>
                 </div>

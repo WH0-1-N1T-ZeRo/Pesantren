@@ -21,18 +21,24 @@
 
     setup() {
       this.chartRef = useRef("chart");
-      this.donutChartRef = useRef("donutChart"); // Add pie chart reference
+      this.chart2Ref = useRef("chart2");
+      this.donutChartRef = useRef("donutChart"); 
+      this.donutChart2Ref = useRef("donutChart2");
       this.orm = useService("orm");
       this.actionService = useService("action");
       this.state = {
         chartData: { series: [], labels: [] },
-        donutChartData: { series: [], labels: [] }, // Add pie chart data
+        chartData2: { series: [], labels: [] },
+        donutChartData: { series: [], labels: [] },
+        donutChartData2: { series: [], labels: [] }, 
         selectedPeriod: this.props.period || "all",
         currentStartDate: this.props.startDate,
         currentEndDate: this.props.endDate,
       };
       this.chartInstance = null;
-      this.donutChartInstance = null; // Add pie chart instance
+      this.chart2Instance = null;
+      this.donutChartInstance = null; 
+      this.donutChart2Instance = null; 
       this.countdownInterval = null;
       this.countdownTime = 10;
       this.isCountingDown = false;
@@ -56,6 +62,10 @@
             this.state.currentStartDate,
             this.state.currentEndDate
           );
+          await this.fetchTahsinAttendanceData(
+            this.state.currentStartDate,
+            this.state.currentEndDate
+          );
         }
       });
 
@@ -65,11 +75,17 @@
           this.state.currentStartDate,
           this.state.currentEndDate
         );
+        await this.fetchTahsinAttendanceData(
+          this.state.currentStartDate,
+          this.state.currentEndDate
+        );
       });
 
       onMounted(() => {
         this.renderChart();
-        this.renderDonutChart(); // Add pie chart rendering
+        this.renderChart2();
+        this.renderDonutChart(); 
+        this.renderDonutChart2(); 
         this.attachEventListeners();
       });
 
@@ -83,9 +99,17 @@
         this.chartInstance.destroy();
         this.chartInstance = null;
       }
-      if (this.donutChartInstance) { // Add pie chart cleanup
+      if (this.chart2Instance) {
+        this.chart2Instance.destroy();
+        this.chart2Instance = null;
+      }
+      if (this.donutChartInstance) { 
         this.donutChartInstance.destroy();
         this.donutChartInstance = null;
+      }
+      if (this.donutChart2Instance) { 
+        this.donutChart2Instance.destroy();
+        this.donutChart2Instance = null;
       }
       this.clearIntervals();
     }
@@ -131,6 +155,7 @@
       const endDate = this.state.isFiltered ? this.state.currentEndDate : null;
     
       await this.fetchAttendanceData(startDate, endDate);
+      await this.fetchTahsinAttendanceData(startDate, endDate);
     
       if (this.chartInstance) {
         this.chartInstance.updateOptions(
@@ -140,8 +165,21 @@
               categories: this.state.chartData.labels,
             },
           },
-          true,  // updateSeries
-          true   // updateOptions
+          true,  
+          true   
+        );
+      }
+
+      if (this.chart2Instance) {
+        this.chart2Instance.updateOptions(
+          {
+            series: this.state.chartData2.series,
+            xaxis: {
+              categories: this.state.chartData2.labels,
+            },
+          },
+          true,  
+          true  
         );
       }
     
@@ -150,6 +188,17 @@
           {
             labels: this.state.donutChartData.labels,
             series: this.state.donutChartData.series,
+        },
+          true,
+          true
+        );
+      }
+
+      if (this.donutChart2Instance) {
+        this.donutChart2Instance.updateOptions(
+          {
+            labels: this.state.donutChartData2.labels,
+            series: this.state.donutChartData2.series,
         },
           true,
           true
@@ -168,7 +217,7 @@
         timerButton.addEventListener("click", this.toggleCountdown.bind(this));
       }
 
-      // Add date filter listeners
+      
       const startDateInput = document.querySelector('input[name="start_date"]');
       const endDateInput = document.querySelector('input[name="end_date"]');
 
@@ -197,6 +246,7 @@
               this.state.isFiltered = true;
   
               await this.fetchAttendanceData(formattedStartDate, formattedEndDate);
+              await this.fetchTahsinAttendanceData(formattedStartDate, formattedEndDate);
           }
       }
   
@@ -242,10 +292,30 @@
         );
       }
 
+      if (this.chart2Instance) {
+        this.chart2Instance.updateOptions(
+          {
+            xaxis: {
+              categories: this.state.chartData2.labels,
+            },
+            series: this.state.chartData2.series,
+          },
+          false,
+          true
+        );
+      }
+
       if (this.donutChartInstance) {
         this.donutChartInstance.updateOptions({
           labels: this.state.donutChartData.labels,
           series: this.state.donutChartData.series,
+        });
+      }
+
+      if (this.donutChart2Instance) {
+        this.donutChart2Instance.updateOptions({
+          labels: this.state.donutChartData2.labels,
+          series: this.state.donutChartData2.series,
         });
       }
     }
@@ -275,8 +345,7 @@
           "search_read",
           [domain, ["name", "halaqoh_id", "tanggal", "kehadiran"]]
         );
-    
-        // Reset data containers
+        
         const groupedData = {};
         const halaqohSet = new Set();
         const attendanceStatus = {};
@@ -299,7 +368,7 @@
     
         const halaqohs = Array.from(halaqohSet).sort();
     
-        // Update bar chart data
+        
         this.state.chartData = {
           labels: ["Total"],
           series: halaqohs.map((halaqoh) => ({
@@ -309,19 +378,19 @@
           })),
         };
     
-        // Update pie chart data
+        
         this.state.donutChartData = {
           labels: Object.keys(attendanceStatus),
           series: Object.values(attendanceStatus),
         };
     
-        // Store the current view range in state for reference
+        
         this.state.currentViewRange = {
           startDate,
           endDate,
         };
     
-        // Render ulang chart setelah update data
+        
         this.renderChart();
         this.renderDonutChart();
     
@@ -330,6 +399,90 @@
         this.state.chartData = { series: [], labels: [] };
         this.state.donutChartData = { series: [], labels: [] };
         this.state.currentViewRange = null;
+      }
+    }
+
+    async fetchTahsinAttendanceData(startDate = null, endDate = null) {
+      
+      if (!startDate && !endDate) {
+        endDate = new Date();
+        startDate = new Date();
+        startDate.setDate(startDate.getDate() - 6);
+    
+        startDate = startDate.toISOString().split("T")[0];
+        endDate = endDate.toISOString().split("T")[0];
+      } else {
+        startDate = new Date(startDate).toISOString().split("T")[0];
+        endDate = new Date(endDate).toISOString().split("T")[0];
+      }
+    
+      const domain = [
+        ["tanggal", ">=", startDate],
+        ["tanggal", "<=", endDate],
+      ];
+    
+      try {
+        const data = await this.orm.call(
+          "cdn.absen_tahsin_quran_line",
+          "search_read",
+          [domain, ["name", "halaqoh_id", "tanggal", "kehadiran", "nis"]]
+        );
+    
+        
+        const groupedData = {};
+        const halaqohSet = new Set();
+        const attendanceStatus = {};
+    
+        data.forEach((record) => {
+          const halaqohName = record.halaqoh_id[1];
+          halaqohSet.add(halaqohName);
+          
+          if (!groupedData[halaqohName]) {
+            groupedData[halaqohName] = {
+              count: 0,
+              associated_ids: []
+            };
+          }
+          groupedData[halaqohName].count += 1;
+          groupedData[halaqohName].associated_ids.push(record.id);
+    
+          const status = record.kehadiran || 'Tidak Ada Status';
+          attendanceStatus[status] = (attendanceStatus[status] || 0) + 1;
+        });
+    
+        const halaqohs = Array.from(halaqohSet).sort();
+    
+        
+        this.state.chartData2 = {
+          labels: ["Total"],
+          series: halaqohs.map((halaqoh) => ({
+            name: halaqoh,
+            data: [groupedData[halaqoh].count],
+            associated_ids: [groupedData[halaqoh].associated_ids]
+          })),
+        };
+    
+        
+        this.state.donutChartData2 = {
+          labels: Object.keys(attendanceStatus),
+          series: Object.values(attendanceStatus),
+        };
+    
+        
+        this.state.currentViewRangeTahsin = {
+          startDate,
+          endDate,
+        };
+    
+        
+        this.renderChart2();
+        this.renderDonutChart2();
+    
+      } catch (error) {
+        console.error("Error fetching Tahsin attendance data:", error);
+        this.state.chartData2 = { series: [], labels: [] };
+        this.state.donutChartData2 = { series: [], labels: [] };
+        this.state.currentViewRangeTahsin = null;
       }
     }
 
@@ -353,16 +506,16 @@
 
     getChartConfig() {
       const barColors = [
-        "#16a34a", // green
-        "#0891b2", // cyan
-        "#22c55e", // emerald
-        "#06b6d4", // light blue
-        "#15803d", // dark green
-        "#0e7490", // dark cyan
-        "#86efac", // light green
-        "#67e8f9", // light cyan
-        "#166534", // forest green
-        "#155e75", // ocean blue
+        "#16a34a", 
+        "#0891b2", 
+        "#22c55e", 
+        "#06b6d4", 
+        "#15803d", 
+        "#0e7490", 
+        "#86efac", 
+        "#67e8f9", 
+        "#166534", 
+        "#155e75", 
       ];
 
       const baseConfig = {
@@ -390,6 +543,9 @@
             dataPointSelection: (event, chartContext, config) =>
               this.onChartClick(event, chartContext, config),
           },
+          hover: {
+            mode: null
+          }
         },
         colors: barColors,
         title: {
@@ -419,7 +575,7 @@
           },
         },
         dataLabels: {
-          enabled: true,
+          enabled: false,
           formatter: function (val) {
             return Math.round(val);
           },
@@ -439,7 +595,10 @@
               position: "top",
             },
             groupPadding: 0.3,
-          },
+            hover: {
+              enabled: false
+            }
+          }
         },
         stroke: {
           width: 2,
@@ -526,16 +685,16 @@
           enabled: false,
         },
         colors: [
-          "#16a34a", // green
-          "#0891b2", // cyan
-          "#22c55e", // emerald
-          "#06b6d4", // light blue
-          "#15803d", // dark green
-          "#0e7490", // dark cyan
-          "#86efac", // light green
-          "#67e8f9", // light cyan
-          "#166534", // forest green
-          "#155e75", // ocean blue  
+          "#16a34a", 
+          "#0891b2", 
+          "#22c55e", 
+          "#06b6d4", 
+          "#15803d", 
+          "#0e7490", 
+          "#86efac", 
+          "#67e8f9", 
+          "#166534", 
+          "#155e75", 
         ],
         labels: this.state.donutChartData.labels,
         series: this.state.donutChartData.series,
@@ -570,6 +729,271 @@
       };
     }
 
+    getChartConfig2() {
+      const barColors = [
+        "#16a34a", 
+        "#0891b2", 
+        "#22c55e", 
+        "#06b6d4", 
+        "#15803d", 
+        "#0e7490", 
+        "#86efac", 
+        "#67e8f9", 
+        "#166534", 
+        "#155e75", 
+      ];
+    
+      const baseConfig = {
+        chart: {
+          type: "bar",
+          height: 450,
+          stacked: false,
+          toolbar: {
+            show: false,
+            tools: {
+              download: true,
+              selection: false,
+              zoom: true,
+              zoomin: true,
+              zoomout: true,
+              pan: true,
+            },
+          },
+          animations: {
+            enabled: true,
+            easing: "easeinout",
+            speed: 800,
+          },
+          events: {
+            dataPointSelection: (event, chartContext, config) =>
+              this.onChartClick2(event, chartContext, config),
+          },
+        },
+        colors: barColors,
+        title: {
+          text: '',
+          align: "center",
+          style: {
+            fontSize: "18px",
+            fontWeight: "600",
+            fontFamily: "Inter, sans-serif",
+          },
+        },
+        legend: {
+          position: "bottom",
+        },
+        xaxis: {
+          type: "category",
+          categories: this.state.chartData2.labels,
+          labels: {
+            style: {
+              fontSize: "12px",
+              fontFamily: "Inter, sans-serif",
+            },
+            rotate: -45,
+            formatter: function (value) {
+              return value.length > 15 ? value.substring(0, 15) + "..." : value;
+            },
+          },
+        },
+        dataLabels: {
+          enabled: true,
+          formatter: function (val) {
+            return Math.round(val);
+          },
+          style: {
+            fontSize: "12px",
+            colors: ["#304758"],
+          },
+          offsetY: -20,
+        },
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: "55%",
+            endingShape: "flat",
+            borderRadius: 4,
+            dataLabels: {
+              position: "top",
+            },
+            groupPadding: 0.3,
+          },
+        },
+        stroke: {
+          width: 2,
+          colors: ["transparent"],
+        },
+        yaxis: {
+          title: {
+            text: "",
+            style: {
+              fontSize: "14px",
+              fontFamily: "Inter, sans-serif",
+            },
+          },
+          labels: {
+            formatter: function (val) {
+              return Math.round(val);
+            },
+          },
+        },
+        tooltip: {
+          shared: true,
+          intersect: false,
+          y: {
+            formatter: function (val) {
+              return Math.round(val);
+            },
+          },
+        },
+        noData: {
+          text: 'Tidak ada data',
+          align: 'center',
+          verticalAlign: 'middle',
+          style: {
+            color: '#1f2937',
+            fontSize: '16px',
+            fontFamily: 'Inter'
+          }
+        }
+      };
+    
+      return baseConfig;
+    }
+    
+    
+    getDonutChartConfig2() {
+      return {
+        chart: {
+          type: 'pie',
+          height: 355,
+          toolbar: {
+            show: false
+          },
+          animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 800,
+            animateGradually: {
+              enabled: true,
+              delay: 150
+            },
+            dynamicAnimation: {
+              enabled: true,
+              speed: 350
+            }
+          },
+          events: {
+            dataPointSelection: (event, chartContext, config) =>
+              this.onPieClick2(event, chartContext, config),
+          },
+        },
+        title: {
+          text: '',
+          align: 'center',
+          style: {
+            fontSize: '18px',
+            fontWeight: '600',
+            fontFamily: 'Inter, sans-serif',
+          },
+        },
+        legend: {
+          position: 'top',
+          horizontalAlign: 'center',
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        colors: [
+          "#16a34a", 
+          "#0891b2", 
+          "#22c55e", 
+          "#06b6d4", 
+          "#15803d", 
+          "#0e7490", 
+          "#86efac", 
+          "#67e8f9", 
+          "#166534", 
+          "#155e75", 
+        ],
+        labels: this.state.donutChartData2.labels,
+        series: this.state.donutChartData2.series,
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 300
+            },
+            legend: {
+              position: 'top'
+            }
+          }
+        }],
+        tooltip: {
+          y: {
+            formatter: function(value) {
+              return value + ' orang';
+            }
+          }
+        },
+        noData: {
+          text: 'Tidak ada data',
+          align: 'center',
+          verticalAlign: 'middle',
+          style: {
+            color: '#1f2937',
+            fontSize: '16px',
+            fontFamily: 'Inter'
+          }
+        }
+      };
+    }
+    
+    
+    renderDonutChart2() {
+      if (!this.donutChart2Ref.el) return;
+    
+      if (this.donutChartInstance2) {
+        this.donutChartInstance2.destroy();
+        this.donutChartInstance2 = null;
+      }
+    
+      this.donutChart2Ref.el.innerHTML = "";
+    
+      const config = this.getDonutChartConfig2();
+    
+      try {
+        this.donutChartInstance2 = new ApexCharts(this.donutChart2Ref.el, config);
+        this.donutChartInstance2.render();
+      } catch (error) {
+        console.error("Error rendering Tahsin pie chart:", error);
+      }
+    }
+    
+    
+    renderChart2() {
+      if (!this.chart2Ref.el) return;
+    
+      if (this.chartInstance2) {
+        this.chartInstance2.destroy();
+        this.chartInstance2 = null;
+      }
+    
+      this.chart2Ref.el.innerHTML = "";
+    
+      const config = {
+        ...this.getChartConfig2(),
+        series: this.state.chartData2.series,
+      };
+    
+      try {
+        this.chartInstance2 = new ApexCharts(this.chart2Ref.el, config);
+        this.chartInstance2.render();
+      } catch (error) {
+        console.error("Error rendering Tahsin chart:", error);
+      }
+    }
+
     renderDonutChart() {
       if (!this.donutChartRef.el) return;
 
@@ -600,7 +1024,7 @@
         ["kehadiran", "=", selectedStatus],
       ];
   
-      // Add date range filter if a custom range is selected
+      
       if (this.state.currentViewRange) {
         domain.push(
           ["tanggal", ">=", this.state.currentViewRange.startDate],
@@ -647,6 +1071,67 @@
         domain: [["id", "in", associatedIds]],
       };
 
+      this.actionService.doAction(actionConfig);
+    }
+
+    onChartClick2(event, chartContext, config) {
+      const dataPointIndex = config.dataPointIndex;
+      const seriesIndex = config.seriesIndex;
+    
+      if (dataPointIndex === -1) return;
+    
+      const associatedIds =
+        this.state.chartData2.series[seriesIndex].associated_ids[dataPointIndex];
+      if (!associatedIds || associatedIds.length === 0) return;
+    
+      const actionConfig = {
+        type: "ir.actions.act_window",
+        target: "current",
+        name: "Absen Tahsin",
+        res_model: "cdn.absen_tahsin_quran_line",
+        view_mode: "list,form",
+        views: [
+          [false, "list"],
+          [false, "form"],
+        ],
+        domain: [["id", "in", associatedIds]],
+      };
+    
+      this.actionService.doAction(actionConfig);
+    }
+    
+    
+    onPieClick2(event, chartContext, config) {
+      const dataPointIndex = config.dataPointIndex;
+    
+      if (dataPointIndex === -1) return;
+    
+      const selectedStatus = this.state.donutChartData2.labels[dataPointIndex];
+      const domain = [
+        ["kehadiran", "=", selectedStatus],
+      ];
+    
+      
+      if (this.state.currentViewRangeTahsin) {
+        domain.push(
+          ["tanggal", ">=", this.state.currentViewRangeTahsin.startDate],
+          ["tanggal", "<=", this.state.currentViewRangeTahsin.endDate]
+        );
+      }
+    
+      const actionConfig = {
+        type: "ir.actions.act_window",
+        target: "current",
+        name: `Absen Tahsin - ${selectedStatus}`,
+        res_model: "cdn.absen_tahsin_quran_line",
+        view_mode: "list,form",
+        views: [
+          [false, "list"],
+          [false, "form"],
+        ],
+        domain: domain,
+      };
+    
       this.actionService.doAction(actionConfig);
     }
 

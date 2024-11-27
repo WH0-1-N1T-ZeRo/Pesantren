@@ -71,9 +71,11 @@
         'views/biaya_daftarulang.xml',
         'views/res_config_settings.xml',
         'views/pendaftaran_seleksi.xml',
+        'views/cron_job.xml',
 
         # report
         'report/ubig_pendaftaran_report.xml',
+
         
         # wizard
 

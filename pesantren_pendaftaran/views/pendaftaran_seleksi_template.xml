@@ -111,7 +111,7 @@
                                     <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                                 </li>
                                 <li class="nav-item me-3">
-                                    <a class="nav-link text-white" href="/psb">
+                                    <a class="nav-link text-white" href="/pendaftaran">
                                         <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                                 </li>
                                 <li class="nav-item me-3">
@@ -152,7 +152,7 @@
                                 <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                             </li>
                             <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/psb">
+                                <a class="nav-link text-white" href="/pendaftaran">
                                     <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                             </li>
                             <li class="nav-item me-3">
@@ -274,6 +274,15 @@
                 bodyElement.classList.remove('o_body_html');
                 bodyElement.classList.remove('container');
                 }
+
+                document.querySelectorAll('.offcanvas').forEach((offcanvas) => {
+                    offcanvas.addEventListener('show.bs.offcanvas', () => {
+                        document.querySelectorAll('.offcanvas-backdrop').forEach((backdrop) => {
+                            backdrop.remove(); // Hapus backdrop yang bertumpuk
+                        });
+                    });
+                });
+
             </script>
 
         </t>
@@ -382,7 +391,7 @@
                                 src="https://i.ibb.co.com/f9j819p/1731466812700.png" width="50"
                                 alt="Logo Pesantren" /> Daarul Qur'an Istiqomah </a>
                         <button class="navbar-toggler ms-auto" type="button"
-                            data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                            data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar2"
                             aria-controls="offcanvasNavbar">
                             <span class="navbar-toggler-icon"></span>
                         </button>
@@ -392,7 +401,7 @@
                                     <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                                 </li>
                                 <li class="nav-item me-3">
-                                    <a class="nav-link text-white" href="/psb">
+                                    <a class="nav-link text-white" href="/pendaftaran">
                                         <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                                 </li>
                                 <li class="nav-item me-3">
@@ -417,7 +426,7 @@
                     </div>
                 </nav>
 
-                <div class="offcanvas offcanvas-end background" tabindex="-1" id="offcanvasNavbar"
+                <div class="offcanvas offcanvas-end background" tabindex="-1" id="offcanvasNavbar2"
                     aria-labelledby="offcanvasNavbarLabel">
                     <button type="button" class="btn-close btn-close-white"
                         data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -431,7 +440,7 @@
                                 <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                             </li>
                             <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/psb">
+                                <a class="nav-link text-white" href="/pendaftaran">
                                     <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                             </li>
                             <li class="nav-item me-3">
@@ -551,6 +560,16 @@
                 bodyElement.classList.remove('o_body_html');
                 bodyElement.classList.remove('container');
                 }
+
+                document.querySelectorAll('.offcanvas').forEach((offcanvas) => {
+                    offcanvas.addEventListener('show.bs.offcanvas', () => {
+                        document.querySelectorAll('.offcanvas-backdrop').forEach((backdrop) => {
+                            backdrop.remove(); // Hapus backdrop yang bertumpuk
+                        });
+                    });
+                });
+
+
             </script>
 
         </t>
@@ -658,7 +677,7 @@
                                 src="https://i.ibb.co.com/f9j819p/1731466812700.png" width="50"
                                 alt="Logo Pesantren" /> Daarul Qur'an Istiqomah </a>
                         <button class="navbar-toggler ms-auto" type="button"
-                            data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                            data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar3"
                             aria-controls="offcanvasNavbar">
                             <span class="navbar-toggler-icon"></span>
                         </button>
@@ -668,7 +687,7 @@
                                     <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                                 </li>
                                 <li class="nav-item me-3">
-                                    <a class="nav-link text-white" href="/psb">
+                                    <a class="nav-link text-white" href="/pendaftaran">
                                         <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                                 </li>
                                 <li class="nav-item me-3">
@@ -694,7 +713,7 @@
                     </div>
                 </nav>
 
-                <div class="offcanvas offcanvas-end background" tabindex="-1" id="offcanvasNavbar"
+                <div class="offcanvas offcanvas-end background" tabindex="-1" id="offcanvasNavbar3"
                     aria-labelledby="offcanvasNavbarLabel">
                     <button type="button" class="btn-close btn-close-white"
                         data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -708,7 +727,7 @@
                                 <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                             </li>
                             <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/psb">
+                                <a class="nav-link text-white" href="/pendaftaran">
                                     <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                             </li>
                             <li class="nav-item me-3">
@@ -829,9 +848,20 @@
                 bodyElement.classList.remove('o_body_html');
                 bodyElement.classList.remove('container');
                 }
+
+                document.querySelectorAll('.offcanvas').forEach((offcanvas) => {
+                    offcanvas.addEventListener('show.bs.offcanvas', () => {
+                        document.querySelectorAll('.offcanvas-backdrop').forEach((backdrop) => {
+                            backdrop.remove(); // Hapus backdrop yang bertumpuk
+                        });
+                    });
+                });
+
+
             </script>
 
         </t>
     </template>
+    
 
 </odoo>
