@@ -31,6 +31,7 @@ class TahsinQuran(models.Model):
         ('draft', 'Draft'),
         ('done', 'Selesai')
     ], default='draft', string='Status')
+    penanggung_jawab_id = fields.Many2one('hr.employee', string='Penanggung Jawab', related='halaqoh_id.penanggung_jawab_id', readonly=True, store=True)
 
     # Jika buku tahsin diubah, maka jilid dan halaman direset
     @api.onchange('buku_tahsin_id')

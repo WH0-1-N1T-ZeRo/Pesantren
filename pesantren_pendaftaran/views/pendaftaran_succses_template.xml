@@ -120,16 +120,17 @@
                                     <a class="nav-link text-white" style="color: white !important;"
                                         href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
                                 </li>
-                                <li class="nav-item dropdown">
-                                    <a href="#" class="dropdown-link nav-link"
-                                        style="color: white !important;">
-                                        <i class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
+                                <t t-if="is_halaman_pengumuman">
+                                    <li class="nav-item dropdown">
+                                    <a href="#" class="dropdown-link nav-link" style="color: white !important;"><i
+                                        class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
                                     <div class="dropdown-content">
                                         <a href="/pengumuman/sd-mi">SD / MI</a>
                                         <a href="/pengumuman/smp-mts">SMP / MTS</a>
                                         <a href="/pengumuman/sma-ma">SMA / MA</a>
                                     </div>
-                                </li>
+                                    </li>
+                                </t>
                             </ul>
                         </div>
                     </div>
@@ -160,16 +161,17 @@
                                 <a class="nav-link text-white" href="/bantuan"><i
                                         class="fa-solid fa-lock me-2"></i>Bantuan</a>
                             </li>
-                            <li class="nav-item dropdown">
-                                <a href="#" class="dropdown-link nav-link"
-                                    style="color: white !important;">
-                                    <i class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
+                            <t t-if="is_halaman_pengumuman">
+                                <li class="nav-item dropdown">
+                                <a href="#" class="dropdown-link nav-link" style="color: white !important;"><i
+                                    class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
                                 <div class="dropdown-content">
                                     <a href="/pengumuman/sd-mi">SD / MI</a>
                                     <a href="/pengumuman/smp-mts">SMP / MTS</a>
                                     <a href="/pengumuman/sma-ma">SMA / MA</a>
                                 </div>
-                            </li>
+                                </li>
+                            </t>
                         </ul>
                     </div>
                 </div>
@@ -239,7 +241,7 @@
                                                 t-esc="'{:,}'.format(pendaftaran.biaya).replace(',', '.')" /></span>
                                     </div>
                                 </div>
-                                <a t-attf-href="/pendaftaran/cetak?id=#{pendaftaran.id}"
+                                <a t-attf-href="/pendaftaran/cetak?token=#{pendaftaran.token}"
                                     class="text-uppercase mb-5 d-inline-block"
                                     style="background-color: #A812AE; padding: 10px; border-radius: 20px; color: white; text-decoration: none; font-size: 13px; margin-left: 30px;"
                                     target="_blank">Cetak Form Pembayaran</a>

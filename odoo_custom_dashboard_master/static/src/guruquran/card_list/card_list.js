@@ -11,6 +11,7 @@ export class GuruquranTahsinCardList extends Component {
 
     setup() {
         this.orm = useService('orm');
+        this.actionService = useService('action');
         this.state = {
             tahsinData: [],
             isLoading: true,
@@ -32,6 +33,35 @@ export class GuruquranTahsinCardList extends Component {
             }
         });
     }
+
+    async onTahsinRowClick(tahsin) {
+        try {
+            // Search for the tahsin record that matches the student and details
+            const tahsinRecord = await this.orm.searchRead(
+                'cdn.tahsin_quran', 
+                [
+                    ['siswa_id.name', '=', tahsin.student_name],
+                    ['buku_tahsin_id.name', '=', tahsin.book],
+                    ['halaman_tahsin', '=', tahsin.page]
+                ], 
+                ['id']
+            );
+    
+            if (tahsinRecord.length > 0) {
+                // Open the form view for the tahsin record
+                this.actionService.doAction({
+                    type: 'ir.actions.act_window',
+                    res_model: 'cdn.tahsin_quran',
+                    res_id: tahsinRecord[0].id,
+                    views: [[false, 'form']],
+                    target: 'current'
+                });
+            }
+        } catch (error) {
+            console.error("Error navigating to tahsin record:", error);
+        }
+    }
+    
 
     async fetchTahsinData() {
         try {
@@ -69,7 +99,6 @@ export class GuruquranTahsinCardList extends Component {
                 return;
             }
     
-            // Process and structure the data
             const processedData = tahsinData.map(record => ({
                 student_name: record.siswa_id[1],
                 date: record.tanggal,
@@ -77,7 +106,7 @@ export class GuruquranTahsinCardList extends Component {
                 volume: record.jilid_tahsin_id ? record.jilid_tahsin_id[1] : 'N/A',
                 page: record.halaman_tahsin || 'N/A'
             }));
-
+    
             // Group by student and get their latest entry
             const studentLatestEntries = {};
             processedData.forEach(record => {
@@ -86,18 +115,23 @@ export class GuruquranTahsinCardList extends Component {
                     new Date(record.date) > new Date(studentLatestEntries[studentName].date)) {
                     studentLatestEntries[studentName] = record;
                 }
-            });
+            });    
     
-            // Convert to array and sort by date (most recent first)
             this.state.tahsinData = Object.values(studentLatestEntries)
-                .sort((a, b) => new Date(b.date) - new Date(a.date))
-                .map((item, index) => ({
+            .sort((a, b) => new Date(b.date) - new Date(a.date))
+            .slice (0, 10)
+            .map((item, index) => {
+                const tahsin = {
                     number: index + 1,
                     ...item
-                }));
-    
+                };
+                
+                tahsin.onClick = () => this.onTahsinRowClick(tahsin);
+                return tahsin;
+            });
+
             this.state.hasData = this.state.tahsinData.length > 0;
-    
+
         } catch (error) {
             console.error("Error fetching tahsin data:", error);
             this.state.tahsinData = [];
@@ -118,6 +152,7 @@ export class GuruquranTahfidzCardList extends Component {
 
     setup() {
         this.orm = useService('orm');
+        this.actionService = useService('action');
         this.state = {
             topTahfidz: [],
             isLoading: true,
@@ -140,6 +175,33 @@ export class GuruquranTahfidzCardList extends Component {
         });
     }
 
+    async onTahfidzRowClick(tahfidz) {
+        try {
+            // Cari record tahfidz yang sesuai
+            const tahfidzRecord = await this.orm.searchRead(
+                'cdn.tahfidz_quran', 
+                [
+                    ['siswa_id.name', '=', tahfidz.name],
+                    ['jml_baris', '=', tahfidz.total_baris]
+                ], 
+                ['id']
+            );
+    
+            if (tahfidzRecord.length > 0) {
+                // Buka form view tahfidz
+                this.actionService.doAction({
+                    type: 'ir.actions.act_window',
+                    res_model: 'cdn.tahfidz_quran',
+                    res_id: tahfidzRecord[0].id,
+                    views: [[false, 'form']],
+                    target: 'current'
+                });
+            }
+        } catch (error) {
+            console.error("Error navigating to tahfidz record:", error);
+        }
+    }
+
     async fetchTahfidzTertinggi() {
         try {
             this.state.isLoading = true;
@@ -158,7 +220,7 @@ export class GuruquranTahfidzCardList extends Component {
                 filterDomain.push(['tanggal', '<=', this.state.currentEndDate]);
             }
     
-            const tahfidzData = await this.orm.searchRead(
+            const tahfidzRecords = await this.orm.searchRead(
                 'cdn.tahfidz_quran',
                 filterDomain,
                 [
@@ -171,7 +233,7 @@ export class GuruquranTahfidzCardList extends Component {
                 { order: 'jml_baris desc' }
             );
     
-            if (!tahfidzData || tahfidzData.length === 0) {
+            if (!tahfidzRecords || tahfidzRecords.length === 0) {
                 this.state.hasData = false;
                 this.state.topTahfidz = [];
                 return;
@@ -179,7 +241,7 @@ export class GuruquranTahfidzCardList extends Component {
     
             // Group by student name and get their highest jml_baris
             const studentTahfidz = {};
-            tahfidzData.forEach(record => {
+            tahfidzRecords.forEach(record => {
                 if (record.jml_baris > 0) {
                     const studentName = record.siswa_id[1];
                     if (!studentTahfidz[studentName] || studentTahfidz[studentName].jml_baris < record.jml_baris) {
@@ -200,13 +262,18 @@ export class GuruquranTahfidzCardList extends Component {
                     kelas: data.kelas
                 }))
                 .sort((a, b) => b.total_baris - a.total_baris)
-                .slice(0, 5);
+                .slice(0, 10);
     
             // Apply sequential numbering after sorting
-            this.state.topTahfidz = sortedData.map((item, index) => ({
-                number: index + 1,
-                ...item
-            }));
+            this.state.topTahfidz = sortedData.map((item, index) => {
+                const tahfidz = {
+                    number: index + 1,
+                    ...item
+                };
+                
+                tahfidz.onClick = () => this.onTahfidzRowClick(tahfidz);
+                return tahfidz;
+            });
     
             this.state.hasData = this.state.topTahfidz.length > 0;
     

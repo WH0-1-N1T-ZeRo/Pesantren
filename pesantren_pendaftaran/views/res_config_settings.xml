@@ -35,6 +35,10 @@
                                 <field name="tgl_pengumuman_hasil_seleksi" widget="datetime" string="Tanggal Pengumuman Hasil Seleksi"/>
                             </group>
 
+                            <group string="Halaman Pengumuman" name="group_halaman_pengumuman">
+                                <field name="is_halaman_pengumuman"/>
+                            </group>
+
                         </block>
                     </app>
                 </xpath>

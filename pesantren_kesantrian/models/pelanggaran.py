@@ -115,4 +115,3 @@ class Pelanggaran(models.Model):
         self.state = 'draft'
     
 
-

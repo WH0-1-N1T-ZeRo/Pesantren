@@ -8,7 +8,7 @@
                     <div class="p-4">
                         <div class="d-flex flex-wrap align-items-center justify-content-between">
                             <h2 class="text-primary fw-bold">Dashboard Guru Qur'an</h2>
-                            <div class="d-flex align-items-center">
+                            <div class="d-md-flex align-items-center justify-content-center">
                                 <!-- Dropdown Periode -->
                                 <div class="dropdown me-3">
                                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -146,13 +146,13 @@
 
             <div class="row mx-0 my-3">
                 <div class="col-lg-6 col-md-12 col-sm-12 m-0 p-2">
-                    <div class="shadow-sm border bg-white h-auto">
+                    <div class="shadow-sm border bg-white h-100">
                         <GuruquranTahsinCardList startDate="state.selectedDateRange?.start" endDate="state.selectedDateRange?.end"/>
                     </div>
                 </div>
 
                 <div class="col-lg-6 col-md-12 col-sm-12 m-0 p-2">
-                    <div class="shadow-sm bg-white h-auto" style="border-radius: 0.375rem; overflow: hidden;">
+                    <div class="shadow-sm bg-white h-100" style="border-radius: 0.375rem; overflow: hidden;">
                         <GuruquranTahfidzCardList startDate="state.selectedDateRange?.start" endDate="state.selectedDateRange?.end"/>
                     </div>
                 </div>

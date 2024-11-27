@@ -4,10 +4,11 @@ import json
 from odoo import http
 from odoo.http import request
 import random
-import datetime
 from datetime import date
+import datetime
 from odoo.exceptions import UserError
 import hashlib
+import locale
 
 class PsbController(http.Controller):
     @http.route('/psb/statistics', type='http', auth='user', methods=['POST'], csrf=False)
@@ -52,28 +53,85 @@ class PsbController(http.Controller):
 class PesantrenBeranda(http.Controller):
     @http.route('/beranda', type='http', auth='public')
     def index(self, **kwargs):
-        # Mengambil data dari model
-        data_pendaftaran = request.env['ubig.pendaftaran'].get_psb_statistics()
 
-        # Ambil nilai dari field konfigurasi
-        config_obj = request.env['ir.config_parameter'].sudo()
+        # Ambil perusahaan yang aktif (current company)
+        company = http.request.env.user.company_id
+
+        # Ambil alamat perusahaan
+        alamat_perusahaan = {
+            'street': company.street or '',
+            'street2': company.street2 or '',
+            'city': company.city or '',
+            'state': company.state_id.name if company.state_id else '',
+            'zip': company.zip or '',
+            'country': company.country_id.name if company.country_id else '',
+        }
+
+        # Gabungkan alamat menjadi satu string (opsional)
+        alamat_lengkap = ', '.join(filter(None, [
+            alamat_perusahaan['street'],
+            alamat_perusahaan['street2'],
+            alamat_perusahaan['city'],
+            alamat_perusahaan['state'],
+            alamat_perusahaan['zip'],
+            alamat_perusahaan['country']
+        ]))
+
+         # Ambil nilai dari field konfigurasi
+        config_obj = http.request.env['ir.config_parameter'].sudo()
 
         tgl_mulai_pendaftaran = config_obj.get_param('pesantren_pendaftaran.tgl_mulai_pendaftaran')
         tgl_akhir_pendaftaran = config_obj.get_param('pesantren_pendaftaran.tgl_akhir_pendaftaran')
         tgl_mulai_seleksi = config_obj.get_param('pesantren_pendaftaran.tgl_mulai_seleksi')
         tgl_akhir_seleksi = config_obj.get_param('pesantren_pendaftaran.tgl_akhir_seleksi')
+        tgl_pengumuman_hasil_seleksi = config_obj.get_param('pesantren_pendaftaran.tgl_pengumuman_hasil_seleksi')
 
-        # Jika parameter konfigurasi kosong, set default date-time
-        tgl_mulai_pendaftaran = tgl_mulai_pendaftaran or datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        tgl_akhir_pendaftaran = tgl_akhir_pendaftaran or datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        tgl_mulai_seleksi = tgl_mulai_seleksi or datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        tgl_akhir_seleksi = tgl_akhir_seleksi or datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        # Set nilai default dinamis jika parameter kosong
+        if not tgl_mulai_pendaftaran:
+            tgl_mulai_pendaftaran_dt = datetime.datetime.now() + datetime.timedelta(days=1)
+            tgl_mulai_pendaftaran = tgl_mulai_pendaftaran_dt.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            tgl_mulai_pendaftaran_dt = datetime.datetime.strptime(tgl_mulai_pendaftaran, '%Y-%m-%d %H:%M:%S')
 
-        # Format tanggal untuk tampil di HTML dengan format yang lebih sederhana (misalnya 23 November 2024)
-        tgl_mulai_pendaftaran = datetime.datetime.strptime(tgl_mulai_pendaftaran, '%Y-%m-%d %H:%M:%S').strftime('%d %B %Y')
-        tgl_akhir_pendaftaran = datetime.datetime.strptime(tgl_akhir_pendaftaran, '%Y-%m-%d %H:%M:%S').strftime('%d %B %Y')
-        tgl_mulai_seleksi = datetime.datetime.strptime(tgl_mulai_seleksi, '%Y-%m-%d %H:%M:%S').strftime('%d %B %Y')
-        tgl_akhir_seleksi = datetime.datetime.strptime(tgl_akhir_seleksi, '%Y-%m-%d %H:%M:%S').strftime('%d %B %Y')
+        if not tgl_akhir_pendaftaran:
+            tgl_akhir_pendaftaran_dt = tgl_mulai_pendaftaran_dt + datetime.timedelta(days=3)
+            tgl_akhir_pendaftaran = tgl_akhir_pendaftaran_dt.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            tgl_akhir_pendaftaran_dt = datetime.datetime.strptime(tgl_akhir_pendaftaran, '%Y-%m-%d %H:%M:%S')
+
+        if not tgl_mulai_seleksi:
+            tgl_mulai_seleksi_dt = tgl_akhir_pendaftaran_dt
+            tgl_mulai_seleksi = tgl_mulai_seleksi_dt.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            tgl_mulai_seleksi_dt = datetime.datetime.strptime(tgl_mulai_seleksi, '%Y-%m-%d %H:%M:%S')
+
+        if not tgl_akhir_seleksi:
+            tgl_akhir_seleksi_dt = tgl_mulai_seleksi_dt + datetime.timedelta(days=3)
+            tgl_akhir_seleksi = tgl_akhir_seleksi_dt.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            tgl_akhir_seleksi_dt = datetime.datetime.strptime(tgl_akhir_seleksi, '%Y-%m-%d %H:%M:%S')
+
+        if not tgl_pengumuman_hasil_seleksi:
+            tgl_pengumuman_hasil_seleksi_dt = tgl_akhir_seleksi_dt + datetime.timedelta(days=2)
+            tgl_pengumuman_hasil_seleksi = tgl_pengumuman_hasil_seleksi_dt.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            tgl_pengumuman_hasil_seleksi_dt = datetime.datetime.strptime(tgl_pengumuman_hasil_seleksi, '%Y-%m-%d %H:%M:%S')
+
+        # Format tanggal manual dalam bahasa Indonesia
+        def format_tanggal_manual(dt):
+            bulan_indonesia = [
+                "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+            ]
+            return f"{dt.day} {bulan_indonesia[dt.month - 1]} {dt.year}"
+
+        # Format tanggal untuk ditampilkan di halaman
+        tgl_mulai_pendaftaran_formatted = format_tanggal_manual(tgl_mulai_pendaftaran_dt)
+        tgl_akhir_pendaftaran_formatted = format_tanggal_manual(tgl_akhir_pendaftaran_dt)
+        tgl_mulai_seleksi_formatted = format_tanggal_manual(tgl_mulai_seleksi_dt)
+        tgl_akhir_seleksi_formatted = format_tanggal_manual(tgl_akhir_seleksi_dt)
+        tgl_pengumuman_hasil_seleksi_formatted = format_tanggal_manual(tgl_pengumuman_hasil_seleksi_dt)
+
 
         html_content = f"""
                     <!doctype html>
@@ -514,9 +572,9 @@ class PesantrenBeranda(http.Controller):
                         <div class="accordion-body">
                             <!-- Konten untuk Verifikasi Berkas -->
                             <p class="m-0">Tanggal:</p>
-                            <p class="fw-bold">{tgl_mulai_pendaftaran} s.d {tgl_akhir_pendaftaran}</p>
+                            <p class="fw-bold">{tgl_mulai_pendaftaran_formatted} s.d {tgl_akhir_pendaftaran_formatted}</p>
                             <p class="m-0">Tempat Penerimaan:</p>
-                            <p class="fw-bold">Pondok Pesantren Daarul Qur'an Istiqomah, Jl. Ambawang, RT.03/RW.01, Karang Taruna, Kec. Pelaihari, Kabupaten Tanah Laut, Kalimantan Selatan 70815 </p>
+                            <p class="fw-bold">Pondok Pesantren Daarul Qur'an Istiqomah, {alamat_lengkap} </p>
                         </div>
                         </div>
                     </div>
@@ -551,17 +609,16 @@ class PesantrenBeranda(http.Controller):
                     <div class="col-md-4">
                     <h5>Pondok Pesantren Daarul Qur’an Istiqomah</h5>
                     <p>
-                        Jl. Ambawang, RT.03/RW.01, Karang Taruna, Kec. Pelaihari, Kabupaten Tanah Laut, Kalimantan Selatan 70815 <br>
+                        {alamat_lengkap} <br>
                         Telp. (0888-307-7077)
                     </p>
                     </div>
                     <div class="col-md-4">
                     <h5>Social Pages</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-white"><i class="bi bi-facebook"></i> Facebook</a></li>
-                        <li><a href="#" class="text-white"><i class="bi bi-twitter"></i> Twitter</a></li>
-                        <li><a href="#" class="text-white"><i class="bi bi-instagram"></i> Instagram</a></li>
-                        <li><a href="#" class="text-white"><i class="bi bi-youtube"></i> Youtube</a></li>
+                        <li><a href="https://www.facebook.com/daquistiqomah?mibextid=ZbWKwL" class="text-white"><i class="bi bi-facebook"></i> Facebook</a></li>
+                        <li><a href="https://www.instagram.com/dqimedia?igsh=NTVwdWlwd3o5MTF1" class="text-white"><i class="bi bi-instagram"></i> Instagram</a></li>
+                        <li><a href="https://youtube.com/@dqimedia?si=6_A8Vr3nysaegI7B" class="text-white"><i class="bi bi-youtube"></i> Youtube</a></li>
                     </ul>
                     </div>
                     <div class="col-md-4">
@@ -706,27 +763,61 @@ class PesantrenPendaftaran(http.Controller):
     def index(self, **kw):
 
         # Ambil nilai dari field konfigurasi
-        config_obj = request.env['ir.config_parameter'].sudo()
+        config_obj = http.request.env['ir.config_parameter'].sudo()
 
         tgl_mulai_pendaftaran = config_obj.get_param('pesantren_pendaftaran.tgl_mulai_pendaftaran')
         tgl_akhir_pendaftaran = config_obj.get_param('pesantren_pendaftaran.tgl_akhir_pendaftaran')
         tgl_mulai_seleksi = config_obj.get_param('pesantren_pendaftaran.tgl_mulai_seleksi')
         tgl_akhir_seleksi = config_obj.get_param('pesantren_pendaftaran.tgl_akhir_seleksi')
         tgl_pengumuman_hasil_seleksi = config_obj.get_param('pesantren_pendaftaran.tgl_pengumuman_hasil_seleksi')
+        is_halaman_pengumuman = config_obj.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False)
 
-        # Jika parameter konfigurasi kosong, set default date-time
-        tgl_mulai_pendaftaran = tgl_mulai_pendaftaran or datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        tgl_akhir_pendaftaran = tgl_akhir_pendaftaran or datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        tgl_mulai_seleksi = tgl_mulai_seleksi or datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        tgl_akhir_seleksi = tgl_akhir_seleksi or datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        tgl_pengumuman_hasil_seleksi = tgl_pengumuman_hasil_seleksi or datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        # Set nilai default dinamis jika parameter kosong
+        if not tgl_mulai_pendaftaran:
+            tgl_mulai_pendaftaran_dt = datetime.datetime.now() + datetime.timedelta(days=1)
+            tgl_mulai_pendaftaran = tgl_mulai_pendaftaran_dt.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            tgl_mulai_pendaftaran_dt = datetime.datetime.strptime(tgl_mulai_pendaftaran, '%Y-%m-%d %H:%M:%S')
 
-        # Format tanggal untuk tampil di HTML dengan format yang lebih sederhana (misalnya 23 November 2024)
-        tgl_mulai_pendaftaran = datetime.datetime.strptime(tgl_mulai_pendaftaran, '%Y-%m-%d %H:%M:%S').strftime('%d %B %Y')
-        tgl_akhir_pendaftaran = datetime.datetime.strptime(tgl_akhir_pendaftaran, '%Y-%m-%d %H:%M:%S').strftime('%d %B %Y')
-        tgl_mulai_seleksi = datetime.datetime.strptime(tgl_mulai_seleksi, '%Y-%m-%d %H:%M:%S').strftime('%d %B %Y')
-        tgl_akhir_seleksi = datetime.datetime.strptime(tgl_akhir_seleksi, '%Y-%m-%d %H:%M:%S').strftime('%d %B %Y')
-        tgl_pengumuman_hasil_seleksi = datetime.datetime.strptime(tgl_pengumuman_hasil_seleksi, '%Y-%m-%d %H:%M:%S').strftime('%d %B %Y')
+        if not tgl_akhir_pendaftaran:
+            tgl_akhir_pendaftaran_dt = tgl_mulai_pendaftaran_dt + datetime.timedelta(days=3)
+            tgl_akhir_pendaftaran = tgl_akhir_pendaftaran_dt.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            tgl_akhir_pendaftaran_dt = datetime.datetime.strptime(tgl_akhir_pendaftaran, '%Y-%m-%d %H:%M:%S')
+
+        if not tgl_mulai_seleksi:
+            tgl_mulai_seleksi_dt = tgl_akhir_pendaftaran_dt
+            tgl_mulai_seleksi = tgl_mulai_seleksi_dt.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            tgl_mulai_seleksi_dt = datetime.datetime.strptime(tgl_mulai_seleksi, '%Y-%m-%d %H:%M:%S')
+
+        if not tgl_akhir_seleksi:
+            tgl_akhir_seleksi_dt = tgl_mulai_seleksi_dt + datetime.timedelta(days=3)
+            tgl_akhir_seleksi = tgl_akhir_seleksi_dt.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            tgl_akhir_seleksi_dt = datetime.datetime.strptime(tgl_akhir_seleksi, '%Y-%m-%d %H:%M:%S')
+
+        if not tgl_pengumuman_hasil_seleksi:
+            tgl_pengumuman_hasil_seleksi_dt = tgl_akhir_seleksi_dt + datetime.timedelta(days=2)
+            tgl_pengumuman_hasil_seleksi = tgl_pengumuman_hasil_seleksi_dt.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            tgl_pengumuman_hasil_seleksi_dt = datetime.datetime.strptime(tgl_pengumuman_hasil_seleksi, '%Y-%m-%d %H:%M:%S')
+
+        # Format tanggal manual dalam bahasa Indonesia
+        def format_tanggal_manual(dt):
+            bulan_indonesia = [
+                "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+            ]
+            return f"{dt.day} {bulan_indonesia[dt.month - 1]} {dt.year}"
+
+        # Format tanggal untuk ditampilkan di halaman
+        tgl_mulai_pendaftaran_formatted = format_tanggal_manual(tgl_mulai_pendaftaran_dt)
+        tgl_akhir_pendaftaran_formatted = format_tanggal_manual(tgl_akhir_pendaftaran_dt)
+        tgl_mulai_seleksi_formatted = format_tanggal_manual(tgl_mulai_seleksi_dt)
+        tgl_akhir_seleksi_formatted = format_tanggal_manual(tgl_akhir_seleksi_dt)
+        tgl_pengumuman_hasil_seleksi_formatted = format_tanggal_manual(tgl_pengumuman_hasil_seleksi_dt)
+
 
         html_response = f"""
             <!DOCTYPE html>
@@ -867,14 +958,14 @@ class PesantrenPendaftaran(http.Controller):
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
                             </li>
-                            <li class="nav-item dropdown">
-                                <a href="#" class="dropdown-link nav-link text-white"><i class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
-                                <div class="dropdown-content">
-                                    <a href="/pengumuman/sd-mi">SD / MI</a>
-                                    <a href="/pengumuman/smp-mts">SMP / MTS</a>
-                                    <a href="/pengumuman/sma-ma">SMA / MA</a>
-                                </div>
-                            </li>
+                            {f'<li class="nav-item dropdown">'
+                            f'<a href="#" class="dropdown-link nav-link text-white"><i class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>'
+                            f'<div class="dropdown-content">'
+                            f'<a href="/pengumuman/sd-mi">SD / MI</a>'
+                            f'<a href="/pengumuman/smp-mts">SMP / MTS</a>'
+                            f'<a href="/pengumuman/sma-ma">SMA / MA</a>'
+                            f'</div>'
+                            f'</li>' if is_halaman_pengumuman else ''}
 
                         </ul>
                     </div>
@@ -901,14 +992,14 @@ class PesantrenPendaftaran(http.Controller):
                         <li class="nav-item me-3">
                             <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a href="#" class="dropdown-link nav-link text-white"><i class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
-                            <div class="dropdown-content">
-                                <a href="/pengumuman/sd-mi">SD / MI</a>
-                                <a href="/pengumuman/smp-mts">SMP / MTS</a>
-                                <a href="/pengumuman/sma-ma">SMA / MA</a>
-                            </div>
-                        </li>
+                        {f'<li class="nav-item dropdown">'
+                        f'<a href="#" class="dropdown-link nav-link text-white"><i class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>'
+                        f'<div class="dropdown-content">'
+                        f'<a href="/pengumuman/sd-mi">SD / MI</a>'
+                        f'<a href="/pengumuman/smp-mts">SMP / MTS</a>'
+                        f'<a href="/pengumuman/sma-ma">SMA / MA</a>'
+                        f'</div>'
+                        f'</li>' if is_halaman_pengumuman else ''}
                     </ul>
                 </div>
             </div>
@@ -1018,7 +1109,7 @@ class PesantrenPendaftaran(http.Controller):
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <img src="https://lh5.googleusercontent.com/p/AF1QipMnvLLieVur8fZEE0qY8b-LWTgqcpf-etDo5_Sq=w408-h306-k-no" alt="Gambar Pondok" width="150"
+                            <img src="https://i.ibb.co.com/wRNC9B0/img1.jpg" alt="Gambar Pondok" width="150"
                                 class="rounded">
                         </div>
                     </div>
@@ -1032,7 +1123,7 @@ class PesantrenPendaftaran(http.Controller):
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <img src="https://img.antaranews.com/cache/730x487/2020/08/20/IMG_0098.jpg" alt="Gambar Pondok" width="150"
+                            <img src="https://i.ibb.co.com/hW8F8Qs/img2.jpg" alt="Gambar Pondok" width="150"
                                 class="rounded">
                         </div>
                     </div>
@@ -1047,7 +1138,7 @@ class PesantrenPendaftaran(http.Controller):
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <img src="https://scontent.fmlg16-1.fna.fbcdn.net/v/t39.30808-6/399219372_741110998033602_2170725576008554610_n.jpg?stp=c342.0.1365.1365a_dst-jpg_s206x206&_nc_cat=100&ccb=1-7&_nc_sid=50ad20&_nc_eui2=AeFWrV5IGO6AqGuEZ6eWZv_dO0d-5pTsLCc7R37mlOwsJyt2n0I7aZyoSfBi-tDYip3Dsx8Id7kOq4IsuFyhQuXd&_nc_ohc=gaONd5lqy1AQ7kNvgEE8QWy&_nc_zt=23&_nc_ht=scontent.fmlg16-1.fna&_nc_gid=AQRiTXPxABtPCk42NrbbYHV&oh=00_AYB7pb7cLJHEHsHTcA3u_MjSrWzgjsnqjGxFGDaRvnC-wQ&oe=673C70F9" alt="Gambar Pondok" width="150"
+                            <img src="https://i.ibb.co.com/jZznN6Q/img3.jpg" alt="Gambar Pondok" width="150"
                                 class="rounded">
                         </div>
                     </div>
@@ -1070,13 +1161,13 @@ class PesantrenPendaftaran(http.Controller):
                             <div>
                                 <span class="fw-semibold">1. Pendaftaran Online</span>
                                 <p class="text-secondary">Pendaftaran dilaksanakan pada: <br>
-                                        Gel 1: {tgl_mulai_pendaftaran} - {tgl_akhir_pendaftaran} <br>
-                                        Gel 2: {tgl_mulai_pendaftaran} - {tgl_akhir_pendaftaran} <br> melalui website <a href="/pendaftaran"
+                                        Gel 1: {tgl_mulai_pendaftaran_formatted} - {tgl_akhir_pendaftaran_formatted} <br>
+                                        Gel 2: {tgl_mulai_pendaftaran_formatted} - {tgl_akhir_pendaftaran_formatted} <br> melalui website <a href="/pendaftaran"
                                     class="text-decoration-none text-primary">https://psb.daarulquranistiqomah</a></p>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <img src="https://scontent.fmlg16-1.fna.fbcdn.net/v/t39.30808-6/298621082_3013095435648995_7345129981216140240_n.jpg?stp=c315.0.810.810a_dst-jpg_s206x206&_nc_cat=109&ccb=1-7&_nc_sid=8b96af&_nc_eui2=AeExpGOLkXvyR5wEXToaUm-p9hAXDNyrN6T2EBcM3Ks3pGuZpdiK7tg5euGv8hjNK5ITZMh-Zm5QNxsWRPIIxezm&_nc_ohc=YgS73NuhAcwQ7kNvgGCPyUk&_nc_zt=23&_nc_ht=scontent.fmlg16-1.fna&_nc_gid=AUzsAXdWRiW7snf88lNwf62&oh=00_AYAj_QhvqtPQp57x4P9uOhv4SSznbolgRzQCISifs9oQeA&oe=673C981E" alt="Gambar Pondok" width="150"
+                            <img src="https://i.ibb.co.com/KKKwWG1/img4.jpg" alt="Gambar Pondok" width="150"
                                 class="rounded">
                         </div>
                     </div>
@@ -1084,20 +1175,20 @@ class PesantrenPendaftaran(http.Controller):
                         <div class="col-md-8">
                             <div>
                                 <span class="fw-semibold">2. Pelaksanaan Test Masuk</span>
-                                <p class="text-secondary">Gel 1: {tgl_mulai_seleksi} - {tgl_akhir_seleksi} <br> Gel 2: {tgl_mulai_seleksi} - {tgl_akhir_seleksi} <br> (Test seleksi dilaksanakan secara ONLINE dengan
+                                <p class="text-secondary">Gel 1: {tgl_mulai_seleksi_formatted} - {tgl_akhir_seleksi_formatted} <br> Gel 2: {tgl_mulai_seleksi_formatted} - {tgl_akhir_seleksi_formatted} <br> (Test seleksi dilaksanakan secara ONLINE dengan
                                     kuota
                                     sebanyak 100 peserta per hari).</p>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <img src="https://scontent.fmlg16-1.fna.fbcdn.net/v/t39.30808-6/271738407_2862177990740741_2560153557144834086_n.jpg?stp=c188.0.488.488a_dst-jpg_s206x206&_nc_cat=101&ccb=1-7&_nc_sid=50ad20&_nc_eui2=AeG2Vs7WVnUHEzU-cxfxFizt0Xmjc99eVwHReaNz315XAf0CJVwYcIHHs3rpQylnMFYytXEw1BEQifeDIWkGmIEa&_nc_ohc=642w7dLq7swQ7kNvgHuulQD&_nc_zt=23&_nc_ht=scontent.fmlg16-1.fna&_nc_gid=AUhop87O8T2aG3MKs-gQxaC&oh=00_AYDP29eZ8WwKpMf52ujqPgQJ02eQhz85V7YxKG2uEGawxA&oe=673C86B8" alt="Gambar Pondok" width="150"
+                            <img src="https://i.ibb.co.com/s9g5nM2/img5.jpg" alt="Gambar Pondok" width="150"
                                 class="rounded">
                         </div>
                     </div>
                     <div>
                         <span class="fw-semibold">4. Pengumuman Hasil Seleksi</span>
-                        <p class="text-secondary">Gel 1: {tgl_pengumuman_hasil_seleksi} <br>
-                                                Gel 2: {tgl_pengumuman_hasil_seleksi}
+                        <p class="text-secondary">Gel 1: {tgl_pengumuman_hasil_seleksi_formatted} <br>
+                                                Gel 2: {tgl_pengumuman_hasil_seleksi_formatted}
                         </p>
                     </div>
                     <div>
@@ -1232,6 +1323,7 @@ class UbigPendaftaranController(http.Controller):
         # Mengambil nilai kuota pendaftaran dari ir.config_parameter
         config_param = request.env['ir.config_parameter'].sudo()
         kuota_pendaftaran = int(config_param.get_param('pesantren_pendaftaran.kuota_pendaftaran', default=0))
+        is_halaman_pengumuman = config_param.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default='False') == 'True'
 
         if total_pendaftar >= kuota_pendaftaran:
             return request.redirect('/psb')
@@ -1240,6 +1332,7 @@ class UbigPendaftaranController(http.Controller):
             pendidikan_list = request.env['ubig.pendidikan'].sudo().search([])
             return request.render('pesantren_pendaftaran.pendaftaran_form_template', {
                 'pendidikan_list': pendidikan_list,
+                'is_halaman_pengumuman': is_halaman_pengumuman,
             })
 
     @http.route('/pendaftaran/submit', type='http', auth='public', methods=['POST'], csrf=True)
@@ -1393,61 +1486,82 @@ class UbigPendaftaranController(http.Controller):
             'state'                  : 'draft'  # set status awal menjadi 'terdaftar'
         })
 
-        pendaftaran_id = pendaftaran.id
+        token = pendaftaran.token
 
         # Redirect ke halaman sukses atau halaman lain yang diinginkan
-        return request.redirect(f'/pendaftaran/success?id={pendaftaran_id}')
+        return request.redirect(f'/pendaftaran/success?token={token}')
 
     @http.route('/pendaftaran/success', type='http', auth='public')
-    def pendaftaran_success(self, **kwargs):
-        # Menangkap ID pendaftaran dari URL
-        pendaftaran_id = request.params.get('id')
+    def pendaftaran_success(self, token=None, **kwargs):
 
-        # Cek apakah ID ada
-        if not pendaftaran_id:
-            return "ID pendaftaran tidak ditemukan."
+        Pendaftaran = request.env['ubig.pendaftaran']
+        total_pendaftar = Pendaftaran.search_count([])
 
-        # Mengambil data pendaftaran berdasarkan ID
-        pendaftaran = request.env['ubig.pendaftaran'].sudo().browse(int(pendaftaran_id))
+        # Mengambil nilai kuota pendaftaran dari ir.config_parameter
+        config_param = request.env['ir.config_parameter'].sudo()
+        kuota_pendaftaran = int(config_param.get_param('pesantren_pendaftaran.kuota_pendaftaran', default=0))
+        is_halaman_pengumuman = config_param.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False) == 'True'
 
-        # Cek apakah record pendaftaran ditemukan
-        if not pendaftaran.exists():
-            return "Data pendaftaran tidak ditemukan."
+        if total_pendaftar >= kuota_pendaftaran:
+            return request.redirect('/psb')
+        else:
+            # Menangkap Token pendaftaran dari URL
+            token = request.params.get('token')
 
-        return request.render('pesantren_pendaftaran.pendaftaran_success_template', {
-            'pendaftaran': pendaftaran,
-        })
-    
-class PesantrenLogin(http.Controller):
-    @http.route('/psblogin', auth='public')
-    def index(self, **kw):
-        return request.render('pesantren_pendaftaran.pendaftaran_login_template')
+            if not token:
+                return request.not_found()
+
+            # Cari pendaftaran berdasarkan token
+            pendaftaran = Pendaftaran.sudo().search([('token', '=', token)], limit=1)
+            if not pendaftaran:
+                return request.not_found()
+
+            return request.render('pesantren_pendaftaran.pendaftaran_success_template', {
+                'pendaftaran': pendaftaran,
+                'is_halaman_pengumuman': is_halaman_pengumuman,
+            })
 
 class PesantrenCetakPembayaran(http.Controller):
     @http.route('/pendaftaran/cetak', type='http', auth='public')
-    def pendaftaran_cetak(self, **kwargs):
-        # Menangkap ID pendaftaran dari URL
-        pendaftaran_id = request.params.get('id')
+    def pendaftaran_cetak(self, token=None, **kwargs):
 
-        # Cek apakah ID ada
-        if not pendaftaran_id:
-            return "ID pendaftaran tidak ditemukan."
+        Pendaftaran = request.env['ubig.pendaftaran']
+        total_pendaftar = Pendaftaran.search_count([])
 
-        # Mengambil data pendaftaran berdasarkan ID
-        pendaftaran = request.env['ubig.pendaftaran'].sudo().browse(int(pendaftaran_id))
+        # Mengambil nilai kuota pendaftaran dari ir.config_parameter
+        config_param = request.env['ir.config_parameter'].sudo()
+        kuota_pendaftaran = int(config_param.get_param('pesantren_pendaftaran.kuota_pendaftaran', default=0))
 
-        # Cek apakah record pendaftaran ditemukan
-        if not pendaftaran.exists():
-            return "Data pendaftaran tidak ditemukan."
+        if total_pendaftar >= kuota_pendaftaran:
+            return request.redirect('/psb')
+        else:
 
-        return request.render('pesantren_pendaftaran.pendaftaran_cetak_form_pembayaran_template', {
-            'pendaftaran': pendaftaran,
-        })
+            # Menangkap Token pendaftaran dari URL
+            token = request.params.get('token')
+
+            # Cek apakah Token ada
+            if not token:
+                return request.not_found()
+
+            # Mengambil data pendaftaran berdasarkan Token
+            pendaftaran = Pendaftaran.sudo().search([('token', '=', token)], limit=1)
+            if not pendaftaran:
+                return request.not_found()
+
+            return request.render('pesantren_pendaftaran.pendaftaran_cetak_form_pembayaran_template', {
+                'pendaftaran': pendaftaran,
+            })
 
 class PesantrenPsbBantuan(http.Controller):
     @http.route('/bantuan', auth='public')
     def index(self, **kw):
-        return """
+
+        # Ambil nilai dari field konfigurasi
+        config_obj = http.request.env['ir.config_parameter'].sudo()
+
+        is_halaman_pengumuman = config_obj.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False)
+
+        html_response = f"""
                 <html lang="en">
             <head>
                 <meta charset="UTF-8">
@@ -1458,32 +1572,32 @@ class PesantrenPsbBantuan(http.Controller):
 
                 <style>
 
-                    body {
+                    body {{
                         background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
-                    }
+                    }}
 
-                    .offcanvas.offcanvas-end {
+                    .offcanvas.offcanvas-end {{
                         
                         width: 250px; /* Lebar kustom untuk offcanvas */
-                    }
+                    }}
                     
-                    .offcanvas .nav-link {
+                    .offcanvas .nav-link {{
                         color: #ffffff; /* teks warna putih */
-                    }
+                    }}
                     
-                    .offcanvas .btn-close {
+                    .offcanvas .btn-close {{
                         position: absolute;
                         top: 10px;
                         right: 10px;
                         filter: invert(1);
-                    }
+                    }}
 
-                    .timeline {
+                    .timeline {{
                         position: relative;
                         padding: 20px 0;
-                    }
+                    }}
 
-                    .timeline::before {
+                    .timeline::before {{
                         content: '';
                         position: absolute;
                         left: 5px;
@@ -1491,15 +1605,15 @@ class PesantrenPsbBantuan(http.Controller):
                         bottom: 0;
                         width: 4px;
                         background: white;
-                    }
+                    }}
 
-                    .timeline-item {
+                    .timeline-item {{
                         position: relative;
                         margin-left: 50px;
                         margin-bottom: 40px;
-                    }
+                    }}
 
-                    .timeline-icon {
+                    .timeline-icon {{
                         position: absolute;
                         left: -63px;
                         top: 20px;
@@ -1512,9 +1626,9 @@ class PesantrenPsbBantuan(http.Controller):
                         color: #fff;
                         font-size: 18px;
                         box-shadow: 0px 3px 20px rgba(0, 0, 0, 0.5);
-                    }
+                    }}
 
-                    .timeline-icon::after {
+                    .timeline-icon::after {{
                         content: "";
                         position: absolute;
                         top: 50%;
@@ -1523,47 +1637,47 @@ class PesantrenPsbBantuan(http.Controller):
                         border-style: solid;
                         border-color: transparent transparent transparent white;  /* Panah segitiga mengarah ke ikon */
                         transform: translateY(-50%) rotate(180deg);
-                    }
+                    }}
 
-                    .timeline-content {
+                    .timeline-content {{
                         padding: 20px;
                         background-color: #fff;
                         border-radius: 8px;
                         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                    }
+                    }}
 
-                    .judul {
+                    .judul {{
                         height: 81px;
                         display: flex;
                         align-items: end;
-                    }
+                    }}
 
-                    .teks-judul {
+                    .teks-judul {{
                         height: 72px;
-                    }
+                    }}
 
-                    .background {
+                    .background {{
                         background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
-                    }
+                    }}
 
-                    a.effect {
+                    a.effect {{
                         transition: .1s !important;
-                    }
+                    }}
 
-                    a.effect:hover {
+                    a.effect:hover {{
                         box-shadow: 0 3px 10px rgba(0,0,0,0.2) !important;
-                    }
+                    }}
 
                     /* Desain Dropdown */
-                    .dropdown {
+                    .dropdown {{
                         position: relative;
-                    }
+                    }}
 
-                    .dropdown-link {
+                    .dropdown-link {{
                         cursor: pointer;
-                    }
+                    }}
 
-                    .dropdown-content {
+                    .dropdown-content {{
                         display: none;
                         position: absolute;
                         top: 100%;
@@ -1574,37 +1688,37 @@ class PesantrenPsbBantuan(http.Controller):
                         min-width: 150px;
                         z-index: 1;
                         overflow: hidden;
-                    }
+                    }}
 
-                    .dropdown-content a {
+                    .dropdown-content a {{
                         color: #333;
                         padding: 10px 15px;
                         display: block;
                         text-decoration: none;
                         transition: background-color 0.2s;
-                    }
+                    }}
 
-                    .dropdown-content a:hover {
+                    .dropdown-content a:hover {{
                         background-color: #f1f1f1;
-                    }
+                    }}
 
                     /* Menampilkan dropdown saat hover */
-                    .dropdown:hover .dropdown-content {
+                    .dropdown:hover .dropdown-content {{
                         display: block;
                         animation: fadeIn 0.3s;
-                    }
+                    }}
 
                     /* Animasi fade-in */
-                    @keyframes fadeIn {
-                        from {
+                    @keyframes fadeIn {{
+                        from {{
                         opacity: 0;
                         transform: translateY(-10px);
-                        }
-                        to {
+                        }}
+                        to {{
                         opacity: 1;
                         transform: translateY(0);
-                        }
-                    }
+                        }}
+                    }}
 
                 </style>
                 
@@ -1634,15 +1748,15 @@ class PesantrenPsbBantuan(http.Controller):
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
                             </li>
-                            <li class="nav-item dropdown">
-                                <a href="#" class="dropdown-link nav-link text-white"><i class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
-                                <div class="dropdown-content">
-                                    <a href="/pengumuman/sd-mi">SD / MI</a>
-                                    <a href="/pengumuman/smp-mts">SMP / MTS</a>
-                                    <a href="/pengumuman/sma-ma">SMA / MA</a>
-                                </div>
-                            </li>
-                        </ul>
+                            {f'<li class="nav-item dropdown">'
+                            f'<a href="#" class="dropdown-link nav-link text-white"><i class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>'
+                            f'<div class="dropdown-content">'
+                            f'<a href="/pengumuman/sd-mi">SD / MI</a>'
+                            f'<a href="/pengumuman/smp-mts">SMP / MTS</a>'
+                            f'<a href="/pengumuman/sma-ma">SMA / MA</a>'
+                            f'</div>'
+                            f'</li>' if is_halaman_pengumuman else ''}
+                            </ul>
                     </div>
                 </div>
             </nav>
@@ -1667,14 +1781,15 @@ class PesantrenPsbBantuan(http.Controller):
                         <li class="nav-item me-3">
                             <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
                         </li>
-                            <li class="nav-item dropdown">
-                                <a href="#" class="dropdown-link nav-link text-white"><i class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
-                                <div class="dropdown-content">
-                                    <a href="/pengumuman/sd-mi">SD / MI</a>
-                                    <a href="/pengumuman/smp-mts">SMP / MTS</a>
-                                    <a href="/pengumuman/sma-ma">SMA / MA</a>
-                                </div>
-                            </li>
+                        {f'<li class="nav-item dropdown">'
+                        f'<a href="#" class="dropdown-link nav-link text-white"><i class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>'
+                        f'<div class="dropdown-content">'
+                        f'<a href="/pengumuman/sd-mi">SD / MI</a>'
+                        f'<a href="/pengumuman/smp-mts">SMP / MTS</a>'
+                        f'<a href="/pengumuman/sma-ma">SMA / MA</a>'
+                        f'</div>'
+                        f'</li>' if is_halaman_pengumuman else ''}
+                        </ul>
                     </ul>
                 </div>
             </div>
@@ -1693,7 +1808,7 @@ class PesantrenPsbBantuan(http.Controller):
                         <span class="badge text-bg-danger text-uppercase mb-2">Panduan Pendaftaran Online</span>
                         <p>Panduan pendaftaran online dapat didownload dengan klik link di bawah ini :</p>
                         <div class="ratio ratio-16x9 my-4">
-                        <iframe src="https://youtu.be/OiPEDy0Sv1U?si=8tm9xvqPE36NgfaP" title="YouTube video player" allowfullscreen></iframe>
+                        <iframe src="https://www.youtube.com/embed/N7eYT3LQ7tQ" title="YouTube video player" allowfullscreen></iframe>
                         </div>
                         <a href="https://psb.bukhari.or.id/assets/img/panduan_gabung_gambar_jadi_pdf.pdf" target="_blank" class="text-decoration-none fs-5" style="color: purple;">
                         <i class="fa-solid fa-download text-dark me-1"></i>Panduan cara menggabungkan beberapa foto menjadi file pdf
@@ -1730,7 +1845,7 @@ class PesantrenPsbBantuan(http.Controller):
                     <div class="timeline-content bg-white rounded p-3">
                         <span class="badge text-bg-info text-white text-uppercase">Video Profil Ponpes Daarul Qur'an Istiqomah</span>
                         <div class="ratio ratio-16x9 my-4">
-                        <iframe width="437" height="315" src="https://www.youtube.com/embed/VfMmhPHh9Ek" title="" frameborder="0" allowfullscreen></iframe>
+                        <iframe width="437" height="315" src="https://www.youtube.com/embed/OiPEDy0Sv1U" title="" frameborder="0" allowfullscreen></iframe>
                         </div>
                     </div>
                     </div>
@@ -1799,38 +1914,40 @@ class PesantrenPsbBantuan(http.Controller):
             <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
             <script>
-                document.addEventListener("DOMContentLoaded", function() {
+                document.addEventListener("DOMContentLoaded", function() {{
     // Tangkap semua elemen dengan class 'pendaftaran-menu'
-    document.querySelectorAll(".pendaftaran-menu").forEach(function(menu) {
-        menu.addEventListener("click", function(event) {
+    document.querySelectorAll(".pendaftaran-menu").forEach(function(menu) {{
+        menu.addEventListener("click", function(event) {{
             event.preventDefault(); // Cegah navigasi default
 
             // Panggil API untuk memeriksa kuota
-            $.ajax({
+            $.ajax({{
                 url: "/pendaftaran/check",
                 type: "POST",
                 contentType: 'application/json', // Pastikan tipe konten JSON
                 dataType: 'json',
-                success: function(response) {
-                    if (response.is_full) {
+                success: function(response) {{
+                    if (response.is_full) {{
                         // Tampilkan modal jika kuota penuh
                         $("#modalPendaftaranTutup").modal("show");
-                    } else {
+                    }} else {{
                         // Jika kuota tersedia, arahkan ke halaman pendaftaran
                         window.location.href = "/pendaftaran";
-                    }
-                },
-                error: function() {
+                    }}
+                }},
+                error: function() {{
                     alert("Terjadi kesalahan saat memeriksa kuota. Silakan coba lagi.");
-                }
-            });
-        });
-    });
-});
+                }}
+            }});
+        }});
+    }});
+}});
             </script>
             </body>
             </html>
         """
+
+        return request.make_response(html_response)
 
 class CustomAuthController(http.Controller):
 
@@ -1887,31 +2004,55 @@ class CustomAuthController(http.Controller):
 class PendaftaranSeleksiSdMi(http.Controller):
     @http.route('/pengumuman/sd-mi', type='http', auth='public')
     def pengumuman(self, **kwargs):
-        # Render form pendaftaran HTML
-        calon_santri = request.env['ubig.pendaftaran'].sudo().search([('state', 'in', ['diterima', 'ditolak']), ('jenjang_id.jenjang', '=', 'sdmi')])
-        return request.render('pesantren_pendaftaran.pendaftaran_seleksi_sdmi_template', {
-            'santri': calon_santri,
-        })
+
+        # Mengambil nilai kuota pendaftaran dari ir.config_parameter
+        config_param = request.env['ir.config_parameter'].sudo()
+        is_halaman_pengumuman = config_param.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False)
+
+        if is_halaman_pengumuman:
+            # Render form pendaftaran HTML
+            calon_santri = request.env['ubig.pendaftaran'].sudo().search([('state', 'in', ['diterima', 'ditolak']), ('jenjang_id.jenjang', '=', 'sdmi')])
+            
+            return request.render('pesantren_pendaftaran.pendaftaran_seleksi_sdmi_template', {
+                'santri': calon_santri,
+            })
+        else:
+            return request.redirect('/psb')
 
 
 class PendaftaranSeleksiSmpMts(http.Controller):
     @http.route('/pengumuman/smp-mts', type='http', auth='public')
     def pengumuman(self, **kwargs):
-        # Render form pendaftaran HTML
-        calon_santri = request.env['ubig.pendaftaran'].sudo().search([('state', 'in', ['diterima', 'ditolak']), ('jenjang_id.jenjang', '=', 'smpmts')])
-        return request.render('pesantren_pendaftaran.pendaftaran_seleksi_smpmts_template', {
-            'santri': calon_santri,
-        })
+
+        # Mengambil nilai kuota pendaftaran dari ir.config_parameter
+        config_param = request.env['ir.config_parameter'].sudo()
+        is_halaman_pengumuman = config_param.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False)
+
+        if is_halaman_pengumuman:
+            # Render form pendaftaran HTML
+            calon_santri = request.env['ubig.pendaftaran'].sudo().search([('state', 'in', ['diterima', 'ditolak']), ('jenjang_id.jenjang', '=', 'smpmts')])
+            return request.render('pesantren_pendaftaran.pendaftaran_seleksi_smpmts_template', {
+                'santri': calon_santri,
+            })
+        else:
+            return request.redirect('/psb')
     
 class PendaftaranSeleksiSmaMa(http.Controller):
     @http.route('/pengumuman/sma-ma', type='http', auth='public')
     def pengumuman(self, **kwargs):
-        # Render form pendaftaran HTML
-        calon_santri = request.env['ubig.pendaftaran'].sudo().search([('state', 'in', ['diterima', 'ditolak']), ('jenjang_id.jenjang', '=', 'smama')])
-        return request.render('pesantren_pendaftaran.pendaftaran_seleksi_smama_template', {
-            'santri': calon_santri,
-        })
 
+        # Mengambil nilai kuota pendaftaran dari ir.config_parameter
+        config_param = request.env['ir.config_parameter'].sudo()
+        is_halaman_pengumuman = config_param.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False)
+
+        if is_halaman_pengumuman:
+            # Render form pendaftaran HTML
+            calon_santri = request.env['ubig.pendaftaran'].sudo().search([('state', 'in', ['diterima', 'ditolak']), ('jenjang_id.jenjang', '=', 'smama')])
+            return request.render('pesantren_pendaftaran.pendaftaran_seleksi_smama_template', {
+                'santri': calon_santri,
+            })
+        else:
+            return request.redirect('/psb')
 
 
 class RefDataController(http.Controller):

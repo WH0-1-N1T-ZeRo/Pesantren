@@ -1,7 +1,8 @@
 from odoo import models, fields, api
 import random
 import hashlib
-from datetime import datetime
+import uuid
+from datetime import datetime, timedelta
 from odoo.tools import format_date
 
 class ResPartner(models.Model):
@@ -21,7 +22,10 @@ class DataPendaftaran(models.Model):
     _inherit            = ['mail.thread', 'mail.activity.mixin']
     _inherits           = {"res.partner": "partner_id"}
     _description        = 'Data Pendaftaran'
+    _order              = 'total_nilai desc'
+    
 
+    token = fields.Char(string='Token')
     nomor_pendaftaran   = fields.Char(string='No Pendaftaran', readonly=True)
     tanggal_daftar      = fields.Date(string='Tanggal Daftar', default=fields.Date.context_today)
     partner_id          = fields.Many2one('res.partner', string="Nama Santri", required=False, help="Nama Calon Santri")
@@ -143,6 +147,12 @@ class DataPendaftaran(models.Model):
     orangtua_id         = fields.Many2one('cdn.orangtua', string="Data Orang Tua", readonly=True)
     siswa_id            = fields.Many2one('cdn.siswa', string="Data Siswa", readonly=True)
 
+    status_va           = fields.Selection([
+                            ('temporary', 'Temporary'),
+                            ('permanent', 'Permanent'),
+                            ('inactive', 'Inactive'),
+                        ], string="Status Virtual Account", default='temporary')
+
     # State
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -157,7 +167,6 @@ class DataPendaftaran(models.Model):
     # def _generate_virtual_account(self):
     #     """Helper method to generate a Virtual Account"""
     #     return f"{random.randint(10000000, 99999999)}"
-
 
     @api.depends('soal_ids')
 
@@ -221,7 +230,18 @@ class DataPendaftaran(models.Model):
         # Generate the new nomor_pendaftaran
         vals['nomor_pendaftaran'] = f'PSB/{current_year}/{str(next_number).zfill(5)}'
 
-        return super(DataPendaftaran, self).create(vals)
+        # Generate UUID token
+        vals['token'] = str(uuid.uuid4())
+
+        record = super(DataPendaftaran, self).create(vals)
+
+        if record.state == 'draft':
+            # Buat data virtual account
+            if not record.virtual_account:
+                nisn = record.nisn
+                record.virtual_account = record._generate_virtual_account(nisn)
+                record.status_va = 'temporary'
+        return record
 
     def get_psb_statistics(self):
         total_pendaftar = self.search_count([])
@@ -239,6 +259,14 @@ class DataPendaftaran(models.Model):
             'kuota_pendaftaran': kuota_pendaftaran,
             'sisa_kuota': max(sisa_kuota, 0),  # Pastikan tidak negatif
         }
+    
+    def hapus_pendaftaran_kadaluarsa(self):
+        tgl_hari_ini = datetime.now()
+        batas_waktu = datetime.now() + timedelta(days=1)
+
+        if tgl_hari_ini > batas_waktu:
+            pendaftaran_kadaluarsa = self.search([('state', '=', 'draft')])
+            pendaftaran_kadaluarsa.unlink()
 
     def action_terdaftar(self):
         self.state = 'terdaftar'
@@ -288,9 +316,11 @@ class DataPendaftaran(models.Model):
                     record.siswa_id = siswa.id
 
                 # Buat data virtual account
-                if not record.virtual_account:
-                    nisn = record.nisn
-                    record.virtual_account = record._generate_virtual_account(nisn)
+                # if not record.virtual_account:
+                #     nisn = record.nisn
+                #     record.virtual_account = record._generate_virtual_account(nisn)
+
+                record.status_va = 'permanent'
 
                 # Buat data virtual account uang saku
                 if not record.va_saku:
@@ -301,6 +331,11 @@ class DataPendaftaran(models.Model):
                 # if not record.nis:
                 #     nisn = record.nisn
                 #     record.nis = record._generate_nis(nisn)
+
+        elif 'state' in vals and vals['state'] == 'ditolak':
+            for record in self:
+                record.virtual_account = False # Menghapus Virtual Account
+                record.status_va = 'inactive'
 
         # Check if state is being changed to 'terdaftar'
         # if 'state' in vals and vals['state'] == 'diterima':
@@ -466,17 +501,19 @@ class DataPendaftaran(models.Model):
         for record in self:
             kode_va_bank = "88810"
             account_type = "01"
-            nis = nis
+            # Pastikan NIS selalu memiliki panjang tertentu
+            nis_str = str(nis).zfill(10)  # Contoh padding NIS menjadi 6 digit
 
-            return f"{kode_va_bank}{account_type}{nis}"
+            return f"{kode_va_bank}{account_type}{nis_str}"
         
     def _generate_va_uangsaku(self, nis):
         for record in self:
             kode_va_bank = "88810"
             account_type = "02"
-            nis = nis
+            # Pastikan NIS selalu memiliki panjang tertentu
+            nis_str = str(nis).zfill(10)  # Contoh padding NIS menjadi 6 digit
 
-            return f"{kode_va_bank}{account_type}{nis}"
+            return f"{kode_va_bank}{account_type}{nis_str}"
         
     def _generate_nis(self, nisn):
         for record in self:
@@ -524,77 +561,110 @@ class ResConfigSettings(models.TransientModel):
         default=0,
         help="Jumlah kuota pendaftaran"
     )
-   tgl_mulai_pendaftaran = fields.Datetime(string="Tanggal Mulai Pendaftaran", config_parameter='pesantren_pendaftaran.tgl_mulai_pendaftaran', help="Atur tgl dibukanya pendaftaran")
-   tgl_akhir_pendaftaran = fields.Datetime(string="Tanggal Akhir Pendaftaran", config_parameter='pesantren_pendaftaran.tgl_akhir_pendaftaran', help="Atur tgl akhir dari pendaftaran")
-   tgl_mulai_seleksi = fields.Datetime(string="Tanggal Mulai Seleksi", config_parameter='pesantren_pendaftaran.tgl_mulai_seleksi', help="Atur tgl mulai seleksi")
-   tgl_akhir_seleksi = fields.Datetime(string="Tanggal Akhir Seleksi", config_parameter='pesantren_pendaftaran.tgl_akhir_seleksi', help="Atur tgl akhir seleksi")
-   tgl_pengumuman_hasil_seleksi = fields.Datetime(string="Tanggal Pengumuman Hasil Seleksi", config_parameter='pesantren_pendaftaran.tgl_pengumuman_hasil_seleksi', help="Atur tgl pengumuman hasil seleksi")
+   tgl_mulai_pendaftaran = fields.Datetime(
+        string="Tanggal Mulai Pendaftaran",
+        config_parameter='pesantren_pendaftaran.tgl_mulai_pendaftaran',
+        help="Atur tgl dibukanya pendaftaran",
+    )
+   tgl_akhir_pendaftaran = fields.Datetime(
+        string="Tanggal Akhir Pendaftaran",
+        config_parameter='pesantren_pendaftaran.tgl_akhir_pendaftaran',
+        help="Atur tgl akhir dari pendaftaran",
+    )
+   tgl_mulai_seleksi = fields.Datetime(
+        string="Tanggal Mulai Seleksi",
+        config_parameter='pesantren_pendaftaran.tgl_mulai_seleksi',
+        help="Atur tgl mulai seleksi",
+    )
+   tgl_akhir_seleksi = fields.Datetime(
+        string="Tanggal Akhir Seleksi",
+        config_parameter='pesantren_pendaftaran.tgl_akhir_seleksi',
+        help="Atur tgl akhir seleksi",
+    )
+   tgl_pengumuman_hasil_seleksi = fields.Datetime(
+        string="Tanggal Pengumuman Hasil Seleksi",
+        config_parameter='pesantren_pendaftaran.tgl_pengumuman_hasil_seleksi',
+        help="Atur tgl pengumuman hasil seleksi",
+    )
    
-
+   is_halaman_pengumuman = fields.Boolean(
+        string="Tampilkan Halaman Pengumuman",
+        config_parameter='pesantren_pendaftaran.is_halaman_pengumuman',
+        default=False,
+        help="Tampilkan halaman pengumuman",
+    )
 
    @api.model
    def set_values(self):
         res = super(ResConfigSettings, self).set_values()
-        # Set nilai untuk konfigurasi ke ir.config_parameter
-        if self.kuota_pendaftaran:
-            self.env['ir.config_parameter'].set_param('pesantren_pendaftaran.kuota_pendaftaran', self.kuota_pendaftaran)
 
-        if self.tgl_mulai_pendaftaran:
-            self.env['ir.config_parameter'].set_param(
-                'pesantren.tgl_mulai_pendaftaran',
-                self.tgl_mulai_pendaftaran.strftime('%Y-%m-%d')
-            )
+        self.env['ir.config_parameter'].set_param(
+            'pesantren_pendaftaran.kuota_pendaftaran',
+            self.kuota_pendaftaran
+        )
+        self.env['ir.config_parameter'].set_param(
+            'pesantren_pendaftaran.tgl_mulai_pendaftaran',
+            self.tgl_mulai_pendaftaran.strftime('%Y-%m-%d %H:%M:%S') if self.tgl_mulai_pendaftaran else False
+        )
+        self.env['ir.config_parameter'].set_param(
+            'pesantren_pendaftaran.tgl_akhir_pendaftaran',
+            self.tgl_akhir_pendaftaran.strftime('%Y-%m-%d %H:%M:%S') if self.tgl_akhir_pendaftaran else False
+        )
+        self.env['ir.config_parameter'].set_param(
+            'pesantren_pendaftaran.tgl_mulai_seleksi',
+            self.tgl_mulai_seleksi.strftime('%Y-%m-%d %H:%M:%S') if self.tgl_mulai_seleksi else False
+        )
+        self.env['ir.config_parameter'].set_param(
+            'pesantren_pendaftaran.tgl_akhir_seleksi',
+            self.tgl_akhir_seleksi.strftime('%Y-%m-%d %H:%M:%S') if self.tgl_akhir_seleksi else False
+        )
+        self.env['ir.config_parameter'].set_param(
+            'pesantren_pendaftaran.tgl_pengumuman_hasil_seleksi',
+            self.tgl_pengumuman_hasil_seleksi.strftime('%Y-%m-%d %H:%M:%S') if self.tgl_pengumuman_hasil_seleksi else False
+        )
 
-        if self.tgl_akhir_pendaftaran:
-            self.env['ir.config_parameter'].set_param(
-                'pesantren.tgl_akhir_pendaftaran',
-                self.tgl_akhir_pendaftaran.strftime('%Y-%m-%d')
-            )
-
-        if self.tgl_mulai_seleksi:
-            self.env['ir.config_parameter'].set_param(
-                'pesantren.tgl_mulai_seleksi',
-                self.tgl_mulai_seleksi.strftime('%Y-%m-%d')
-            )
-
-        if self.tgl_akhir_seleksi:
-            self.env['ir.config_parameter'].set_param(
-                'pesantren.tgl_akhir_seleksi',
-                self.tgl_akhir_seleksi.strftime('%Y-%m-%d')
-            )
-
-        if self.tgl_pengumuman_hasil_seleksi:
-            self.env['ir.config_parameter'].set_param(
-                'pesantren.tgl_pengumuman_hasil_seleksi',
-                self.tgl_pengumuman_hasil_seleksi.strftime('%Y-%m-%d')
-            )
+        self.env['ir.config_parameter'].set_param(
+            'pesantren_pendaftaran.is_halaman_pengumuman',
+            self.is_halaman_pengumuman
+        )
 
         return res
 
    @api.model
    def get_values(self):
         res = super(ResConfigSettings, self).get_values()
-        # Ambil nilai kuota pendaftaran dari ir.config_parameter
-
-        kuota_pendaftaran = self.env['ir.config_parameter'].get_param('pesantren_pendaftaran.kuota_pendaftaran', default=0)
-
-        tgl_mulai_pendaftaran = self.env['ir.config_parameter'].get_param('pesantren_pendaftaran.tgl_mulai_pendaftaran', default=False)
-        tgl_akhir_pendaftaran = self.env['ir.config_parameter'].get_param('pesantren_pendaftaran.tgl_akhir_pendaftaran', default=False)
+        icp = self.env['ir.config_parameter']
         
-        tgl_mulai_seleksi = self.env['ir.config_parameter'].get_param('pesantren_pendaftaran.tgl_mulai_seleksi', default=False)
-        tgl_akhir_seleksi = self.env['ir.config_parameter'].get_param('pesantren_pendaftaran.tgl_akhir_seleksi', default=False)
+        # Tentukan default values jika tidak ada di ir.config_parameter
+        tgl_mulai_pendaftaran = icp.get_param('pesantren_pendaftaran.tgl_mulai_pendaftaran', default=False)
+        if not tgl_mulai_pendaftaran:
+            tgl_mulai_pendaftaran = (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')
 
-        tgl_pengumuman_hasil_seleksi = self.env['ir.config_parameter'].get_param('pesantren_pendaftaran.tgl_pengumuman_hasil_seleksi', default=False)
+        tgl_akhir_pendaftaran = icp.get_param('pesantren_pendaftaran.tgl_akhir_pendaftaran', default=False)
+        if not tgl_akhir_pendaftaran:
+            tgl_akhir_pendaftaran = (datetime.now() + timedelta(days=4)).strftime('%Y-%m-%d %H:%M:%S')
+
+        tgl_mulai_seleksi = icp.get_param('pesantren_pendaftaran.tgl_mulai_seleksi', default=False)
+        if not tgl_mulai_seleksi:
+            tgl_mulai_seleksi = (datetime.now() + timedelta(days=5)).strftime('%Y-%m-%d %H:%M:%S')
+
+        tgl_akhir_seleksi = icp.get_param('pesantren_pendaftaran.tgl_akhir_seleksi', default=False)
+        if not tgl_akhir_seleksi:
+            tgl_akhir_seleksi = (datetime.now() + timedelta(days=8)).strftime('%Y-%m-%d %H:%M:%S')
+
+        tgl_pengumuman_hasil_seleksi = icp.get_param('pesantren_pendaftaran.tgl_pengumuman_hasil_seleksi', default=False)
+        if not tgl_pengumuman_hasil_seleksi:
+            tgl_pengumuman_hasil_seleksi = (datetime.now() + timedelta(days=10)).strftime('%Y-%m-%d %H:%M:%S')
 
         res.update({
-            'kuota_pendaftaran': kuota_pendaftaran,
+            'kuota_pendaftaran': int(icp.get_param('pesantren_pendaftaran.kuota_pendaftaran', default=0)),
             'tgl_mulai_pendaftaran': tgl_mulai_pendaftaran,
             'tgl_akhir_pendaftaran': tgl_akhir_pendaftaran,
             'tgl_mulai_seleksi': tgl_mulai_seleksi,
             'tgl_akhir_seleksi': tgl_akhir_seleksi,
             'tgl_pengumuman_hasil_seleksi': tgl_pengumuman_hasil_seleksi,
+            'is_halaman_pengumuman': icp.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False),
         })
-
         return res
 
 

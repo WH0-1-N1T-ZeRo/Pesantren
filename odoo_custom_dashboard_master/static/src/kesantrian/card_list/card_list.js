@@ -10,13 +10,13 @@ export class PelanggaranCardList extends Component {
 
     setup() {
         this.orm = useService('orm');
+        this.actionService = useService('action');
         this.state = {
             pelanggarans: [],
             isLoading: true,
             hasData: false,
             currentStartDate: this.props.startDate,
-            currentEndDate: this.props.endDate,
-            sevenDayData: [] // Store rolling 7-day data separately
+            currentEndDate: this.props.endDate
         };
 
         onWillStart(async () => {
@@ -33,26 +33,60 @@ export class PelanggaranCardList extends Component {
         });
     }
 
+    async onPelanggaranRowClick(pelanggaran) {
+        try {
+            const pelanggaranRecord = await this.orm.searchRead(
+                'cdn.pelanggaran', 
+                [
+                    ['siswa_id.name', '=', pelanggaran.student_name],
+                    ['tgl_pelanggaran', '=', this.formatDateForSearch(pelanggaran.tanggal)],
+                    ['pelanggaran_id.name', '=', pelanggaran.pelanggaran_name],
+                    ['poin', '=', pelanggaran.points]
+                ], 
+                ['id', 'name']
+            );
+    
+            if (pelanggaranRecord.length > 0) {
+
+                this.actionService.doAction({
+                    type: 'ir.actions.act_window',
+                    res_model: 'cdn.pelanggaran',
+                    res_id: pelanggaranRecord[0].id,
+                    views: [[false, 'form']],
+                    target: 'current'
+                });
+            } else {
+                console.warn("No matching pelanggaran record found");
+            }
+        } catch (error) {
+            console.error("Error navigating to pelanggaran record:", error);
+        }
+    }
+    formatDateForSearch(dateStr) {
+        if (!dateStr) return null;
+        const [day, month, year] = dateStr.split('/');
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+    
     async fetchPelanggaranSantri() {
         try {
             this.state.isLoading = true;
 
-            // Get data for the last 7 days
-            const sevenDaysAgo = new Date();
-            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-            const sevenDaysAgoDB = sevenDaysAgo.toISOString().split('T')[0];
-
-            // Base domain for 7-day data
-            const sevenDayDomain = [
+            const filterDomain = [
                 ['state', '=', 'approved'],
-                ['poin', '>', 0],
-                ['tgl_pelanggaran', '>=', sevenDaysAgoDB]
+                ['poin', '>', 0]
             ];
 
-            // Fetch 7-day data
-            const sevenDayPelanggaran = await this.orm.searchRead(
+            if (this.state.currentStartDate) {
+                filterDomain.push(['tgl_pelanggaran', '>=', this.state.currentStartDate]);
+            }
+            if (this.state.currentEndDate) {
+                filterDomain.push(['tgl_pelanggaran', '<=', this.state.currentEndDate]);
+            }
+
+            const pelanggaranRecords = await this.orm.searchRead(
                 'cdn.pelanggaran',
-                sevenDayDomain,
+                filterDomain,
                 [
                     'siswa_id',
                     'pelanggaran_id',
@@ -67,61 +101,13 @@ export class PelanggaranCardList extends Component {
                 }
             );
 
-            // Store 7-day data
-            this.state.sevenDayData = sevenDayPelanggaran;
-
-            // Now handle filtered data if dates are provided
-            let filteredData = [...this.state.sevenDayData]; // Start with 7-day data
-
-            if (this.state.currentStartDate || this.state.currentEndDate) {
-                // Additional domain for date filters
-                const filterDomain = [
-                    ['state', '=', 'approved'],
-                    ['poin', '>', 0]
-                ];
-
-                if (this.state.currentStartDate) {
-                    filterDomain.push(['tgl_pelanggaran', '>=', this.state.currentStartDate]);
-                }
-                if (this.state.currentEndDate) {
-                    filterDomain.push(['tgl_pelanggaran', '<=', this.state.currentEndDate]);
-                }
-
-                const filteredPelanggaran = await this.orm.searchRead(
-                    'cdn.pelanggaran',
-                    filterDomain,
-                    [
-                        'siswa_id',
-                        'pelanggaran_id',
-                        'kategori',
-                        'poin',
-                        'tgl_pelanggaran',
-                        'kelas_id',
-                        'deskripsi'
-                    ],
-                    { 
-                        order: 'create_date DESC, poin DESC'
-                    }
-                );
-
-                // Merge filtered data with 7-day data
-                const allIds = new Set();
-                filteredData = [...filteredData, ...filteredPelanggaran].filter(item => {
-                    if (!allIds.has(item.id)) {
-                        allIds.add(item.id);
-                        return true;
-                    }
-                    return false;
-                });
-            }
-
-            if (!filteredData || filteredData.length === 0) {
+            if (!pelanggaranRecords || pelanggaranRecords.length === 0) {
                 this.state.hasData = false;
                 this.state.pelanggarans = [];
                 return;
             }
 
-            const studentIds = [...new Set(filteredData.map(p => p.siswa_id[0]))];
+            const studentIds = [...new Set(pelanggaranRecords.map(p => p.siswa_id[0]))];
             const students = await this.orm.searchRead(
                 'cdn.siswa',
                 [['id', 'in', studentIds]],
@@ -130,17 +116,23 @@ export class PelanggaranCardList extends Component {
            
             const studentMap = new Map(students.map(s => [s.id, s]));
 
-            this.state.pelanggarans = filteredData
-                .map(p => ({
-                    student_name: studentMap.get(p.siswa_id[0])?.name || "N/A",
-                    pelanggaran_name: p.pelanggaran_id[1] || "N/A",
-                    kategori: p.kategori || "N/A",
-                    points: p.poin || 0,
-                    tanggal: this.formatDate(p.tgl_pelanggaran),
-                    kelas: p.kelas_id ? p.kelas_id[1] : "N/A",
-                    deskripsi: p.deskripsi || ""
-                }))
-                .sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+            this.state.pelanggarans = pelanggaranRecords
+                .map(p => {
+                    const pelanggaran = {
+                        student_name: studentMap.get(p.siswa_id[0])?.name || "N/A",
+                        pelanggaran_name: p.pelanggaran_id[1] || "N/A",
+                        kategori: p.kategori || "N/A",
+                        points: p.poin || 0,
+                        tanggal: this.formatDate(p.tgl_pelanggaran),
+                        kelas: p.kelas_id ? p.kelas_id[1] : "N/A",
+                        deskripsi: p.deskripsi || ""
+                    };
+                    
+                    pelanggaran.onClick = () => this.onPelanggaranRowClick(pelanggaran);
+                    return pelanggaran;
+                })
+                .sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal))
+                .slice(0, 10);
 
             this.state.hasData = this.state.pelanggarans.length > 0;
 
@@ -174,13 +166,13 @@ export class TahfidzCardList extends Component {
 
     setup() {
         this.orm = useService('orm');
+        this.actionService = useService('action');
         this.state = {
             topTahfidz: [],
             isLoading: true,
             hasData: false,
             currentStartDate: this.props.startDate,
-            currentEndDate: this.props.endDate,
-            sevenDayData: [] // Store rolling 7-day data separately
+            currentEndDate: this.props.endDate
         };
 
         onWillStart(async () => {
@@ -197,27 +189,52 @@ export class TahfidzCardList extends Component {
         });
     }
 
+    async onTahfidzRowClick(tahfidz) {
+        try {
+            const tahfidzRecord = await this.orm.searchRead(
+                'cdn.tahfidz_quran', 
+                [
+                    ['siswa_id.name', '=', tahfidz.name],
+                    ['jml_baris', '=', tahfidz.total_baris]
+                ], 
+                ['id']
+            );
+    
+            if (tahfidzRecord.length > 0) {
+
+                this.actionService.doAction({
+                    type: 'ir.actions.act_window',
+                    res_model: 'cdn.tahfidz_quran',
+                    res_id: tahfidzRecord[0].id,
+                    views: [[false, 'form']],
+                    target: 'current'
+                });
+            }
+        } catch (error) {
+            console.error("Error navigating to tahfidz record:", error);
+        }
+    }
+
     async fetchTahfidzTertinggi() {
         try {
             this.state.isLoading = true;
     
-            // Get data for the last 7 days
-            const sevenDaysAgo = new Date();
-            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-            const sevenDaysAgoDB = sevenDaysAgo.toISOString().split('T')[0];
-    
-            // Base domain for 7-day data with non-zero jml_baris
-            const sevenDayDomain = [
+            const filterDomain = [
                 ['state', '=', 'done'],
                 ['siswa_id', '!=', false],
-                ['tanggal', '>=', sevenDaysAgoDB],
                 ['jml_baris', '>', 0]
             ];
     
-            // Fetch 7-day data
-            const sevenDayTahfidz = await this.orm.searchRead(
+            if (this.state.currentStartDate) {
+                filterDomain.push(['tanggal', '>=', this.state.currentStartDate]);
+            }
+            if (this.state.currentEndDate) {
+                filterDomain.push(['tanggal', '<=', this.state.currentEndDate]);
+            }
+    
+            const tahfidzRecords = await this.orm.searchRead(
                 'cdn.tahfidz_quran',
-                sevenDayDomain,
+                filterDomain,
                 [
                     'siswa_id',
                     'halaqoh_id',
@@ -228,59 +245,14 @@ export class TahfidzCardList extends Component {
                 { order: 'jml_baris desc' }
             );
     
-            // Store 7-day data
-            this.state.sevenDayData = sevenDayTahfidz;
-    
-            // Handle filtered data if dates are provided
-            let filteredData = [...this.state.sevenDayData];
-    
-            if (this.state.currentStartDate || this.state.currentEndDate) {
-                const filterDomain = [
-                    ['state', '=', 'done'],
-                    ['siswa_id', '!=', false],
-                    ['jml_baris', '>', 0]
-                ];
-    
-                if (this.state.currentStartDate) {
-                    filterDomain.push(['tanggal', '>=', this.state.currentStartDate]);
-                }
-                if (this.state.currentEndDate) {
-                    filterDomain.push(['tanggal', '<=', this.state.currentEndDate]);
-                }
-    
-                const filteredTahfidz = await this.orm.searchRead(
-                    'cdn.tahfidz_quran',
-                    filterDomain,
-                    [
-                        'siswa_id',
-                        'halaqoh_id',
-                        'jml_baris',
-                        'state',
-                        'tanggal'
-                    ],
-                    { order: 'jml_baris desc' }
-                );
-    
-                // Merge filtered data with 7-day data
-                const allIds = new Set();
-                filteredData = [...filteredData, ...filteredTahfidz].filter(item => {
-                    if (!allIds.has(item.id)) {
-                        allIds.add(item.id);
-                        return true;
-                    }
-                    return false;
-                });
-            }
-    
-            if (!filteredData || filteredData.length === 0) {
+            if (!tahfidzRecords || tahfidzRecords.length === 0) {
                 this.state.hasData = false;
                 this.state.topTahfidz = [];
                 return;
             }
     
-            // Group by student name and get their highest jml_baris
             const studentTahfidz = {};
-            filteredData.forEach(record => {
+            tahfidzRecords.forEach(record => {
                 if (record.jml_baris > 0) {
                     const studentName = record.siswa_id[1];
                     if (!studentTahfidz[studentName] || studentTahfidz[studentName].jml_baris < record.jml_baris) {
@@ -293,7 +265,6 @@ export class TahfidzCardList extends Component {
                 }
             });
     
-            // Convert to array, sort by jml_baris, and apply sequential numbering
             let sortedData = Object.entries(studentTahfidz)
                 .map(([name, data]) => ({
                     name: name,
@@ -301,13 +272,17 @@ export class TahfidzCardList extends Component {
                     kelas: data.kelas
                 }))
                 .sort((a, b) => b.total_baris - a.total_baris)
-                .slice(0, 5);
+                .slice(0, 10);
     
-            // Apply sequential numbering after sorting
-            this.state.topTahfidz = sortedData.map((item, index) => ({
-                number: index + 1,  // Sequential numbering starting from 1
-                ...item
-            }));
+            this.state.topTahfidz = sortedData.map((item, index) => {
+                const tahfidz = {
+                    number: index + 1,
+                    ...item
+                };
+                
+                tahfidz.onClick = () => this.onTahfidzRowClick(tahfidz);
+                return tahfidz;
+            });
     
             this.state.hasData = this.state.topTahfidz.length > 0;
     
