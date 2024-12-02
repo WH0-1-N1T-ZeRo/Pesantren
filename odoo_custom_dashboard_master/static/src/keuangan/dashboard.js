@@ -9,12 +9,12 @@ class OwlKeuanganDashboard extends Component {
             selectedDateRange: null,
             tempDateRange: { start: '', end: '' },
             showDatePicker: false,
-            selectedPeriod: 'all', 
+            selectedPeriod: 'thisWeek', 
             isLoading: false
         });
         
         // Initialize with thisWeek period
-        this.setPeriod('all');
+        this.setPeriod('thisWeek');
     }
 
     toggleDatePicker() {

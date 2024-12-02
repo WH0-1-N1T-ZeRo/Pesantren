@@ -52,6 +52,8 @@
           'pos_wallet_odoo/static/src/overrides/components/InheritProduct/InheritProduct.xml',
           'pos_wallet_odoo/static/src/overrides/components/InheritProduct/InheritProduct.js',
           'pos_wallet_odoo/static/src/overrides/components/InheritProduct/InheritPopupArea.xml',
+          'pos_wallet_odoo/static/src/overrides/components/menu/menu.js',
+          'pos_wallet_odoo/static/src/overrides/components/menu/menu.xml',
         ],
         'point_of_sale.assets': [
          'pos_wallet_odoo/static/src/js/customerListScreen.js',

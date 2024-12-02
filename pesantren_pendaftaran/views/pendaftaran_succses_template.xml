@@ -178,7 +178,8 @@
 
                 <div class="d-flex justify-content-center">
                     <div style="width: 800px; padding-top: 30px;" class="bg-white rounded mt-5 mb-3">
-                        <h4 class="text-center mb-4">Alhamdulillah pendaftaran sudah berhasil</h4>
+                        <h4 class="text-center mb-2">Alhamdulillah pendaftaran sudah berhasil</h4>
+                        <p class="text-center mb-4">Pastikan selalu memantau email wali untuk info akun orang tua dibagian menu kotak masuk (Inbox) atau Spam.</p>
                         <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
                             <div>
                                 <div class="mb-4">
@@ -249,35 +250,12 @@
                         </div>
                     </div>
                 </div>
-                <footer class="p-2"
-                    style="display: flex; justify-content: space-between; flex-wrap: wrap; color: white !important;">
+                <footer class="text-white p-2" style="display: flex; justify-content: space-between; flex-wrap: wrap;">
                     <div class="ms-5">
-                        <ul
-                            style="list-style-type: none; display: flex; text-transform: uppercase; font-size: 13px;"
-                            class="fw-semibold">
-                            <li>
-                                <a href="/psb" class="me-4"
-                                    style="text-decoration: none; color: white;">Home</a>
-                            </li>
-                            <li>
-                                <a href="/beranda" class="me-4"
-                                    style="text-decoration: none; color: white;" target="_blank">Info
-                                    Pondok</a>
-                            </li>
-                            <li>
-                                <a
-                                    href="https://drive.google.com/drive/mobile/folders/1EYat5411joyoOmH_DkJ3g2DeJKgyyuBQ?usp=share_link&amp;fbclid=IwY2xjawGflGlleHRuA2FlbQIxMQABHTusVv9hD3VRDSLW9-671QhOL86e3KMv30smsAYW0DHkkWf7zwPlcBlbeA_aem_XXofAY-ay0syx043L5BLvw"
-                                    class="me-4" style="text-decoration: none; color: white;"
-                                    target="_blank">Brosur</a>
-                            </li>
-                            <li>
-                                <a href="" class="me-4" style="text-decoration: none; color: white;">
-                                    Panduan</a>
-                            </li>
-                        </ul>
+                        
                     </div>
                     <div class="me-5">
-                        <p class="text-center mt-1">© 2024 TIM IT PPIB</p>
+                        <p class="text-center mt-1" style="color: white !important;">© 2024 TIM IT PPIB</p>
                     </div>
                 </footer>
             </div>

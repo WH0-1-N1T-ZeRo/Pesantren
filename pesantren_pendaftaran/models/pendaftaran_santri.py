@@ -1,9 +1,12 @@
 from odoo import models, fields, api
-import random
-import hashlib
+from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 import uuid
 from datetime import datetime, timedelta
 from odoo.tools import format_date
+import pytz
+import random
+import string
 
 class ResPartner(models.Model):
     _inherit            = 'res.partner'
@@ -43,14 +46,14 @@ class DataPendaftaran(models.Model):
     keterangan          = fields.Char(related='jenjang_id.keterangan', string='Keterangan', readonly=True)
 
     # Data Diri
-    gender              = fields.Selection([('l','Laki - Laki'),('p','Perempuan'),], string="Jenis Kelamin")
+    gender              = fields.Selection([('L','Laki - Laki'),('P','Perempuan'),], string="Jenis Kelamin")
     kota_lahir          = fields.Char(string="Kota Kelahiran")
     tanggal_lahir       = fields.Date(string="Tanggal Lahir Calon Santri")
     golongan_darah      = fields.Selection([
-                          ('a', 'A'),
-                          ('b', 'B'),
-                          ('ab', 'AB'),
-                          ('o', 'O'),
+                          ('A', 'A'),
+                          ('B', 'B'),
+                          ('AB', 'AB'),
+                          ('O', 'O'),
                         ], string="Golongan Darah")
     kewarganegaraan     = fields.Selection(selection=[('wni','WNI'),('wna','WNA')],  string="Kewarganegaraan",  help="")
     alamat              = fields.Char(string='Alamat Calon Santri')
@@ -123,6 +126,7 @@ class DataPendaftaran(models.Model):
     wali_tgl_lahir      = fields.Date( string="Tgl lahir (Wali)",  help="")
     wali_telp           = fields.Char( string="No Telepon (Wali)",  help="")
     wali_email          = fields.Char( string="Email (Wali)",  help="")
+    wali_password       = fields.Char( string="Password", help="")
     wali_agama          = fields.Selection(selection=[('islam', 'Islam'), ('katolik', 'Katolik'), ('protestan', 'Protestan'), ('hindu', 'Hindu'), ('budha', 'Budha')],  string="Agama (Wali)",  help="")
     wali_hubungan       = fields.Char( string="Hubungan dengan Siswa",  help="")
                           
@@ -215,20 +219,20 @@ class DataPendaftaran(models.Model):
 
     def create(self, vals):
         # Get the current year
-        current_year = fields.Date.context_today(self).year
+        current_year = fields.Date.context_today(self).year % 100
         
         # Search for existing records with the same year
-        existing_records = self.search([('nomor_pendaftaran', 'ilike', f'PSB/{current_year}/%')])
+        existing_records = self.search([('nomor_pendaftaran', 'ilike', f'{current_year}%')])
         
         # Determine the next sequence number
         if existing_records:
-            last_number = max(int(record.nomor_pendaftaran.split('/')[-1]) for record in existing_records)
+            last_number = max(int(record.nomor_pendaftaran[len(str(current_year)):]) for record in existing_records)
             next_number = last_number + 1
         else:
             next_number = 1
             
         # Generate the new nomor_pendaftaran
-        vals['nomor_pendaftaran'] = f'PSB/{current_year}/{str(next_number).zfill(5)}'
+        vals['nomor_pendaftaran'] = f'{current_year}{str(next_number).zfill(4)}'
 
         # Generate UUID token
         vals['token'] = str(uuid.uuid4())
@@ -238,8 +242,8 @@ class DataPendaftaran(models.Model):
         if record.state == 'draft':
             # Buat data virtual account
             if not record.virtual_account:
-                nisn = record.nisn
-                record.virtual_account = record._generate_virtual_account(nisn)
+                nopen = record.nomor_pendaftaran
+                record.virtual_account = record._generate_virtual_account_temporary(nopen)
                 record.status_va = 'temporary'
         return record
 
@@ -261,12 +265,19 @@ class DataPendaftaran(models.Model):
         }
     
     def hapus_pendaftaran_kadaluarsa(self):
-        tgl_hari_ini = datetime.now()
-        batas_waktu = datetime.now() + timedelta(days=1)
+        # Tentukan zona waktu Anda, misalnya 'Asia/Jakarta' untuk WIB
+        timezone = pytz.timezone('Asia/Jakarta')
+        for record in self:
+            if record.tanggal_daftar:
+                tgl_hari_ini = datetime.now(timezone).date()
+                batas_waktu = record.tanggal_daftar + timedelta(days=7)
 
-        if tgl_hari_ini > batas_waktu:
-            pendaftaran_kadaluarsa = self.search([('state', '=', 'draft')])
-            pendaftaran_kadaluarsa.unlink()
+                # Debug
+                # raise UserError(f"Tanggal setelah satu hari: {batas_waktu}, Tanggal hari ini: {tgl_hari_ini}")
+
+                if tgl_hari_ini > batas_waktu:
+                    pendaftaran_kadaluarsa = self.search([('state', '=', 'draft')])
+                    pendaftaran_kadaluarsa.unlink()
 
     def action_terdaftar(self):
         self.state = 'terdaftar'
@@ -299,9 +310,6 @@ class DataPendaftaran(models.Model):
     # return res
 
     def write(self, vals):
-        # if 'bank' in vals:
-        #     nisn = self.nisn
-        #     vals['virtual_account'] = self._generate_virtual_account(vals, nisn)
 
         if 'state' in vals and vals['state'] == 'diterima':
             for record in self:
@@ -319,13 +327,14 @@ class DataPendaftaran(models.Model):
                 # if not record.virtual_account:
                 #     nisn = record.nisn
                 #     record.virtual_account = record._generate_virtual_account(nisn)
-
+                nis = record.nis
+                jenjang = record.jenjang
+                record.virtual_account = record._generate_virtual_account_permanent(nis, jenjang)
                 record.status_va = 'permanent'
 
                 # Buat data virtual account uang saku
                 if not record.va_saku:
-                    nisn = record.nisn
-                    record.va_saku = record._generate_va_uangsaku(nisn)
+                    record.va_saku = record._generate_va_uangsaku(nis, jenjang)
 
                 # Generate nis
                 # if not record.nis:
@@ -350,7 +359,7 @@ class DataPendaftaran(models.Model):
             """Fungsi untuk membuat akun orang tua di cdn.orangtua"""
 
             # Cek apakah email orang tua sudah ada di res.partner
-            existing_partner = self.env['res.partner'].search([('email', '=', record.email)], limit=1)
+            existing_partner = self.env['res.partner'].search([('email', '=', record.wali_email)], limit=1)
 
             if existing_partner:
                 # Jika partner sudah ada, cek apakah data orang tua sudah ada
@@ -362,9 +371,8 @@ class DataPendaftaran(models.Model):
                      # Jika partner ada tapi data orang tua belum ada, buat data orang tua
                      orangtua_vals = {
                          'partner_id': existing_partner.id,
-                         'hubungan': 'ayah',
-                         'email': record.email,
-                         'nik': record.ktp_ayah,
+                         'hubungan': 'wali',
+                         'email': record.wali_email,
                      }
                      orangtua = self.env['cdn.orangtua'].sudo().create(orangtua_vals)
                      return orangtua
@@ -372,10 +380,9 @@ class DataPendaftaran(models.Model):
                 # Jika partner belum ada, buat data partner baru
                 # Membuat data orangtua otomatis saat pendaftaran diterima
                 partner_vals = {
-                    'name': record.nama_ayah,
-                    'email': record.email,  # Asumsi field email ada di model Pendaftaran
-                    'phone': record.telepon_ayah,  # Asumsi field phone ada di model Pendaftaran
-                    'street': record.alamat,  # Asumsi field Alamat ada di model Pendaftaran
+                    'name': record.wali_nama,
+                    'email': record.wali_email,  # Asumsi field email ada di model Pendaftaran
+                    'phone': record.wali_telp,  # Asumsi field phone ada di model Pendaftaran
                     'city': record.kota_id.name,
                 }
                 
@@ -384,38 +391,140 @@ class DataPendaftaran(models.Model):
 
                 orangtua_vals = {
                     'partner_id': partner.id,
-                    'hubungan': 'ayah',
-                    'email': record.email,
-                    'nik': record.ktp_ayah,
+                    'hubungan': 'wali',
+                    'email': record.wali_email,
                 }
                 orangtua = self.env['cdn.orangtua'].sudo().create(orangtua_vals)
 
                 # Mengatur password untuk user_id yang sudah dibuat otomatis
                 if partner.user_id:  # Pastikan user_id sudah ada
-                    password = record.password
+                    password = record.wali_password
                     partner.user_id.write({'password': password,})
 
                 # Mengirim email menggunakan mail.mail
+                # email_values = {
+                #     'subject': "Informasi Login Orang Tua Santri Baru Pesantren Daarul Qur'an Istiqomah",
+                #     'email_to': record.wali_email,
+                #     'body_html': f'''
+                #         <p>Assalamualaikum Wr.wb, Bapak/Ibu {record.wali_nama}</p>
+                #         <p>Akun OrangTua telah dibuat di sistem pesantren kami. Dengan ini kami kirimkan informasi akun login sebagai berikut:</p>
+                #         <p style="font-style: italic; color: red;">Sebelum Bapak/Ibu menggunakan akun ini, harap mengganti password demi keamanan akun.</p>
+                #         <a href="localhost:9069/web/reset_password" class="btn btn-link">Ganti Password</a>
+                #         <ul>
+                #             <li>Web Login   : Gunakan <a href="localhost:9069/odoo">Akun Anda</a></li>
+                #             <li>Email       : {record.wali_email}</li>
+                #             <li>Password    : {password}</li>
+                #         </ul>
+                #         <p>Apabila terdapat kesulitan saat login atau membutuhkan bantuan, Bapak/Ibu dapat menghubungi tim teknis kami melalui nomor telepon 0822 5207 9785/0853 9051 1124. <br> <br>
+                #         Kami harap portal ini dapat memudahkan Bapak/Ibu dalam memantau perkembangan putra/putri selama berada di pesantren. <br> <br>
+                #         Demikian informasi ini kami sampaikan. Atas perhatian dan kerjasamanya, kami ucapkan terima kasih.<br> <br> <br>
+
+                #         Hormat kami, <br>
+                #         Admin Pendaftaran <br>
+                #         Pesantren Tahfizh Daarul Qur'an Istiqomah</p>
+                #     ''',
+                # }
+
+                # email_values = {
+                #     'subject': "Informasi Login Orang Tua Santri Baru Pesantren Daarul Qur'an Istiqomah",
+                #     'email_to': record.wali_email,
+                #     'body_html': f'''
+                #         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
+                #             <div style="text-align: center; margin-bottom: 20px;">
+                #                 <img src="https://example.com/logo.png" alt="Pesantren Daarul Qur'an Istiqomah" style="max-width: 150px;">
+                #             </div>
+                #             <h2 style="color: #333; text-align: center;">Informasi Login Akun Orang Tua</h2>
+                #             <p style="color: #555;">Assalamualaikum Wr. Wb,</p>
+                #             <p style="color: #555;">Bapak/Ibu <strong>{record.wali_nama}</strong>,</p>
+                #             <p style="color: #555;">Akun Orang Tua telah dibuat di sistem pesantren kami. Berikut informasi login Anda:</p>
+                #             <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                #                 <tr>
+                #                     <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Email</td>
+                #                     <td style="padding: 8px; border: 1px solid #ddd;">{record.wali_email}</td>
+                #                 </tr>
+                #                 <tr>
+                #                     <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Password</td>
+                #                     <td style="padding: 8px; border: 1px solid #ddd;">{password}</td>
+                #                 </tr>
+                #                 <tr>
+                #                     <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Web Login</td>
+                #                     <td style="padding: 8px; border: 1px solid #ddd;">
+                #                         <a href="http://localhost:9069/odoo" style="color: #0066cc; text-decoration: none;">Klik di sini untuk login</a>
+                #                     </td>
+                #                 </tr>
+                #             </table>
+                #             <p style="color: #555; font-style: italic;">Sebelum menggunakan akun ini, harap mengganti password demi keamanan.</p>
+                #             <p style="text-align: center;">
+                #                 <a href="http://localhost:9069/web/reset_password" style="background-color: #0066cc; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">Ganti Password</a>
+                #             </p>
+                #             <p style="color: #555;">Apabila terdapat kesulitan atau membutuhkan bantuan, silakan hubungi tim teknis kami melalui nomor:</p>
+                #             <ul style="color: #555;">
+                #                 <li>0822 5207 9785</li>
+                #                 <li>0853 9051 1124</li>
+                #             </ul>
+                #             <p style="color: #555;">Kami berharap portal ini dapat membantu Bapak/Ibu memantau perkembangan putra/putri selama berada di pesantren.</p>
+                #             <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+                #             <p style="text-align: center; color: #888; font-size: 12px;">
+                #                 Pesantren Tahfizh Daarul Qur'an Istiqomah<br>
+                #                 <a href="http://example.com" style="color: #0066cc; text-decoration: none;">Website Kami</a>
+                #             </p>
+                #         </div>
+                #     ''',
+                # }
+
                 email_values = {
                     'subject': "Informasi Login Orang Tua Santri Baru Pesantren Daarul Qur'an Istiqomah",
-                    'email_to': record.email,
+                    'email_to': record.wali_email,
                     'body_html': f'''
-                        <p>Assalamualaikum Wr.wb, Bapak/Ibu {record.nama_ayah}</p>
-                        <p>Akun OrangTua telah dibuat di sistem pesantren kami. Dengan ini kami kirimkan informasi akun login sebagai berikut:</p>
-                        <ul>
-                            <li>Web Login   : Gunakan <a href="https://clever-gelding-alive.ngrok-free.app/odoo">Akun Anda</a></li>
-                            <li>Email       : {record.email}</li>
-                            <li>Password    : {password}</li>
-                        </ul>
-                        <p>Apabila terdapat kesulitan saat login atau membutuhkan bantuan, Bapak/Ibu dapat menghubungi tim teknis kami melalui nomor telepon 0822 5207 9785/0853 9051 1124. <br> <br>
-                        Kami harap portal ini dapat memudahkan Bapak/Ibu dalam memantau perkembangan putra/putri selama berada di pesantren. <br> <br>
-                        Demikian informasi ini kami sampaikan. Atas perhatian dan kerjasamanya, kami ucapkan terima kasih.<br> <br> <br>
-
-                        Hormat kami, <br>
-                        Admin Pendaftaran <br>
-                        Pesantren Tahfizh Daarul Qur'an Istiqomah</p>
+                        <div style="background-color: #d9eaf7; padding: 20px; font-family: Arial, sans-serif;">
+                            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden;">
+                                <!-- Header -->
+                                <div style="background-color: #0066cc; color: #ffffff; text-align: center; padding: 20px;">
+                                    <h1 style="margin: 0; font-size: 24px;">Pesantren Daarul Qur'an Istiqomah</h1>
+                                </div>
+                                <!-- Body -->
+                                <div style="padding: 20px; color: #555555;">
+                                    <p style="margin: 0 0 10px;">Assalamualaikum Wr. Wb,</p>
+                                    <p style="margin: 0 0 20px;">
+                                        Bapak/Ibu <strong>{record.wali_nama}</strong>,<br>
+                                        Akun Orang Tua telah dibuat di sistem pesantren kami. Berikut adalah informasi login Anda:
+                                    </p>
+                                    <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                                        <table style="width: 100%; border-collapse: collapse;">
+                                            <tr>
+                                                <td style="padding: 8px; font-weight: bold; color: #333333;">Email</td>
+                                                <td style="padding: 8px; color: #555555;">{record.wali_email}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <p style="text-align: center;">
+                                        <a href="http://localhost:9069/odoo" style="background-color: #0066cc; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">
+                                            Masuk Ke Akun Anda
+                                        </a>
+                                    </p>
+                                    <p style="margin: 20px 0;">
+                                        Apabila terdapat kesulitan atau membutuhkan bantuan, silakan hubungi tim teknis kami melalui nomor:
+                                    </p>
+                                    <ul style="margin: 0; padding-left: 20px; color: #555555;">
+                                        <li>0822 5207 9785</li>
+                                        <li>0853 9051 1124</li>
+                                    </ul>
+                                    <p style="margin: 20px 0;">
+                                        Kami berharap portal ini dapat membantu Bapak/Ibu memantau perkembangan putra/putri selama berada di pesantren.
+                                    </p>
+                                </div>
+                                <!-- Footer -->
+                                <div style="background-color: #f1f1f1; text-align: center; padding: 10px;">
+                                    <p style="font-size: 12px; color: #888888; margin: 0;">
+                                        &copy; 2024 Pesantren Tahfizh Daarul Qur'an Istiqomah. All rights reserved.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     ''',
                 }
+
+
 
                 # Membuat dan mengirim email
                 mail = self.env['mail.mail'].sudo().create(email_values)
@@ -457,7 +566,6 @@ class DataPendaftaran(models.Model):
                 'ayah_pekerjaan_id'     : record.pekerjaan_ayah.id,
                 'ayah_agama'            : record.agama_ayah,
                 'ayah_warganegara'      : record.kewarganegaraan_ayah,
-                'ayah_email'            : record.email_ayah,
                 'ayah_pendidikan_id'    : record.pendidikan_ayah.id,
 
                 'ibu_nama'              : record.nama_ibu,
@@ -466,21 +574,23 @@ class DataPendaftaran(models.Model):
                 'ibu_pekerjaan_id'      : record.pekerjaan_ibu.id,
                 'ibu_agama'             : record.agama_ibu,
                 'ibu_warganegara'       : record.kewarganegaraan_ibu,
-                'ibu_email'             : record.email_ibu,
                 'ibu_pendidikan_id'     : record.pendidikan_ibu.id,
+
+                'wali_nama'             : record.wali_nama,
+                'wali_tgl_lahir'        : record.wali_tgl_lahir,
+                'wali_telp'             : record.wali_telp,
+                'wali_email'            : record.wali_email,
+                'wali_hubungan'         : record.wali_hubungan,
             }
             siswa = self.env['cdn.siswa'].sudo().create(siswa_vals)
             return siswa
     
 
-    # def generate_password_akun_ortu(ktp, additional_arg=None):
-    #     ktp_str = str(ktp)
-    #     # Buat hash dari nomor KTP menggunakan SHA-256
-    #     hash_object = hashlib.sha256(ktp_str.encode())
-    #     hashed_ktp = hash_object.hexdigest()
-
-    #     # Ambil 8 karakter pertama dari hasil hash
-    #     password = hashed_ktp[:8]
+    # def generate_password_akun_ortu(self):
+    #     # Kombinasi karakter yang akan digunakan untuk password
+    #     characters = string.ascii_letters + string.digits  # Huruf besar, kecil, dan angka
+    #     # Menghasilkan password acak sepanjang 8 karakter
+    #     password = ''.join(random.choices(characters, k=8))
     #     return password
     
     # def _generate_virtual_account(self, vals, nis):
@@ -497,37 +607,62 @@ class DataPendaftaran(models.Model):
     #     return f"{kode_va_bank}{account_type}{nis}"
 
 
-    def _generate_virtual_account(self, nis):
+    def _generate_virtual_account_temporary(self, nopen):
         for record in self:
-            kode_va_bank = "88810"
+            kode_bank_bri = "002"
+            # account_type = "01"
+            # Pastikan NIS selalu memiliki panjang tertentu
+            nopen = nopen # Contoh padding NIS menjadi 6 digit
+
+            return f"{kode_bank_bri}{nopen}"
+        
+    def _generate_virtual_account_permanent(self, nis, jenjang):
+        for record in self:
+            kode_bank_bri = "002"
             account_type = "01"
             # Pastikan NIS selalu memiliki panjang tertentu
-            nis_str = str(nis).zfill(10)  # Contoh padding NIS menjadi 6 digit
+            nis = nis
 
-            return f"{kode_va_bank}{account_type}{nis_str}"
+            if jenjang == "sdmi":
+                kode_jenjang = "10"
+                return f"{kode_bank_bri}{kode_jenjang}{account_type}{nis}"
+            elif jenjang == "smpmts":
+                kode_jenjang = "20"
+                return f"{kode_bank_bri}{kode_jenjang}{account_type}{nis}"
+            elif jenjang == "smama":
+                kode_jenjang = "30"
+                return f"{kode_bank_bri}{kode_jenjang}{account_type}{nis}"
         
-    def _generate_va_uangsaku(self, nis):
+    def _generate_va_uangsaku(self, nis, jenjang):
         for record in self:
-            kode_va_bank = "88810"
+            kode_bank_bri = "002"
             account_type = "02"
             # Pastikan NIS selalu memiliki panjang tertentu
-            nis_str = str(nis).zfill(10)  # Contoh padding NIS menjadi 6 digit
+            nis = nis
 
-            return f"{kode_va_bank}{account_type}{nis_str}"
+            if jenjang == "sdmi":
+                kode_jenjang = "10"
+                return f"{kode_bank_bri}{kode_jenjang}{account_type}{nis}"
+            elif jenjang == "smpmts":
+                kode_jenjang = "20"
+                return f"{kode_bank_bri}{kode_jenjang}{account_type}{nis}"
+            elif jenjang == "smama":
+                kode_jenjang = "30"
+                return f"{kode_bank_bri}{kode_jenjang}{account_type}{nis}"
         
-    def _generate_nis(self, nisn):
-        for record in self:
-            nisn = nisn
-            if nisn and len(nisn) >= 5:
-                last_nisn = nisn[-5:]
-                npsn = record.jenjang_id.npsn
-                last_npsn = npsn[-3:]
-                thn_sekarang = str(datetime.now().year)
-                last_thn_sekarang = thn_sekarang[-2:]
-                nis = f"{last_nisn}{last_npsn}{last_thn_sekarang}"
-            else:
-                last_nisn = ''
-        return nis
+    # def _generate_nis(self, nisn):
+    #     for record in self:
+    #         nisn = nisn
+    #         if nisn and len(nisn) >= 5:
+    #             last_nisn = nisn[-5:]
+    #             npsn = record.jenjang_id.npsn
+    #             last_npsn = npsn[-3:]
+    #             thn_sekarang = str(datetime.now().year)
+    #             last_thn_sekarang = thn_sekarang[-2:]
+    #             nis = f"{last_nisn}{last_npsn}{last_thn_sekarang}"
+    #         else:
+    #             last_nisn = ''
+    #     return nis
 
 
     def get_formatted_tanggal(self):

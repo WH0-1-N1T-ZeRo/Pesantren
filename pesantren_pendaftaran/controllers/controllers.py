@@ -11,9 +11,9 @@ import hashlib
 import locale
 
 class PsbController(http.Controller):
-    @http.route('/psb/statistics', type='http', auth='user', methods=['POST'], csrf=False)
+    @http.route('/psb/statistics', type='http', auth='public', methods=['POST'], csrf=False)
     def get_statistics(self):
-        Pendaftaran = request.env['ubig.pendaftaran']
+        Pendaftaran = request.env['ubig.pendaftaran'].sudo()
         data = Pendaftaran.get_psb_statistics()
 
         if request.httprequest.headers.get('Content-Type') == 'application/json':
@@ -26,9 +26,9 @@ class PsbController(http.Controller):
                 headers={'Content-Type': 'application/json'}
             )
         
-    @http.route('/pendaftaran/check', type='http', auth='user', methods=['POST'], csrf=False)
+    @http.route('/pendaftaran/check', type='http', auth='public', methods=['POST'], csrf=False)
     def check_kuota(self):
-        Pendaftaran = request.env['ubig.pendaftaran']
+        Pendaftaran = request.env['ubig.pendaftaran'].sudo()
         total_pendaftar = Pendaftaran.search_count([])
 
         # Mengambil nilai kuota pendaftaran dari ir.config_parameter
@@ -51,7 +51,7 @@ class PsbController(http.Controller):
 
 
 class PesantrenBeranda(http.Controller):
-    @http.route('/beranda', type='http', auth='public')
+    @http.route('/', type='http', auth='public')
     def index(self, **kwargs):
 
         # Ambil perusahaan yang aktif (current company)
@@ -146,7 +146,7 @@ class PesantrenBeranda(http.Controller):
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
             </head>
             <style>
-            .bg-body-grenyellow {{ background: linear-gradient(to right, #009688 40%, #ccff33 130%); }}
+            .bg-body-grenyellow {{ background: linear-gradient(to left, #0B5B54 40%, #ccff33 130%); }}
 
             .rounded-90 {{ border-radius: 0 0 25% 0; }}
 
@@ -159,7 +159,7 @@ class PesantrenBeranda(http.Controller):
             .step-circle {{ 
                 width: 50px;
                 height: 50px;
-                background-color: #009688;
+                background-color: #0B5B54;
                 color: white;
                 font-size: 1.5rem;
                 border-radius: 50%;
@@ -172,7 +172,7 @@ class PesantrenBeranda(http.Controller):
             .step-line {{ 
                 width: 100%;
                 height: 2px;
-                background-color: #009688;
+                background-color: #0B5B54;
                 position: absolute;
                 top: 55px;
                 left: 0;
@@ -186,9 +186,9 @@ class PesantrenBeranda(http.Controller):
                 left: 50%; }}
 
             .text-green {{ 
-                color: #009688; }}
+                color: #0B5B54; }}
             .footer {{ 
-                background-color: #4a4a4a;
+                background-color: #0B5B54;
              }}
             .footer h5 {{
                 font-weight: bold;
@@ -306,7 +306,28 @@ class PesantrenBeranda(http.Controller):
                 </span> 
                 </a>
                 <div class="d-flex justify-content-end" id="navbarSupportedContent">
-                <div>
+                <div class="d-flex">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-none d-md-flex" style="text-transform: uppercase; font-size: 13px;">
+        <li class="nav-item">
+          <a class="nav-link" href="/" style="color: white; text-decoration: none;">Home</a>
+        </li>
+        <!-- Dropdown Menu -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="infoPondokDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: white; text-decoration: none;">
+            Info Pondok
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="infoPondokDropdown">
+            <li>
+              <a class="dropdown-item"
+                href="https://drive.google.com/drive/mobile/folders/1EYat5411joyoOmH_DkJ3g2DeJKgyyuBQ?usp=share_link&amp;fbclid=IwY2xjawGflGlleHRuA2FlbQIxMQABHTusVv9hD3VRDSLW9-671QhOL86e3KMv30smsAYW0DHkkWf7zwPlcBlbeA_aem_XXofAY-ay0syx043L5BLvw"
+                target="_blank">Brosur</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="https://drive.google.com/drive/folders/1eVH0nZT6ib6hIGyhXNGSAkuBFk1LSwa-?usp=drive_link" target="_blank">Panduan</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
                     <!-- Buttons for Pendaftaran and Login -->
                     <a href="/psb" class="btn btn-light ms-2" type="submit">Pendaftaran</a>
                     <a href="/web/login" class="btn btn-warning ms-2" type="submit">Login</a>
@@ -328,7 +349,7 @@ class PesantrenBeranda(http.Controller):
                     <h3 class="fw-bold pb-3">Pondok Pesantren Daarul Qur’an Istiqomah</h3>
                     <h5 class="fw-bold">Daarul Qur’an Istiqomah Boarding School for Education and Science</h5>
                     <h5 class="fw-bold">Tahun Ajaran 2024 - 2025</h5>
-                    <a href="/psb" class="btn btn-light rounded-5 text-primary mt-2">Daftar Sekarang</a>
+                    <a href="/psb" class="btn btn-light rounded-md text-primary mt-2">Daftar Sekarang</a>
                 </div>
                 </div>
             </div>
@@ -438,7 +459,7 @@ class PesantrenBeranda(http.Controller):
                 </div>
                 <!-- Image Section -->
                 <div class="col-md-6">
-                    <img src="https://psb.nuruljadid.net/img/PAGE2.44b0e259.png" class="img-fluid rounded-4"
+                    <img src="pesantren_pendaftaran/static/src/img/PAGE2.44b0e259.png" class="img-fluid rounded-4"
                     alt="Syarat Pendaftaran">
                 </div>
                 </div>
@@ -536,10 +557,10 @@ class PesantrenBeranda(http.Controller):
             <div class="container my-5">
                 <div class="row align-items-center">
                 <div class="col-md-6">
-                    <img src="https://psb.nuruljadid.net/img/PAGE3.e3b6d704.png" alt="Image" class="rounded-custom img-fluid" />
+                    <img src="pesantren_pendaftaran/static/src/img/PAGE3.e3b6d704.png" alt="Image" class="rounded-custom img-fluid" />
                 </div>
                 <div class="col-md-6 col-sm-12">
-                    <h3 class="fw-bold"><span class="text-primary ">Informasi</span> Pelayanan Pendaftaran</h3>
+                    <h3 class="fw-bold"><span class="text-green ">Informasi</span> Pelayanan Pendaftaran</h3>
                     <div class="accordion" id="accordionExample">
                     <div class="accordion-item mb-3">
                         <h2 class="accordion-header" id="headingOne">
@@ -616,9 +637,9 @@ class PesantrenBeranda(http.Controller):
                     <div class="col-md-4">
                     <h5>Social Pages</h5>
                     <ul class="list-unstyled">
-                        <li><a href="https://www.facebook.com/daquistiqomah?mibextid=ZbWKwL" class="text-white"><i class="bi bi-facebook"></i> Facebook</a></li>
-                        <li><a href="https://www.instagram.com/dqimedia?igsh=NTVwdWlwd3o5MTF1" class="text-white"><i class="bi bi-instagram"></i> Instagram</a></li>
-                        <li><a href="https://youtube.com/@dqimedia?si=6_A8Vr3nysaegI7B" class="text-white"><i class="bi bi-youtube"></i> Youtube</a></li>
+                        <li><a href="https://www.facebook.com/daquistiqomah?mibextid=ZbWKwL" class="text-white" style="text-decoration: auto;"><i class="bi bi-facebook"></i> Facebook</a></li>
+                        <li><a href="https://www.instagram.com/dqimedia?igsh=NTVwdWlwd3o5MTF1" class="text-white" style="text-decoration: auto;"><i class="bi bi-instagram"></i> Instagram</a></li>
+                        <li><a href="https://youtube.com/@dqimedia?si=6_A8Vr3nysaegI7B" class="text-white" style="text-decoration: auto;"><i class="bi bi-youtube"></i> Youtube</a></li>
                     </ul>
                     </div>
                     <div class="col-md-4">
@@ -829,9 +850,9 @@ class PesantrenPendaftaran(http.Controller):
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
                 <style>
-
+  
                     body {{
-                        background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
+                        background: linear-gradient(to bottom left, #0B5B54 40%, #f5e505 100%) !important;
                     }}
 
                     .offcanvas.offcanvas-end {{
@@ -861,7 +882,7 @@ class PesantrenPendaftaran(http.Controller):
                     }}
 
                     .background {{
-					    background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
+					    background: linear-gradient(to bottom left, #0B5B54 40%, #f5e505 100%) !important;
 					}}
 
 					a.effect {{
@@ -917,7 +938,7 @@ class PesantrenPendaftaran(http.Controller):
                     }}
 
                     #daftar:hover {{ 
-                        background-color: #f5407d !important;
+                        background-color: #2528D5 !important;
                     }}
 
                     /* Animasi fade-in */
@@ -947,7 +968,7 @@ class PesantrenPendaftaran(http.Controller):
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav ms-auto">
                             <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
+                                <a class="nav-link text-white" href="/"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white pendaftaran-menu" href="#"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
@@ -1008,7 +1029,7 @@ class PesantrenPendaftaran(http.Controller):
                 <div class="text-center text-white">
                     <h4 class="fs-2 fw-semibold mb-2">Aplikasi penerimaan santri baru</h4>
                     <span>Daarul Qur'an Istiqomah Tanah Laut Kalimantan Selatan</span> <br><br>
-                    <a href="#" style="background-color: #e91e63; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px;" class="pendaftaran-menu" id="daftar">Daftar Sekarang</a>
+                    <a href="#" style="background-color: #2d6bca; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px;" class="pendaftaran-menu" id="daftar">Daftar Sekarang</a>
                 </div>
             </div>
 
@@ -1017,9 +1038,9 @@ class PesantrenPendaftaran(http.Controller):
                     <div class="bg-white shadow-lg rounded p-3" style="width: 270px; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
                         <span class="text-uppercase text-secondary mb-3">Program Pendidikan</span>
                         <div>
-                            <i class="fa-solid fa-graduation-cap fs-1 border rounded-circle p-5" style="color: #e91e63 !important;"></i>
+                            <i class="fa-solid fa-graduation-cap fs-1 border rounded-circle p-5" style="color: #2d6bca !important;"></i>
                         </div>
-                        <span class="text-uppercase fs-3 judul">Prodi</span>
+                        <span class="text-uppercase text-center fs-3 judul">Prodi</span>
                         <div class="text-center mb-4 teks-judul">
                             <span class="text-secondary" style="font-size: 14px;">1. TK TAHFIZH</span>
                             <span class="text-secondary" style="font-size: 14px;">2. SD BILINGUAL</span>
@@ -1027,46 +1048,46 @@ class PesantrenPendaftaran(http.Controller):
                             <span class="text-secondary" style="font-size: 14px;">4. SMA / MA</span>
                         </div>
                         <div class="text-uppercase">
-                            <a href="" data-bs-toggle="modal" data-bs-target="#detailProgramPendidikan" class="effect" style="background-color: #9F1FB2 !important; padding: 10px 20px; border-radius: 20px; text-decoration: none; color: white;">Detail</a>
+                            <a href="" data-bs-toggle="modal" data-bs-target="#detailProgramPendidikan" class="effect" style="background-color: #2528D5 !important; padding: 10px 20px; border-radius: 10px; text-decoration: none; color: white;">Detail</a>
                         </div>
                     </div>
                     <div class="bg-white shadow-lg rounded p-3" style="width: 270px; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
                         <span class="text-uppercase text-secondary mb-3">Jadwal Kegiatan</span>
                         <div>
-                            <i class="fa-regular fa-calendar fs-1 border rounded-circle p-5" style="color: #e91e63 !important;"></i>
+                            <i class="fa-regular fa-calendar fs-1 border rounded-circle p-5" style="color: #2d6bca !important;"></i>
                         </div>
-                        <span class="text-uppercase fs-3 judul">Jadwal Kegiatan</span>
+                        <span class="text-uppercase text-center fs-3 judul">Jadwal Kegiatan</span>
                         <div class="text-center mb-4 teks-judul">
                             <span class="text-secondary" style="font-size: 14px;">Jadwal kegiatan PSB dan Kuota Test </span>
                         </div>
                         <div class="text-uppercase">
-                            <a href="" data-bs-toggle="modal" data-bs-target="#detailJadwalKegiatan" class="effect" style="background-color: #9F1FB2 !important; padding: 10px 20px; border-radius: 20px; text-decoration: none; color: white;">Detail</a>
+                            <a href="" data-bs-toggle="modal" data-bs-target="#detailJadwalKegiatan" class="effect" style="background-color: #2528D5 !important; padding: 10px 20px; border-radius: 10px; text-decoration: none; color: white;">Detail</a>
                         </div>
                     </div>
                     <div class="bg-white shadow-lg rounded p-3" style="width: 270px; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
                         <span class="text-uppercase text-secondary mb-3">Persyaratan</span>
                         <div>
-                            <i class="fa-solid fa-clipboard-list fs-1 border rounded-circle p-5" style="color: #e91e63 !important;"></i>
+                            <i class="fa-solid fa-clipboard-list fs-1 border rounded-circle p-5" style="color: #2d6bca !important;"></i>
                         </div>
                         <span class="text-uppercase fs-3 text-center judul">Syarat pendaftaran</span>
                         <div class="text-center mb-4 teks-judul">
                             <span class="text-secondary" style="font-size: 14px;">Persyaratan Pendaftaran dapat dilihat disini</span>
                         </div>
                         <div class="text-uppercase">
-                            <a href="" data-bs-toggle="modal" data-bs-target="#detailPersyaratan" class="effect" style="background-color: #9F1FB2 !important; padding: 10px 20px; border-radius: 20px; text-decoration: none; color: white;">Detail</a>
+                            <a href="" data-bs-toggle="modal" data-bs-target="#detailPersyaratan" class="effect" style="background-color: #2528D5 !important; padding: 10px 20px; border-radius: 10px; text-decoration: none; color: white;">Detail</a>
                         </div>
                     </div>
                     <div class="bg-white shadow-lg rounded p-3" style="width: 270px; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
                         <span class="text-uppercase text-secondary mb-3">Bantuan</span>
                         <div>
-                            <i class="fa-solid fa-lock fs-1 border rounded-circle p-5" style="color: #e91e63 !important;"></i>
+                            <i class="fa-solid fa-lock fs-1 border rounded-circle p-5" style="color: #2d6bca !important;"></i>
                         </div>
-                        <span class="text-uppercase fs-3 judul">Hubungi Kami</span>
+                        <span class="text-uppercase text-center fs-3 judul">Hubungi Kami</span>
                         <div class="text-center mb-4 teks-judul">
                             <span class="text-secondary" style="font-size: 14px;">Jika memerlukan bantuan : Telp / WA : 62271-858199 </span>
                         </div>
                         <div class="text-uppercase">
-                            <a href="/bantuan" class="effect" style="background-color: #9F1FB2 !important; padding: 10px 20px; border-radius: 20px; text-decoration: none; color: white;">Detail</a>
+                            <a href="/bantuan" class="effect" style="background-color: #2528D5 !important; padding: 10px 20px; border-radius: 10px; text-decoration: none; color: white;">Detail</a>
                         </div>
                     </div>
                 </div>
@@ -1075,12 +1096,7 @@ class PesantrenPendaftaran(http.Controller):
 
             <footer class="text-white p-2" style="display: flex; justify-content: space-between; flex-wrap: wrap;">
             	<div class="ms-5">
-            		<ul style="list-style-type: none; display: flex; text-transform: uppercase; font-size: 13px;" class="fw-semibold">
-            			<li><a href="/psb" class="me-4" style="text-decoration: none; color: white;">Home</a></li>
-            			<li><a href="/beranda" class="me-4" style="text-decoration: none; color: white;" target="_blank">Info Pondok</a></li>
-            			<li><a href="https://drive.google.com/drive/mobile/folders/1EYat5411joyoOmH_DkJ3g2DeJKgyyuBQ?usp=share_link&fbclid=IwY2xjawGflGlleHRuA2FlbQIxMQABHTusVv9hD3VRDSLW9-671QhOL86e3KMv30smsAYW0DHkkWf7zwPlcBlbeA_aem_XXofAY-ay0syx043L5BLvw" class="me-4" style="text-decoration: none; color: white;" target="_blank">Brosur</a></li>
-            			<li><a href="" class="me-4" style="text-decoration: none; color: white;">Panduan</a></li>
-            		</ul>
+            		
             	</div>
             	<div class="me-5">
             		<p class="text-center mt-1">© 2024 TIM IT PPIB</p>
@@ -1341,7 +1357,7 @@ class UbigPendaftaranController(http.Controller):
         nama                   = post.get('nama')
         nik                    = post.get('nik')
         email                  = post.get('email')
-        password               = post.get('password')
+        # password               = post.get('password')
         jenjang_id             = post.get('jenjang_id')
         gender                 = request.params.get('gender')
         kota_lahir             = post.get('kota_lahir')
@@ -1352,12 +1368,12 @@ class UbigPendaftaranController(http.Controller):
         provinsi_id            = request.params.get('provinsi_id')
         kota_id                = request.params.get('kota_id')
         kecamatan_id           = request.params.get('kecamatan_id')
-        golongan_darah         = request.params.get('golongan_darah')
+        golongan_darah         = request.params.get('golongan_darah') if request.params.get('golongan_darah') else ''
         kewarganegaraan        = request.params.get('kewarganegaraan')
         nisn                   = post.get('nisn')
-        anak_ke                = post.get('anak_ke')
-        jml_saudara_kandung    = post.get('jml_saudara_kandung')
-        cita_cita              = post.get('cita_cita')
+        anak_ke                = post.get('anak_ke') if post.get('anak_ke') else ''
+        jml_saudara_kandung    = post.get('jml_saudara_kandung') if post.get('jml_saudara_kandung') else ''
+        cita_cita              = post.get('cita_cita') if post.get('cita_cita') else ''
 
         # Data Orang Tua - Ayah
         nama_ayah              = post.get('nama_ayah')
@@ -1368,7 +1384,7 @@ class UbigPendaftaranController(http.Controller):
         telepon_ayah           = post.get('telepon_ayah')
         pekerjaan_ayah         = request.params.get('pekerjaan_ayah')
         penghasilan_ayah       = request.params.get('penghasilan_ayah')
-        email_ayah             = post.get('email_ayah')
+        # email_ayah             = post.get('email_ayah')
         kewarganegaraan_ayah   = request.params.get('kewarganegaraan_ayah')
         pendidikan_ayah        = request.params.get('pendidikan_ayah')
 
@@ -1381,23 +1397,19 @@ class UbigPendaftaranController(http.Controller):
         telepon_ibu            = post.get('telepon_ibu')
         pekerjaan_ibu          = request.params.get('pekerjaan_ibu')
         penghasilan_ibu        = request.params.get('penghasilan_ibu')
-        email_ibu              = post.get('email_ibu')
+        # email_ibu              = post.get('email_ibu')
         kewarganegaraan_ibu    = request.params.get('kewarganegaraan_ibu')
         pendidikan_ibu         = request.params.get('pendidikan_ibu')
         
         # Data Wali
-        wali_nama              = post.get('wali_nama') if post.get('wali_nama') else ''
-        wali_tmp_lahir         = post.get('wali_tmp_lahir') if post.get('wali_tmp_lahir') else ''
-        wali_tgl_lahir_str     = request.params.get('wali_tgl_lahir', '')
-        wali_tgl_lahir         = None
-
-        if wali_tgl_lahir_str:
-            # Mengonversi format tanggal dd/mm/yyyy menjadi date
-            wali_tgl_lahir = datetime.datetime.strptime(wali_tgl_lahir_str, '%d/%m/%Y').date()
-            
-        wali_telp              = post.get('wali_telp') if post.get('wali_telp') else ''
-        wali_email             = post.get('wali_email') if post.get('wali_email') else ''
-        wali_hubungan          = post.get('wali_hubungan') if post.get('wali_hubungan') else ''
+        wali_nama              = post.get('wali_nama')
+        wali_tgl_lahir_str     = request.params.get('wali_tgl_lahir')
+        # Mengonversi format tanggal dd/mm/yyyy menjadi date
+        wali_tgl_lahir         = datetime.datetime.strptime(wali_tgl_lahir_str, '%d/%m/%Y').date()
+        wali_telp              = post.get('wali_telp')
+        wali_email             = post.get('wali_email')
+        wali_password          = post.get('password')
+        wali_hubungan          = request.params.get('wali_hubungan')
 
         # Data Pendidikan
         asal_sekolah           = post.get('asal_sekolah')
@@ -1410,18 +1422,18 @@ class UbigPendaftaranController(http.Controller):
         akta_kelahiran         = request.params.get('akta_kelahiran')
         kartu_keluarga         = request.params.get('kartu_keluarga')
         ijazah                 = request.params.get('ijazah')
-        surat_kesehatan        = request.params.get('surat_kesehatan')
+        surat_kesehatan        = request.params.get('surat_kesehatan') if request.params.get('surat_kesehatan') else ''
         pas_foto               = request.params.get('pas_foto')
         raport_terakhir        = request.params.get('raport_terakhir')
         ktp_ortu               = request.params.get('ktp_ortu')
-        skhun                  = request.params.get('skhun')
+        skhun                  = request.params.get('skhun') if request.params.get('skhun') else ''
 
         # Simpan data ke model ubig.pendaftaran
         pendaftaran = request.env['ubig.pendaftaran'].sudo().create({
             'name'                   : nama,
             'nik'                    : nik,
             'email'                  : email,
-            'password'               : password,
+            # 'password'               : password,
             'jenjang_id'             : int(jenjang_id),
             'gender'                 : gender,
             'kota_lahir'             : kota_lahir,
@@ -1444,7 +1456,7 @@ class UbigPendaftaranController(http.Controller):
             'telepon_ayah'           : telepon_ayah,
             'pekerjaan_ayah'         : pekerjaan_ayah,
             'penghasilan_ayah'       : penghasilan_ayah,
-            'email_ayah'             : email_ayah,
+            # 'email_ayah'             : email_ayah,
             'kewarganegaraan_ayah'   : kewarganegaraan_ayah,
             'pendidikan_ayah'        : pendidikan_ayah,
 
@@ -1455,16 +1467,16 @@ class UbigPendaftaranController(http.Controller):
             'telepon_ibu'            : telepon_ibu,
             'pekerjaan_ibu'          : pekerjaan_ibu,
             'penghasilan_ibu'        : penghasilan_ibu,
-            'email_ibu'              : email_ibu,
+            # 'email_ibu'              : email_ibu,
             'kewarganegaraan_ibu'    : kewarganegaraan_ibu,
             'pendidikan_ibu'         : pendidikan_ibu,
             
             # Data Wali
             'wali_nama'              : wali_nama,
-            'wali_tmp_lahir'         : wali_tmp_lahir,
             'wali_tgl_lahir'         : wali_tgl_lahir,
             'wali_telp'              : wali_telp,
             'wali_email'             : wali_email,
+            'wali_password'          : wali_password,
             'wali_hubungan'          : wali_hubungan,
 
             # Data Pendidikan
@@ -1573,7 +1585,7 @@ class PesantrenPsbBantuan(http.Controller):
                 <style>
 
                     body {{
-                        background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
+                        background: linear-gradient(to bottom left, #0B5B54 40%, #f5e505 100%) !important;
                     }}
 
                     .offcanvas.offcanvas-end {{
@@ -1657,7 +1669,7 @@ class PesantrenPsbBantuan(http.Controller):
                     }}
 
                     .background {{
-                        background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
+                        background: linear-gradient(to bottom left, #0B5B54 40%, #f5e505 100%) !important;
                     }}
 
                     a.effect {{
@@ -1808,11 +1820,8 @@ class PesantrenPsbBantuan(http.Controller):
                         <span class="badge text-bg-danger text-uppercase mb-2">Panduan Pendaftaran Online</span>
                         <p>Panduan pendaftaran online dapat didownload dengan klik link di bawah ini :</p>
                         <div class="ratio ratio-16x9 my-4">
-                        <iframe src="https://www.youtube.com/embed/N7eYT3LQ7tQ" title="YouTube video player" allowfullscreen></iframe>
+                        <iframe src="https://www.youtube.com/embed/R-ep97NzvsQ?si=XR3a8Dp378LT5x8K" title="YouTube video player" allowfullscreen></iframe>
                         </div>
-                        <a href="https://psb.bukhari.or.id/assets/img/panduan_gabung_gambar_jadi_pdf.pdf" target="_blank" class="text-decoration-none fs-5" style="color: purple;">
-                        <i class="fa-solid fa-download text-dark me-1"></i>Panduan cara menggabungkan beberapa foto menjadi file pdf
-                        </a>
                     </div>
                     </div>
 
@@ -1824,14 +1833,14 @@ class PesantrenPsbBantuan(http.Controller):
                     <div class="timeline-content bg-white rounded p-3">
                         <span class="badge text-bg-success text-uppercase mb-3">Alur Pendaftaran Santri Baru</span>
                         <ul>
-                        <li>Buka website <a href="#" class="text-decoration-none" style="color: purple;">https://psb.daarukquranistiqomah.or.id/</a></li>
+                        <li>Buka website <a href="/psb" class="text-decoration-none" style="color: purple;">https://psb.daarulquranistiqomah.or.id/</a></li>
                         <li>Klik menu daftar dan isikan data yang tersedia.</li>
-                        <li>Login di <a href="#" class="text-decoration-none" style="color: purple;">https://psb.daarulquranistiqomah.or.id/login</a></li>
+                        <li>Login di <a href="/web/login" class="text-decoration-none" style="color: purple;">https://psb.daarulquranistiqomah.or.id/login</a></li>
                         <li>Upload berkas yang dipersyaratkan dan bukti pembayaran.</li>
                         <li>Tunggu verifikasi maksimal 3 hari.</li>
                         <li>Login kembali dan pilih tanggal tes.</li>
                         <li>Ikuti tes seleksi online menggunakan aplikasi ZOOM meeting.</li>
-                        <li>Lihat hasil tes di <a href="#" class="text-decoration-none" style="color: purple;">https://psb.daarulquranistiqomah.or.id/login</a></li>
+                        <li>Lihat hasil tes di <a href="/psb" class="text-decoration-none" style="color: purple;">https://psb.daarulquranistiqomah.or.id/login</a></li>
                         <li>Setelah pembayaran daftar ulang, tunggu pengumuman serah terima santri baru.</li>
                         </ul>
                     </div>
@@ -1878,18 +1887,12 @@ class PesantrenPsbBantuan(http.Controller):
             </div>
 
             <footer class="text-white p-2" style="display: flex; justify-content: space-between; flex-wrap: wrap;">
-                <div class="ms-5">
-                    <ul style="list-style-type: none; display: flex; text-transform: uppercase; font-size: 13px;" class="fw-semibold">
-                        <li><a href="/psb" class="me-4" style="text-decoration: none; color: white;">Home</a></li>
-                        <li><a href="/beranda" class="me-4" style="text-decoration: none; color: white;" target="_blank">Info Pondok</a></li>
-                        <li><a href="https://drive.google.com/drive/mobile/folders/1EYat5411joyoOmH_DkJ3g2DeJKgyyuBQ?usp=share_link&fbclid=IwY2xjawGflGlleHRuA2FlbQIxMQABHTusVv9hD3VRDSLW9-671QhOL86e3KMv30smsAYW0DHkkWf7zwPlcBlbeA_aem_XXofAY-ay0syx043L5BLvw" class="me-4" style="text-decoration: none; color: white;" target="_blank">Brosur</a></li>
-                        <li><a href="" class="me-4" style="text-decoration: none; color: white;">Panduan</a></li>
-                    </ul>
-                    </ul>
-                </div>
-                <div class="me-5">
-                    <p class="text-center mt-1">© 2024 TIM IT PPIB</p>
-                </div>
+            	<div class="ms-5">
+            		
+            	</div>
+            	<div class="me-5">
+            		<p class="text-center mt-1">© 2024 TIM IT PPIB</p>
+            	</div>
             </footer>
 
             <!-- Modal -->
@@ -1949,57 +1952,6 @@ class PesantrenPsbBantuan(http.Controller):
 
         return request.make_response(html_response)
 
-class CustomAuthController(http.Controller):
-
-    @http.route('/send-login-email', type='http', auth='public', methods=['POST'], csrf=True)
-    def send_login_email(self, **post):
-        email = post.get('email')
-        name = post.get('name')
-        nik = post.get('nik')
-
-        # Mengambil digit tengah dari NIK dan mengacak password
-        if nik:
-            mid_nik = nik[len(nik)//4 : len(nik)//2]  # Ambil digit tengah
-            password = hashlib.sha256(mid_nik.encode('utf-8')).hexdigest()
-        else:
-            password = 'password123'  # Fallback jika NIK tidak tersedia
-
-        # Cek apakah pengguna sudah ada
-        user = request.env['res.users'].sudo().search([('login', '=', email)], limit=1)
-
-        if not user:
-            try:
-                # Buat pengguna baru dengan mengisi field `name`
-                user = request.env['res.users'].sudo().create({
-                    'login': email,
-                    'password': password,
-                    'name': name,
-                })
-
-                # Mengirim email menggunakan SMTP bawaan Odoo
-                email_values = {
-                    'subject': 'Informasi Login Odoo Anda',
-                    'email_to': email,
-                    'body_html': f'<p>Ini adalah email dan password Anda untuk login sistem pesantren:</p>'
-                                 f'<p>Email: {email}</p>'
-                                 f'<p>Password: {password}</p>',
-                }
-
-                mail = request.env['mail.mail'].sudo().create(email_values)
-                mail.send()
-
-                return """
-                        <script>
-                            alert('Akun Berhasil dibuat.');
-                            window.location.href = '/web/login';
-                        </script>
-                """
-
-            except Exception as e:
-                return """
-                        
-                """
-
 
 class PendaftaranSeleksiSdMi(http.Controller):
     @http.route('/pengumuman/sd-mi', type='http', auth='public')
@@ -2056,12 +2008,12 @@ class PendaftaranSeleksiSmaMa(http.Controller):
 
 
 class RefDataController(http.Controller):
-    @http.route('/get_provinsi', type='http', auth='user', methods=['POST'], csrf=False)
+    @http.route('/get_provinsi', type='http', auth='public', methods=['POST'], csrf=False)
     def get_provinsi(self, **kwargs):
          # Ambil parameter 'query' dari permintaan
         query = request.httprequest.json.get('query', '').lower()
         
-        provinces = request.env['cdn.ref_propinsi'].search([('name', 'ilike', query)])
+        provinces = request.env['cdn.ref_propinsi'].sudo().search([('name', 'ilike', query)])
         data = [{'id': prov.id, 'name': prov.name} for prov in provinces]
         
         if request.httprequest.headers.get('Content-Type') == 'application/json':
@@ -2074,9 +2026,9 @@ class RefDataController(http.Controller):
                 headers={'Content-Type': 'application/json'}
             )
 
-    @http.route('/get_kota/<int:provinsi_id>', type='http', auth='user', methods=['POST'], csrf=False)
+    @http.route('/get_kota/<int:provinsi_id>', type='http', auth='public', methods=['POST'], csrf=False)
     def get_kota(self, provinsi_id, **kwargs):
-        kota = request.env['cdn.ref_kota'].search([('propinsi_id', '=', provinsi_id)])
+        kota = request.env['cdn.ref_kota'].sudo().search([('propinsi_id', '=', provinsi_id)])
         data = [{'id': city.id, 'name': city.name} for city in kota]
         
         if request.httprequest.headers.get('Content-Type') == 'application/json':
@@ -2089,9 +2041,9 @@ class RefDataController(http.Controller):
                 headers={'Content-Type': 'application/json'}
             )
 
-    @http.route('/get_kecamatan/<int:kota_id>', type='http', auth='user', methods=['POST'], csrf=False)
+    @http.route('/get_kecamatan/<int:kota_id>', type='http', auth='public', methods=['POST'], csrf=False)
     def get_kecamatan(self, kota_id, **kwargs):
-        kecamatan = request.env['cdn.ref_kecamatan'].search([('kota_id', '=', kota_id)])
+        kecamatan = request.env['cdn.ref_kecamatan'].sudo().search([('kota_id', '=', kota_id)])
         data = [{'id': kec.id, 'name': kec.name} for kec in kecamatan]
         
         if request.httprequest.headers.get('Content-Type') == 'application/json':

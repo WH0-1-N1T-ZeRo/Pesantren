@@ -40,16 +40,16 @@
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav ms-auto">
                             <li class="nav-item me-3">
-                                <a class="nav-link" href="http://localhost:9069/psb"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a>
+                                <a class="nav-link" href="/psb"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a>
                             </li>
                             <li class="nav-item me-3">
-                                <a class="nav-link" href="http://localhost:9069/pendaftaran"><i class="fa-solid fa-user-plus me-2"></i>Daftar</a>
+                                <a class="nav-link" href="/pendaftaran"><i class="fa-solid fa-user-plus me-2"></i>Daftar</a>
                             </li>
                             <li class="nav-item me-3">
-                                <a class="nav-link" href="http://localhost:9069/psblogin"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                <a class="nav-link" href="/psblogin"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                             </li>
                             <li class="nav-item me-3">
-                                <a class="nav-link" href="http://localhost:9069/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
+                                <a class="nav-link" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
                             </li>
                         </ul>
                     </div>
@@ -61,16 +61,16 @@
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                         <li class="nav-item me-3">
-                            <a class="nav-link" href="http://localhost:9069/psb"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a>
+                            <a class="nav-link" href="/psb"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a>
                         </li>
                         <li class="nav-item me-3">
-                            <a class="nav-link" href="http://localhost:9069/pendaftaran"><i class="fa-solid fa-user-plus me-2"></i>Daftar</a>
+                            <a class="nav-link" href="/pendaftaran"><i class="fa-solid fa-user-plus me-2"></i>Daftar</a>
                         </li>
                         <li class="nav-item me-3">
-                            <a class="nav-link" href="http://localhost:9069/psblogin"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                            <a class="nav-link" href="/psblogin"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                         </li>
                         <li class="nav-item me-3">
-                            <a class="nav-link" href="http://localhost:9069/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
+                            <a class="nav-link" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
                         </li>
                     </ul>
                 </div>

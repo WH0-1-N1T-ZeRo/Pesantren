@@ -23,7 +23,7 @@ class siswa(models.Model):
 
     partner_id          = fields.Many2one('res.partner', 'Partner', ondelete="cascade")
     active_id           = fields.Many2one('res.partner', string='Customer Active', compute="_compute_partner_id")
-    nis                 = fields.Char( string="NIS", required=True,  help="")
+    nis                 = fields.Char( string="NIS",  help="")
     nisn                = fields.Char( string="NISN",  help="")
     tmp_lahir           = fields.Char( string="Tempat Lahir",  help="")
     tgl_lahir           = fields.Date( string="Tgl Lahir",  help="")

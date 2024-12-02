@@ -115,14 +115,15 @@
         /* Pastikan invalid-feedback tidak memengaruhi tata letak */
         .khusus .invalid-feedback {
           position: absolute; /* Agar tetap di dalam container */
-          bottom: -20px; /* Sesuaikan jarak ke bawah */
+          bottom: -40px; /* Sesuaikan jarak ke bawah */
           left: 0;
           font-size: 0.875rem; /* Ukuran teks */
         }
 
         .khusus {
           position: relative; /* Container memiliki konteks posisi */
-          padding-bottom: 15px; /* Ruang untuk invalid-feedback */
+          padding-bottom: 15px;
+          
         }
 
         .step-indicator {
@@ -255,117 +256,9 @@
           enctype="multipart/form-data" novalidate="true">
           <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
 
-          <div class="container" id="containerDataUsername" style="display: block;">
-            <div style="max-width: 100%;" class="bg-white rounded mt-4 p-3">
-              <div class="step-indicator mb-3">
-                <span class="fw-semibold step active">
-                  Data Login</span>
-                <span class="fw-semibold step">Data Siswa</span>
-                <span class="fw-semibold step">Data Orang
-                  Tua</span>
-                <span class="fw-semibold step">Data Sekolah
-                  Asal</span>
-                <span class="fw-semibold step">Data Berkas</span>
-              </div>
-              <h4 class="fw-semibold fs-3 mb-4">Data Login</h4>
-              <div>
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="mb-3">
-                      <label for="email" class="form-label">Email<span class="text-danger">*</span></label>
-                      <input type="email" name="email" class="form-control" id="email"
-                        placeholder="Email" required="true" autocomplete="off" />
-                      <div class="invalid-feedback">
-                        Masukkan email.
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="mb-3 khusus">
-                      <label for="password" class="form-label">Kata Sandi<span class="text-danger">*</span></label>
-                      <div class="d-flex align-items-center position-relative">
-                        <input
-                          type="password"
-                          name="password"
-                          class="form-control pe-5"
-                          id="password"
-                          placeholder="Kata Sandi"
-                          required="true"
-                          autocomplete="off"
-                        />
-                        <div class="invalid-feedback">
-                          Panjang password minimal 8 karakter.
-                        </div>
-                        <i
-                          class="fa-solid fa-eye-slash fs-5 position-absolute"
-                          style="right: 35px; cursor: pointer; color: #333;"
-                          onclick="togglePasswordVisibility()"
-                        ></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="mb-3 khusus">
-                      <label for="password2" class="form-label">Konfirmasi Kata Sandi<span class="text-danger">*</span></label>
-                      <div class="d-flex align-items-center position-relative">
-                        <input
-                          type="password"
-                          name="password2"
-                          class="form-control pe-5"
-                          id="password2"
-                          placeholder="Konfirmasi Kata Sandi"
-                          required="true"
-                          autocomplete="off"
-                        />
-                        <div class="invalid-feedback">
-                          Konfirmasi kata sandi harus sesuai.
-                        </div>
-                        <i
-                          class="fa-solid fa-eye-slash fs-5 position-absolute"
-                          style="right: 35px; cursor: pointer; color: #333;"
-                          onclick="togglePassword2Visibility()"
-                        ></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <h4>Pilih Jenjang</h4>
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="mb-3">
-                      <label for="jenjang_id" class="form-label">Jenjang Pendidikan<span
-                          class="text-danger">*</span></label>
-                      <select class="form-select" required="true" name="jenjang_id" id="jenjang_id">
-                        <option selected="true" disabled="true" hidden="true" value="">Pilih Jenjang</option>
-                        <t t-foreach="pendidikan_list" t-as="jenjang">
-                          <option t-att-value="jenjang.id">
-                            <t t-esc="jenjang.name" />
-                          </option>
-                        </t>
-                      </select>
-                      <div class="invalid-feedback">
-                        Pilih Jenjang.
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="mb-3 d-flex justify-content-end">
-                  <button type="button"
-                    style="background-color: #4CAF50 !important; text-decoration: none; color: white; padding: 10px 20px; text-align: center; display: inline-block; font-size: 16px; border-radius: 5px; cursor: pointer;"
-                    class="btn btn-success btn-next" data-next="containerDataDiri">Selanjutnya</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="container" id="containerDataDiri" style="display: none;">
+          <div class="container" id="containerDataDiri">
             <div style="max-width: 100%;" class="bg-white rounded mt-5 p-3">
               <div class="step-indicator mb-3">
-                <span class="fw-semibold step">Data Login</span>
                 <span class="fw-semibold step active">Data
                   Siswa</span>
                 <span class="fw-semibold step">Data Orang
@@ -374,7 +267,10 @@
                   Asal</span>
                 <span class="fw-semibold step">Data Berkas</span>
               </div>
-              <h4 class="fw-semibold fs-3 mb-4">Data Siswa</h4>
+              <div class="mb-4 d-flex justify-content-between align-items-center">
+                <h4 class="fw-semibold fs-3">Data Siswa</h4>
+                <p style="font-style: italic;">Data yang ada tanda <span class="text-danger">*</span> wajib diisi.</p>
+              </div>
               <div>
                 <div class="row">
                   <div class="col-md-6">
@@ -401,13 +297,42 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="mb-3">
+                      <label for="email" class="form-label">Email<span class="text-danger">*</span></label>
+                      <input type="email" name="email" class="form-control" id="email" placeholder="Email"
+                        required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan email.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="jenjang_id" class="form-label">Jenjang Pendidikan<span
+                          class="text-danger">*</span></label>
+                      <select class="form-select" required="true" name="jenjang_id" id="jenjang_id">
+                        <option selected="true" disabled="true" hidden="true" value="">Pilih Jenjang</option>
+                        <t t-foreach="pendidikan_list" t-as="jenjang">
+                          <option t-att-value="jenjang.id">
+                            <t t-esc="jenjang.name" />
+                          </option>
+                        </t>
+                      </select>
+                      <div class="invalid-feedback">
+                        Pilih Jenjang.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
                       <label for="gender" class="form-label">Jenis Kelamin<span class="text-danger">
                         *</span></label>
                       <select class="form-select" required="true" name="gender" id="gender">
                         <option selected="true" disabled="true" hidden="true" value="">Pilih Jenis
                           Kelamin</option>
-                        <option value="l">Laki - Laki</option>
-                        <option value="p">Perempuan</option>
+                        <option value="L">Laki - Laki</option>
+                        <option value="P">Perempuan</option>
                       </select>
                       <div class="invalid-feedback">
                         Pilih Jenis Kelamin
@@ -471,19 +396,6 @@
                   </div>
                   <div class="col-md-6">
                     <div class="mb-3">
-                      <label for="anak_ke" class="form-label">Anak Ke<span class="text-danger">*</span></label>
-                      <input type="number" name="anak_ke" class="form-control" id="anak_ke"
-                        placeholder="Anak Ke" required="true" autocomplete="off" />
-                      <div class="invalid-feedback">
-                        Masukkan Anak Ke.
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="mb-3">
                       <label for="kota_id" class="form-label">Kabupaten/Kota<span
                           class="text-danger">*</span></label> <br />
                       <select class="select2" required="true" name="kota_id" id="kota_id" style="width: 100%;">
@@ -496,18 +408,6 @@
                       </select>
                       <div class="invalid-feedback">
                         Pilih Kabupaten/Kota.
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="mb-3">
-                      <label for="jml_saudara_kandung" class="form-label">Jumlah Saudara<span
-                          class="text-danger">*</span></label>
-                      <input type="number" name="jml_saudara_kandung" class="form-control"
-                        id="jml_saudara_kandung" placeholder="Jumlah Saudara" required="true"
-                        autocomplete="off" />
-                      <div class="invalid-feedback">
-                        Masukkan Jumlah Saudara.
                       </div>
                     </div>
                   </div>
@@ -535,12 +435,27 @@
                   </div>
                   <div class="col-md-6">
                     <div class="mb-3">
-                      <label for="cita_cita" class="form-label">Cita Cita<span class="text-danger">*</span></label>
+                      <label for="anak_ke" class="form-label">Anak Ke</label>
+                      <input type="number" name="anak_ke" class="form-control" id="anak_ke"
+                        placeholder="Anak Ke" autocomplete="off" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="jml_saudara_kandung" class="form-label">Jumlah Saudara</label>
+                      <input type="number" name="jml_saudara_kandung" class="form-control"
+                        id="jml_saudara_kandung" placeholder="Jumlah Saudara"
+                        autocomplete="off" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="cita_cita" class="form-label">Cita Cita</label>
                       <input type="text" name="cita_cita" class="form-control" id="cita_cita"
-                        placeholder="Cita Cita" required="true" autocomplete="off" />
-                      <div class="invalid-feedback">
-                        Masukkan Cita Cita.
-                      </div>
+                        placeholder="Cita Cita" autocomplete="off" />
                     </div>
                   </div>
                 </div>
@@ -548,18 +463,15 @@
                   <div class="col-md-6">
                     <div class="mb-3">
                       <label for="golongan_darah" class="form-label">Golongan Darah</label>
-                      <select required="true" name="golongan_darah" id="golongan_darah"
+                      <select name="golongan_darah" id="golongan_darah"
                         class="form-select">
                         <option value="" selected="true" disabled="true" hidden="true">Pilih
                           Golongan Darah</option>
-                        <option value="a">A</option>
-                        <option value="b">B</option>
-                        <option value="ab">AB</option>
-                        <option value="o">O</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="AB">AB</option>
+                        <option value="O">O</option>
                       </select>
-                      <div class="invalid-feedback">
-                        Pilih Golongan Darah.
-                      </div>
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -586,10 +498,7 @@
                   </div>
                 </div>
 
-                <div class="mb-3 d-flex justify-content-between">
-                  <button type="button"
-                    style="background-color: #4CAF50 !important; text-decoration: none; color: white; padding: 10px 20px; text-align: center; display: inline-block; font-size: 16px; border-radius: 5px; cursor: pointer;"
-                    class="btn btn-secondary btn-prev" data-prev="containerDataUsername">Kembali</button>
+                <div class="mb-3 d-flex justify-content-end">
                   <button type="button"
                     style="background-color: #4CAF50 !important; text-decoration: none; color: white; padding: 10px 20px; text-align: center; display: inline-block; font-size: 16px; border-radius: 5px; cursor: pointer;"
                     class="btn btn-success btn-next" data-next="containerDataOrangTua">Selanjutnya</button>
@@ -601,7 +510,6 @@
           <div class="container" id="containerDataOrangTua" style="display: none;">
             <div style="max-width: 100%;" class="bg-white rounded mt-5 p-3">
               <div class="step-indicator mb-3">
-                <span class="fw-semibold step">Data Login</span>
                 <span class="fw-semibold step">Data Siswa</span>
                 <span class="fw-semibold step active">Data
                   Orang Tua</span>
@@ -609,7 +517,10 @@
                   Asal</span>
                 <span class="fw-semibold step">Data Berkas</span>
               </div>
-              <h4 class="fw-semibold fs-3 mb-4">Data Orang Tua</h4>
+              <div class="mb-4 d-flex justify-content-between align-items-center">
+                <h4 class="fw-semibold fs-3">Data Orang Tua</h4>
+                <p style="font-style: italic;">Harap isi data dengan teliti dan benar.</p>
+              </div>
               <div class="mb-3">
                 <h5 class="fw-semibold mb-3">Data Ayah</h5>
                 <div class="row">
@@ -695,18 +606,7 @@
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-md-4">
-                    <div class="mb-3">
-                      <label for="email_ayah" class="form-label">Email Ayah<span class="text-danger">
-                        *</span></label>
-                      <input type="email" name="email_ayah" class="form-control" id="email_ayah"
-                        placeholder="Email Ayah" required="true" autocomplete="off" />
-                      <div class="invalid-feedback">
-                        Masukkan Email Ayah.
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
+                  <div class="col-md-6">
                     <div class="mb-3">
                       <label for="pendidikan_ayah" class="form-label">Pendidikan Ayah<span
                           class="text-danger">*</span></label>
@@ -724,7 +624,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-6">
                     <div class="mb-3">
                       <label for="kewarganegaraan_ayah" class="form-label">Kewarganegaraan Ayah<span
                           class="text-danger">*</span></label>
@@ -822,17 +722,7 @@
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-md-4">
-                    <div class="mb-3">
-                      <label for="email_ibu" class="form-label">Email Ibu<span class="text-danger">*</span></label>
-                      <input type="email" name="email_ibu" class="form-control" id="email_ibu"
-                        placeholder="Email Ibu" required="true" autocomplete="off" />
-                      <div class="invalid-feedback">
-                        Masukkan Email Ibu.
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
+                  <div class="col-md-6">
                     <div class="mb-3">
                       <label for="pendidikan_ibu" class="form-label">Pendidikan Ibu<span
                           class="text-danger">*</span></label>
@@ -850,7 +740,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-6">
                     <div class="mb-3">
                       <label for="kewarganegaraan_ibu" class="form-label">Kewarganegaraan Ibu<span
                           class="text-danger">*</span></label>
@@ -864,50 +754,82 @@
                 </div>
               </div>
               <div class="mb-3">
-                <h5 class="fw-semibold mb-3">Data Wali (Opsional)</h5>
+                <h5 class="fw-semibold mb-1">Data Wali</h5>
+                <p class="mb-3" style="font-style: italic; color: grey;">*Data ini akan digunakan untuk membuat akun orang tua, Email wali harus aktif.</p>
                 <div class="row">
                   <div class="col-md-4">
                     <div class="mb-3">
-                      <label for="wali_nama" class="form-label">Nama Wali</label>
+                      <label for="wali_nama" class="form-label">Nama Wali<span class="text-danger">*</span></label>
                       <input type="text" name="wali_nama" class="form-control" id="wali_nama"
-                        placeholder="Nama Wali" autocomplete="off" />
+                        placeholder="Nama Wali" required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan nama wali.
+                      </div>
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="mb-3">
-                      <label for="wali_tmp_lahir" class="form-label">Tempat Lahir</label>
-                      <input type="text" name="wali_tmp_lahir" class="form-control"
-                        id="wali_tmp_lahir" placeholder="Tempat Lahir" autocomplete="off" />
+                      <label for="wali_email" class="form-label">Email Wali<span class="text-danger">*</span></label>
+                      <input type="email" name="wali_email" class="form-control" id="wali_email"
+                        placeholder="Email Wali" required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan email.
+                      </div>
                     </div>
                   </div>
                   <div class="col-md-4">
-                    <div class="mb-3">
-                      <label for="wali_tgl_lahir" class="form-label">Tgl Lahir</label>
-                      <input type="text" name="wali_tgl_lahir" id="wali_tgl_lahir"
-                        placeholder="dd / mm / yyyy" autocomplete="off" class="form-control" />
+                    <div class="mb-3 khusus">
+                      <label for="password" class="form-label">Kata Sandi<span class="text-danger">*</span></label>
+                      <div class="d-flex align-items-center position-relative">
+                        <input
+                          type="password"
+                          name="password"
+                          class="form-control pe-5"
+                          id="password"
+                          placeholder="Kata Sandi"
+                          required="true"
+                          autocomplete="off"
+                        />
+                        <div class="invalid-feedback">
+                          Password harus minimal 8 karakter, mengandung huruf besar, huruf kecil, dan angka.
+                        </div>
+                        <i
+                          class="fa-solid fa-eye-slash fs-5 position-absolute"
+                          style="right: 35px; cursor: pointer; color: #333;"
+                          onclick="togglePasswordVisibility()"
+                        ></i>
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-md-4">
                     <div class="mb-3">
-                      <label for="wali_telp" class="form-label">Telepon Wali</label>
+                      <label for="wali_telp" class="form-label">Telepon Wali<span class="text-danger">*</span></label>
                       <input type="text" name="wali_telp" class="form-control" id="wali_telp"
-                        placeholder="Telepon Wali" autocomplete="off" />
+                        placeholder="Telepon Wali" required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan telepon wali.
+                      </div>
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="mb-3">
                       <label for="wali_hubungan" class="form-label">Hubungan Dengan Santri</label>
-                      <input type="text" name="wali_hubungan" class="form-control"
-                        id="wali_hubungan" placeholder="Hubungan Dengan Santri" autocomplete="off" />
+                      <select class="form-select" required="true" name="wali_hubungan"
+                        id="wali_hubungan" readonly="true">
+                        <option selected="true" value="wali">Wali</option>
+                      </select>
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="mb-3">
-                      <label for="wali_email" class="form-label">Email Wali</label>
-                      <input type="email" name="wali_email" class="form-control" id="wali_email"
-                        placeholder="Email Wali" autocomplete="off" />
+                      <label for="wali_tgl_lahir" class="form-label">Tgl Lahir<span class="text-danger">*</span></label>
+                      <input type="text" name="wali_tgl_lahir" id="wali_tgl_lahir"
+                        placeholder="dd / mm / yyyy" required="true" autocomplete="off" class="form-control" />
+                      <div class="invalid-feedback">
+                        Masukkan tanggal lahir wali.
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -927,7 +849,6 @@
           <div class="container" id="containerDataSekolahAsal" style="display: none;">
             <div style="max-width: 100%;" class="bg-white rounded mt-5 p-3">
               <div class="step-indicator mb-3">
-                <span class="fw-semibold step">Data Login</span>
                 <span class="fw-semibold step">Data Siswa</span>
                 <span class="fw-semibold step">Data Orang
                   Tua</span>
@@ -1018,7 +939,6 @@
           <div class="container" id="containerDataBerkas" style="display: none;">
             <div style="max-width: 100%;" class="bg-white rounded mt-5 p-3">
               <div class="step-indicator mb-3">
-                <span class="fw-semibold step">Data Login</span>
                 <span class="fw-semibold step">Data Siswa</span>
                 <span class="fw-semibold step">Data Orang
                   Tua</span>
@@ -1091,14 +1011,10 @@
                   </div>
                   <div class="col-md-6">
                     <div class="mb-3">
-                      <label for="surat_kesehatan" class="form-label">Surat Kesehatan<span
-                          class="text-danger">*</span></label>
+                      <label for="surat_kesehatan" class="form-label">Surat Kesehatan (Jika Ada)</label>
                       <input type="file" name="surat_kesehatan" class="form-control"
-                        id="surat_kesehatan" placeholder="Surat Kesehatan" required="true"
+                        id="surat_kesehatan" placeholder="Surat Kesehatan"
                         autocomplete="off" />
-                      <div class="invalid-feedback">
-                        Masukkan File.
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -1116,12 +1032,9 @@
                   </div>
                   <div class="col-md-6">
                     <div class="mb-3">
-                      <label for="skhun" class="form-label">SKHUN<span class="text-danger">*</span></label>
+                      <label for="skhun" class="form-label">SKHUN (Jika Ada)</label>
                       <input type="file" name="skhun" class="form-control" id="skhun"
-                        placeholder="SKHUN" required="true" autocomplete="off" />
-                      <div class="invalid-feedback">
-                        Masukkan File.
-                      </div>
+                        placeholder="SKHUN" autocomplete="off" />
                     </div>
                   </div>
                 </div>
@@ -1138,31 +1051,12 @@
           </div>
 
         </form>
-        <footer class="p-2"
-          style="display: flex; justify-content: space-between; flex-wrap: wrap; color: white !important;">
+        <footer class="text-white p-2" style="display: flex; justify-content: space-between; flex-wrap: wrap;">
           <div class="ms-5">
-            <ul
-              style="list-style-type: none; display: flex; text-transform: uppercase; font-size: 13px;"
-              class="fw-semibold">
-              <li>
-                <a href="/psb" class="me-4" style="text-decoration: none; color: white;">Home</a>
-              </li>
-              <li>
-                <a href="/beranda" class="me-4" style="text-decoration: none; color: white;"
-                  target="_blank">Info Pondok</a>
-              </li>
-              <li>
-                <a
-                  href="https://drive.google.com/drive/mobile/folders/1EYat5411joyoOmH_DkJ3g2DeJKgyyuBQ?usp=share_link&amp;fbclid=IwY2xjawGflGlleHRuA2FlbQIxMQABHTusVv9hD3VRDSLW9-671QhOL86e3KMv30smsAYW0DHkkWf7zwPlcBlbeA_aem_XXofAY-ay0syx043L5BLvw"
-                  class="me-4" style="text-decoration: none; color: white;" target="_blank">Brosur</a>
-              </li>
-              <li>
-                <a href="" class="me-4" style="text-decoration: none; color: white;">Panduan</a>
-              </li>
-            </ul>
+            
           </div>
           <div class="me-5">
-            <p class="text-center mt-1 text-white">© 2024 TIM IT PPIB</p>
+            <p class="text-center mt-1" style="color: white !important;">© 2024 TIM IT PPIB</p>
           </div>
         </footer>
       </div>
@@ -1173,206 +1067,193 @@
       <script type="text/javascript">
 
         (() => {
-          'use strict';
-      
-          const form = document.querySelector('.needs-validation');
-      
-          // Navigasi antar langkah
-          const goToStep = (currentStep, targetStep) => {
-              document.getElementById(currentStep).style.display = 'none';
-              document.getElementById(targetStep).style.display = 'block';
-          };
-      
-          // Validasi semua input dalam container
-          const validateInputs = (container) => {
-              const inputs = container.querySelectorAll('input, select, textarea');
-              let isValid = true;
-      
-              inputs.forEach(input => {
-                  if (input.id === 'nik' || input.id === 'ktp_ayah' || input.id === 'ktp_ibu') {
-                      // Validasi khusus NIK, KTP
-                      if (input.value.length !== 16 || !/^\d+$/.test(input.value)) {
-                          input.classList.add('is-invalid');
-                          input.classList.remove('is-valid');
-                          isValid = false;
-                      } else {
-                          input.classList.remove('is-invalid');
-                          input.classList.add('is-valid');
-                      }
-                  } else if (input.id === 'nisn') {
-                      // Validasi khusus NISN
-                      if (input.value.length !== 10 || !/^\d+$/.test(input.value)) {
-                          input.classList.add('is-invalid');
-                          input.classList.remove('is-valid');
-                          isValid = false;
-                      } else {
-                          input.classList.remove('is-invalid');
-                          input.classList.add('is-valid');
-                      }
-                  } else if (input.id === 'npsn') {
-                      // Validasi khusus NPSN
-                      if (input.value.length !== 8 || !/^\d+$/.test(input.value)) {
-                          input.classList.add('is-invalid');
-                          input.classList.remove('is-valid');
-                          isValid = false;
-                      } else {
-                          input.classList.remove('is-invalid');
-                          input.classList.add('is-valid');
-                      }
-                  } else if (input.id === 'password') {
-                      // Validasi khusus password
-                      if (input.value.length &lt; 8) {
-                          input.classList.add('is-invalid');
-                          input.classList.remove('is-valid');
-                          isValid = false;
-                      } else {
-                          input.classList.remove('is-invalid');
-                          input.classList.add('is-valid');
-                      }
-                  } else if (input.id === 'password2') {
-                      // Validasi khusus konfirmasi password
-                      const passwordInput = container.querySelector('#password');
-                      if (input.value === passwordInput.value &amp;&amp; input.value.trim() !== '') {
-                          input.classList.remove('is-invalid');
-                          input.classList.add('is-valid');
-                      } else {
-                          input.classList.add('is-invalid');
-                          input.classList.remove('is-valid');
-                          isValid = false;
-                      }
-                  } else if (!input.checkValidity()) {
-                      // Validasi umum
-                      input.classList.add('is-invalid');
-                      input.classList.remove('is-valid');
-                      isValid = false;
-                  } else {
-                      input.classList.remove('is-invalid');
-                      input.classList.add('is-valid');
-                  }
-              });
-      
-              return isValid;
-          };
-      
-          // Validasi file input khusus untuk langkah terakhir
-          const validateFileInputs = () => {
-              const fileInputs = document.querySelectorAll('#containerDataBerkas input[type="file"]');
-              let isValid = true;
-      
-              fileInputs.forEach(fileInput => {
-                  if (fileInput.files.length === 0) {
-                      fileInput.classList.add('is-invalid');
-                      fileInput.classList.remove('is-valid');
-                      isValid = false;
-                  } else {
-                      fileInput.classList.remove('is-invalid');
-                      fileInput.classList.add('is-valid');
-                  }
-              });
-      
-              return isValid;
-          };
-      
-          // Navigasi "Selanjutnya"
-          document.querySelectorAll('.btn-next').forEach(button => {
-              button.addEventListener('click', () => {
-                  const currentStep = button.closest('.container').id;
-                  const nextStep = button.dataset.next;
-                  const currentContainer = document.getElementById(currentStep);
-      
-                  if (!validateInputs(currentContainer)) {
-                      return;
-                  }
-      
-                  goToStep(currentStep, nextStep);
-              });
-          });
-      
-          // Navigasi "Kembali"
-          document.querySelectorAll('.btn-prev').forEach(button => {
-              button.addEventListener('click', () => {
-                  const currentStep = button.closest('.container').id;
-                  const prevStep = button.dataset.prev;
-                  goToStep(currentStep, prevStep);
-              });
-          });
-      
-          // Validasi real-time
-          document.querySelectorAll('input, select, textarea').forEach(input => {
-              input.addEventListener('input', () => {
-                  if (input.id === 'nik' || input.id === 'ktp_ayah' || input.id === 'ktp_ibu') {
-                      // Validasi khusus NIK, KTP
-                      if (input.value.length === 16 &amp;&amp; /^\d+$/.test(input.value)) {
-                          input.classList.remove('is-invalid');
-                          input.classList.add('is-valid');
-                      } else {
-                          input.classList.add('is-invalid');
-                          input.classList.remove('is-valid');
-                      }
-                  } else if (input.id === 'nisn') {
-                      // Validasi khusus NISN
-                      if (input.value.length === 10 &amp;&amp; /^\d+$/.test(input.value)) {
-                          input.classList.remove('is-invalid');
-                          input.classList.add('is-valid');
-                      } else {
-                          input.classList.add('is-invalid');
-                          input.classList.remove('is-valid');
-                      }
-                  } else if (input.id === 'npsn') {
-                      // Validasi khusus NPSN
-                      if (input.value.length === 8 &amp;&amp; /^\d+$/.test(input.value)) {
-                          input.classList.remove('is-invalid');
-                          input.classList.add('is-valid');
-                      } else {
-                          input.classList.add('is-invalid');
-                          input.classList.remove('is-valid');
-                      }
-                  } else if (input.id === 'password') {
-                      // Validasi khusus password
-                      if (input.value.length >= 8) {
-                          input.classList.remove('is-invalid');
-                          input.classList.add('is-valid');
-                      } else {
-                          input.classList.add('is-invalid');
-                          input.classList.remove('is-valid');
-                      }
-                  } else if (input.id === 'password2') {
-                      // Validasi khusus konfirmasi password
-                      const passwordInput = document.querySelector('#password');
-                      if (input.value === passwordInput.value &amp;&amp; input.value.trim() !== '') {
-                          input.classList.remove('is-invalid');
-                          input.classList.add('is-valid');
-                      } else {
-                          input.classList.add('is-invalid');
-                          input.classList.remove('is-valid');
-                      }
-                  } else if (!input.checkValidity()) {
-                      input.classList.add('is-invalid');
-                      input.classList.remove('is-valid');
-                  } else {
-                      input.classList.remove('is-invalid');
-                      input.classList.add('is-valid');
-                  }
-              });
-          });
-      
-          // Tombol submit pada langkah terakhir
-          const submitButton = document.querySelector('button[type="submit"]');
-          submitButton.addEventListener('click', (event) => {
-              event.preventDefault(); // Mencegah pengiriman form secara default
-      
-              const currentContainer = document.getElementById('containerDataBerkas');
-              const isInputValid = validateInputs(currentContainer);
-              const isFileValid = validateFileInputs();
-      
-              if (isInputValid &amp;&amp; isFileValid) {
-                  form.submit(); // Kirim form jika validasi berhasil
-              } else {
-                  alert('Mohon lengkapi semua data dan berkas yang diperlukan sebelum mengirim form.');
-              }
-          });
-      
-      })();
+  'use strict';
+
+  const form = document.querySelector('.needs-validation');
+
+  // Navigasi antar langkah
+  const goToStep = (currentStep, targetStep) => {
+    document.getElementById(currentStep).style.display = 'none';
+    document.getElementById(targetStep).style.display = 'block';
+  };
+
+  // Fungsi regex password
+  const isValidPassword = (password) => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    return passwordRegex.test(password);
+  };
+
+  // Validasi semua input dalam container
+  const validateInputs = (container) => {
+    const inputs = container.querySelectorAll('input, select, textarea');
+    let isValid = true;
+
+    inputs.forEach(input => {
+      if (input.id === 'nik' || input.id === 'ktp_ayah' || input.id === 'ktp_ibu') {
+        // Validasi khusus NIK, KTP
+        if (input.value.length !== 16 || !/^\d+$/.test(input.value)) {
+          input.classList.add('is-invalid');
+          input.classList.remove('is-valid');
+          isValid = false;
+        } else {
+          input.classList.remove('is-invalid');
+          input.classList.add('is-valid');
+        }
+      } else if (input.id === 'nisn') {
+        // Validasi khusus NISN
+        if (input.value.length !== 10 || !/^\d+$/.test(input.value)) {
+          input.classList.add('is-invalid');
+          input.classList.remove('is-valid');
+          isValid = false;
+        } else {
+          input.classList.remove('is-invalid');
+          input.classList.add('is-valid');
+        }
+      } else if (input.id === 'npsn') {
+        // Validasi khusus NPSN
+        if (input.value.length !== 8 || !/^\d+$/.test(input.value)) {
+          input.classList.add('is-invalid');
+          input.classList.remove('is-valid');
+          isValid = false;
+        } else {
+          input.classList.remove('is-invalid');
+          input.classList.add('is-valid');
+        }
+      } else if (input.id === 'password') {
+        // Validasi khusus password dengan regex
+        if (!isValidPassword(input.value)) {
+          input.classList.add('is-invalid');
+          input.classList.remove('is-valid');
+          isValid = false;
+        } else {
+          input.classList.remove('is-invalid');
+          input.classList.add('is-valid');
+        }
+      } else if (!input.checkValidity()) {
+        // Validasi umum
+        input.classList.add('is-invalid');
+        input.classList.remove('is-valid');
+        isValid = false;
+      } else {
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+      }
+    });
+
+    return isValid;
+  };
+
+  // Validasi file input khusus untuk langkah terakhir
+  const validateFileInputs = () => {
+    const fileInputs = document.querySelectorAll('#containerDataBerkas input[type="file"]');
+    let isValid = true;
+
+    fileInputs.forEach(fileInput => {
+      // Abaikan validasi jika input adalah SKHUN atau Surat Kesehatan
+      if (fileInput.id === 'skhun' || fileInput.id === 'surat_kesehatan') {
+        return;
+      }
+      if (fileInput.files.length === 0) {
+        fileInput.classList.add('is-invalid');
+        fileInput.classList.remove('is-valid');
+        isValid = false;
+      } else {
+        fileInput.classList.remove('is-invalid');
+        fileInput.classList.add('is-valid');
+      }
+    });
+
+    return isValid;
+  };
+
+  // Navigasi "Selanjutnya"
+  document.querySelectorAll('.btn-next').forEach(button => {
+    button.addEventListener('click', () => {
+      const currentStep = button.closest('.container').id;
+      const nextStep = button.dataset.next;
+      const currentContainer = document.getElementById(currentStep);
+
+      if (!validateInputs(currentContainer)) {
+        return;
+      }
+
+      goToStep(currentStep, nextStep);
+    });
+  });
+
+  // Navigasi "Kembali"
+  document.querySelectorAll('.btn-prev').forEach(button => {
+    button.addEventListener('click', () => {
+      const currentStep = button.closest('.container').id;
+      const prevStep = button.dataset.prev;
+      goToStep(currentStep, prevStep);
+    });
+  });
+
+  // Validasi real-time
+  document.querySelectorAll('input, select, textarea').forEach(input => {
+    input.addEventListener('input', () => {
+      if (input.id === 'nik' || input.id === 'ktp_ayah' || input.id === 'ktp_ibu') {
+        if (input.value.length === 16 &amp;&amp; /^\d+$/.test(input.value)) {
+          input.classList.remove('is-invalid');
+          input.classList.add('is-valid');
+        } else {
+          input.classList.add('is-invalid');
+          input.classList.remove('is-valid');
+        }
+      } else if (input.id === 'nisn') {
+        if (input.value.length === 10 &amp;&amp; /^\d+$/.test(input.value)) {
+          input.classList.remove('is-invalid');
+          input.classList.add('is-valid');
+        } else {
+          input.classList.add('is-invalid');
+          input.classList.remove('is-valid');
+        }
+      } else if (input.id === 'npsn') {
+        if (input.value.length === 8 &amp;&amp; /^\d+$/.test(input.value)) {
+          input.classList.remove('is-invalid');
+          input.classList.add('is-valid');
+        } else {
+          input.classList.add('is-invalid');
+          input.classList.remove('is-valid');
+        }
+      } else if (input.id === 'password') {
+        if (isValidPassword(input.value)) {
+          input.classList.remove('is-invalid');
+          input.classList.add('is-valid');
+        } else {
+          input.classList.add('is-invalid');
+          input.classList.remove('is-valid');
+        }
+      } else if (!input.checkValidity()) {
+        input.classList.add('is-invalid');
+        input.classList.remove('is-valid');
+      } else {
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+      }
+    });
+  });
+
+  // Tombol submit pada langkah terakhir
+  const submitButton = document.querySelector('button[type="submit"]');
+  submitButton.addEventListener('click', (event) => {
+    event.preventDefault(); // Mencegah pengiriman form secara default
+
+    const currentContainer = document.getElementById('containerDataBerkas');
+    const isInputValid = validateInputs(currentContainer);
+    const isFileValid = validateFileInputs();
+
+    if (isInputValid &amp;&amp; isFileValid) {
+      form.submit(); // Kirim form jika validasi berhasil
+    } else {
+      alert('Mohon lengkapi semua data dan berkas yang diperlukan sebelum mengirim form.');
+    }
+  });
+})();
+
+
+
       
 
         $(document).ready(function() {

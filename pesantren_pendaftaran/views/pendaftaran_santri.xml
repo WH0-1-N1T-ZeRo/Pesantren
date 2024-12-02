@@ -9,6 +9,9 @@
             <field name="priority" eval="8" />
             <field name="arch" type="xml">
                 <list string="Data Pendaftaran" default_order="total_nilai desc">
+                    <header>
+                        <button name="hapus_pendaftaran_kadaluarsa" type="object" string="Bersihkan Data" class="oe_highlight" icon="fa-database"/>
+                    </header>
                     <field name="nomor_pendaftaran" />
                     <field name="name" />
                     <field name="jenjang_id" />
@@ -71,8 +74,10 @@
                                     required="False" />
                             </group>
                             <group>
+                                <field name="email"
+                                    readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
                                 <field name="nis"
-                                    invisible="state in 'draft','terdaftar','ditolak','batal'" />
+                                    invisible="state in 'draft','terdaftar','seleksi','ditolak','batal'" />
                                 <field name="token" invisible="1" />
                             </group>
                         </group>
@@ -271,14 +276,14 @@
                                     <field name="total_nilai" readonly="1"/>
                                 </group>
                             </page>
-                            <page string="Akun">
+                            <!-- <page string="Akun">
                                 <group string="Akun Login OrangTua" class="o_group">
                                     <field name="email"
                                         readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
                                     <field name="password" password="True"
                                         readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
                                 </group> 
-                            </page>
+                            </page> -->
                         </notebook>
                     </sheet>
                     <div class="oe_chatter" groups="pesantren_base.group_sekolah_manager">

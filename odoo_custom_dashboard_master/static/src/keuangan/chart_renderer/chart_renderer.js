@@ -213,7 +213,7 @@ export class KeuanganChartRenderer extends Component {
 
     processDateData(data, field) {
         return data.reduce((acc, record) => {
-            const date = this.parseDate(record.create_date);
+            const date = this.parseDate(record.validasi_time);
             const dateStr = date.toLocaleDateString('id-ID', {
                 year: 'numeric',
                 month: '2-digit',
@@ -268,28 +268,31 @@ export class KeuanganChartRenderer extends Component {
 
     async fetchUangSakuMasukData(startDate = null, endDate = null) {
         try {
-            // If no dates provided, set default range to last 7 days
-            if (!startDate && !endDate) {
-                endDate = new Date();
-                startDate = new Date();
-                startDate.setDate(startDate.getDate() - 6); // Get last 7 days including today
-                
-                // Convert to YYYY-MM-DD format for API
-                startDate = startDate.toISOString().split('T')[0];
-                endDate = endDate.toISOString().split('T')[0];
+            let domain = [['amount_in', '>', 0]];
+    
+            // If no dates provided, set default to current week
+            if (!startDate || !endDate) {
+                const now = new Date();
+                const firstDayOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+                startDate = firstDayOfWeek.toISOString().split('T')[0];
+                endDate = new Date().toISOString().split('T')[0];
             }
     
-            const domain = [
-                ['amount_in', '>', 0],
-                ['create_date', '>=', startDate],
-                ['create_date', '<=', endDate]
-            ];
+            // Convert dates to ISO string format
+            startDate = new Date(startDate).toISOString().split('T')[0];
+            endDate = new Date(endDate).toISOString().split('T')[0];
+            
+            // Add date filtering
+            domain.push(
+                ['validasi_time', '>=', startDate],
+                ['validasi_time', '<=', endDate]
+            );
     
             const result = await this.orm.searchRead(
                 'cdn.uang_saku',
                 domain,
-                ['create_date', 'amount_in', 'state'],
-                { order: 'create_date asc' }
+                ['validasi_time', 'amount_in', 'state'],
+                { order: 'validasi_time asc' }
             );
     
             if (!result || result.length === 0) {
@@ -312,31 +315,33 @@ export class KeuanganChartRenderer extends Component {
         }
     }
     
-    
     async fetchUangSakuKeluarData(startDate = null, endDate = null) {
         try {
-            // If no dates provided, set default range to last 7 days
-            if (!startDate && !endDate) {
-                endDate = new Date();
-                startDate = new Date();
-                startDate.setDate(startDate.getDate() - 6); // Get last 7 days including today
-                
-                // Convert to YYYY-MM-DD format for API
-                startDate = startDate.toISOString().split('T')[0];
-                endDate = endDate.toISOString().split('T')[0];
+            let domain = [['amount_out', '>', 0]];
+    
+            // If no dates provided, set default to current week
+            if (!startDate || !endDate) {
+                const now = new Date();
+                const firstDayOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+                startDate = firstDayOfWeek.toISOString().split('T')[0];
+                endDate = new Date().toISOString().split('T')[0];
             }
     
-            const domain = [
-                ['amount_out', '>', 0],
-                ['create_date', '>=', startDate],
-                ['create_date', '<=', endDate]
-            ];
+            // Convert dates to ISO string format
+            startDate = new Date(startDate).toISOString().split('T')[0];
+            endDate = new Date(endDate).toISOString().split('T')[0];
+            
+            // Add date filtering
+            domain.push(
+                ['validasi_time', '>=', startDate],
+                ['validasi_time', '<=', endDate]
+            );
     
             const result = await this.orm.searchRead(
                 'cdn.uang_saku',
                 domain,
-                ['create_date', 'amount_out', 'state'],
-                { order: 'create_date asc' }
+                ['validasi_time', 'amount_out', 'state'],
+                { order: 'validasi_time asc' }
             );
     
             if (!result || result.length === 0) {
@@ -771,13 +776,13 @@ export class KeuanganChartRenderer extends Component {
                     actionConfig.domain = this.props.title === 'Uang Saku Masuk'
                         ? [
                             ['amount_in', '>', 0],
-                            ['create_date', '>=', formattedStartDate],
-                            ['create_date', '<=', formattedEndDate]
+                            ['validasi_time', '>=', formattedStartDate],
+                            ['validasi_time', '<=', formattedEndDate]
                         ]
                         : [
                             ['amount_out', '>', 0],
-                            ['create_date', '>=', formattedStartDate],
-                            ['create_date', '<=', formattedEndDate]
+                            ['validasi_time', '>=', formattedStartDate],
+                            ['validasi_time', '<=', formattedEndDate]
                         ];
                 } catch (e) {
                     console.error('Error processing date:', e);

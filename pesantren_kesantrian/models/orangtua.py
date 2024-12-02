@@ -23,11 +23,14 @@ class OrangTua(models.Model):
                 self.env.ref('pesantren_kesantrian.group_kesantrian_orang_tua').id,
                 # Assign grup sekolah user
                 self.env.ref('pesantren_base.group_sekolah_user').id,
+                # Assign grup sekolah user
+                self.env.ref('pesantren_kesantrian.group_kesantrian_user').id,
                 # Assign grup keuangan user
                 self.env.ref('pesantren_keuangan.group_keuangan_user').id
             ])]
         })
-
+        
+        res.user_id = user.id
         return res
 
     def unlink(self):

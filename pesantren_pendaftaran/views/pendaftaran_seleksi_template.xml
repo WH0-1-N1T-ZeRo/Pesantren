@@ -15,7 +15,7 @@
                 href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css" />
             <style>
                 .container-main {
-                background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
+                background: linear-gradient(to bottom left, #0B5B54 40%, #f5e505 100%) !important;
                 }
 
                 .offcanvas.offcanvas-end {
@@ -34,7 +34,7 @@
                 }
 
                 .background {
-                background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
+                background: linear-gradient(to bottom left, #0B5B54 40%, #f5e505 100%) !important;
                 }
 
                 /* Desain Dropdown */
@@ -220,35 +220,12 @@
                     </div>
                 </div>
 
-                <footer class="text-white p-2"
-                    style="display: flex; justify-content: space-between; flex-wrap: wrap; margin-top: 135px;">
+                <footer class="text-white p-2" style="display: flex; justify-content: space-between; flex-wrap: wrap;">
                     <div class="ms-5">
-                        <ul
-                            style="list-style-type: none; display: flex; text-transform: uppercase; font-size: 13px;"
-                            class="fw-semibold">
-                            <li>
-                                <a href="/psb" class="me-4"
-                                    style="text-decoration: none; color: white;">Home</a>
-                            </li>
-                            <li>
-                                <a href="/beranda" class="me-4"
-                                    style="text-decoration: none; color: white;" target="_blank">Info
-                                    Pondok</a>
-                            </li>
-                            <li>
-                                <a
-                                    href="https://drive.google.com/drive/mobile/folders/1EYat5411joyoOmH_DkJ3g2DeJKgyyuBQ?usp=share_link&amp;fbclid=IwY2xjawGflGlleHRuA2FlbQIxMQABHTusVv9hD3VRDSLW9-671QhOL86e3KMv30smsAYW0DHkkWf7zwPlcBlbeA_aem_XXofAY-ay0syx043L5BLvw"
-                                    class="me-4" style="text-decoration: none; color: white;"
-                                    target="_blank">Brosur</a>
-                            </li>
-                            <li>
-                                <a href="" class="me-4" style="text-decoration: none; color: white;">
-                                    Panduan</a>
-                            </li>
-                        </ul>
+                        
                     </div>
                     <div class="me-5">
-                        <p class="text-center mt-1">© 2024 TIM IT PPIB</p>
+                        <p class="text-center mt-1" style="color: white !important;">© 2024 TIM IT PPIB</p>
                     </div>
                 </footer>
             </div>
@@ -304,7 +281,7 @@
                 href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css" />
             <style>
                 .container-main {
-                background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
+                background: linear-gradient(to bottom left, #0B5B54 40%, #f5e505 100%) !important;
                 max-width: 100vw;
                 }
 
@@ -324,7 +301,7 @@
                 }
 
                 .background {
-                background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
+                background: linear-gradient(to bottom left, #0B5B54 40%, #f5e505 100%) !important;
                 }
 
                 /* Desain Dropdown */
@@ -506,35 +483,12 @@
                     </div>
                 </div>
 
-                <footer class="text-white p-2"
-                    style="display: flex; justify-content: space-between; flex-wrap: wrap; margin-top: 135px;">
+                <footer class="text-white p-2" style="display: flex; justify-content: space-between; flex-wrap: wrap;">
                     <div class="ms-5">
-                        <ul
-                            style="list-style-type: none; display: flex; text-transform: uppercase; font-size: 13px;"
-                            class="fw-semibold">
-                            <li>
-                                <a href="/psb" class="me-4"
-                                    style="text-decoration: none; color: white;">Home</a>
-                            </li>
-                            <li>
-                                <a href="/beranda" class="me-4"
-                                    style="text-decoration: none; color: white;" target="_blank">Info
-                                    Pondok</a>
-                            </li>
-                            <li>
-                                <a
-                                    href="https://drive.google.com/drive/mobile/folders/1EYat5411joyoOmH_DkJ3g2DeJKgyyuBQ?usp=share_link&amp;fbclid=IwY2xjawGflGlleHRuA2FlbQIxMQABHTusVv9hD3VRDSLW9-671QhOL86e3KMv30smsAYW0DHkkWf7zwPlcBlbeA_aem_XXofAY-ay0syx043L5BLvw"
-                                    class="me-4" style="text-decoration: none; color: white;"
-                                    target="_blank">Brosur</a>
-                            </li>
-                            <li>
-                                <a href="" class="me-4" style="text-decoration: none; color: white;">
-                                    Panduan</a>
-                            </li>
-                        </ul>
+                        
                     </div>
                     <div class="me-5">
-                        <p class="text-center mt-1">© 2024 TIM IT PPIB</p>
+                        <p class="text-center mt-1" style="color: white !important;">© 2024 TIM IT PPIB</p>
                     </div>
                 </footer>
             </div>
@@ -591,7 +545,7 @@
                 href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css" />
             <style>
                 .container-main {
-                background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
+                background: linear-gradient(to bottom left, #0B5B54 40%, #f5e505 100%) !important;
                 }
 
                 .offcanvas.offcanvas-end {
@@ -610,7 +564,7 @@
                 }
 
                 .background {
-                background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
+                background: linear-gradient(to bottom left, #0B5B54 40%, #f5e505 100%) !important;
                 }
 
                 /* Desain Dropdown */
@@ -794,35 +748,12 @@
                     </div>
                 </div>
 
-                <footer class="text-white p-2"
-                    style="display: flex; justify-content: space-between; flex-wrap: wrap; margin-top: 135px;">
+                <footer class="text-white p-2" style="display: flex; justify-content: space-between; flex-wrap: wrap;">
                     <div class="ms-5">
-                        <ul
-                            style="list-style-type: none; display: flex; text-transform: uppercase; font-size: 13px;"
-                            class="fw-semibold">
-                            <li>
-                                <a href="/psb" class="me-4"
-                                    style="text-decoration: none; color: white;">Home</a>
-                            </li>
-                            <li>
-                                <a href="/beranda" class="me-4"
-                                    style="text-decoration: none; color: white;" target="_blank">Info
-                                    Pondok</a>
-                            </li>
-                            <li>
-                                <a
-                                    href="https://drive.google.com/drive/mobile/folders/1EYat5411joyoOmH_DkJ3g2DeJKgyyuBQ?usp=share_link&amp;fbclid=IwY2xjawGflGlleHRuA2FlbQIxMQABHTusVv9hD3VRDSLW9-671QhOL86e3KMv30smsAYW0DHkkWf7zwPlcBlbeA_aem_XXofAY-ay0syx043L5BLvw"
-                                    class="me-4" style="text-decoration: none; color: white;"
-                                    target="_blank">Brosur</a>
-                            </li>
-                            <li>
-                                <a href="" class="me-4" style="text-decoration: none; color: white;">
-                                    Panduan</a>
-                            </li>
-                        </ul>
+                        
                     </div>
                     <div class="me-5">
-                        <p class="text-center mt-1">© 2024 TIM IT PPIB</p>
+                        <p class="text-center mt-1" style="color: white !important;">© 2024 TIM IT PPIB</p>
                     </div>
                 </footer>
             </div>

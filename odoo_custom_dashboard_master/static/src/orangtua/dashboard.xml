@@ -163,9 +163,7 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 m-0 p-2">
                     <div class="shadow-sm border p-4 bg-white h-100">
                         <OrangtuaChartRenderer type="'bar'" 
-                                             title="'Tagihan Siswa'"
-                                             startDate="state.selectedDateRange?.start"
-                                             endDate="state.selectedDateRange?.end" />
+                                             title="'Tagihan Siswa'"/>
                     </div>
                 </div>
             </div>
