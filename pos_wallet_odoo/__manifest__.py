@@ -38,6 +38,7 @@
         'views/account_journal_views.xml',
         'views/pos_payment_method_views.xml',
         'wizard/recharge_wallet_views.xml',
+        'views/res_users_views.xml',
     ],
     'assets': {
         'point_of_sale._assets_pos': [
@@ -54,14 +55,10 @@
           'pos_wallet_odoo/static/src/overrides/components/InheritProduct/InheritPopupArea.xml',
           'pos_wallet_odoo/static/src/overrides/components/menu/menu.js',
           'pos_wallet_odoo/static/src/overrides/components/menu/menu.xml',
-        ],
-        'point_of_sale.assets': [
-         'pos_wallet_odoo/static/src/js/customerListScreen.js',
-         'pos_wallet_odoo/static/src/js/payment_method.js',
-         'pos_wallet_odoo/static/src/js/wallet_recharge.js',
-         'pos_wallet_odoo/static/src/xml/balance_templates.xml',
-         'pos_wallet_odoo/static/src/xml/partner_templates.xml',
-         'pos_wallet_odoo/static/src/xml/wallet_templates.xml',
+          'pos_wallet_odoo/static/src/overrides/components/menu/close.js',
+          'pos_wallet_odoo/static/src/overrides/components/menu/close.xml',
+        ],'web.assets_backend': [
+            'pos_wallet_odoo/static/src/js/beforeunload.js',
         ],
     },
     'images': ['static/description/banner.jpg'],

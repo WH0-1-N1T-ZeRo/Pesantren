@@ -25,3 +25,4 @@ from . import pos_session
 from . import res_partner
 from . import wallet_transaction
 from . import wallet_account
+from . import res_users

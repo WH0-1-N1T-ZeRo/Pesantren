@@ -30,9 +30,9 @@
                 <form string="Tahfidz quran" create="false" >
                     <header>
                         <button string="Confirm" type="object" name="action_confirm" 
-                             invisible="state not in ('draft')" groups="pesantren_kesantrian.group_kesantrian_manager,pesantren_kesantrian.group_kesantrian_staff"/>
+                             invisible="state not in ('draft')" groups="pesantren_kesantrian.group_kesantrian_manager,pesantren_guruquran.group_guru_quran_staff"/>
                         <button string="Ubah ke Draf" type="object" name="action_draft" 
-                             invisible="state not in ('done')" groups="pesantren_kesantrian.group_kesantrian_manager,pesantren_kesantrian.group_kesantrian_staff"/>
+                             invisible="state not in ('done')" groups="pesantren_kesantrian.group_kesantrian_manager,pesantren_guruquran.group_guru_quran_staff"/>
                         <field name="state" widget="statusbar" />
                     </header>
                     <sheet>

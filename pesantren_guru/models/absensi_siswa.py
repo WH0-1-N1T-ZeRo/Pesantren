@@ -2,6 +2,7 @@ from odoo import api, fields, models
 
 class AbsenesiSiswa(models.Model):
     _name               = 'cdn.absensi_siswa'
+    _inherit            = ['mail.thread', 'mail.activity.mixin']
     _description        = 'Data Absensi Siswa'
 
     # domain
@@ -92,6 +93,21 @@ class AbsenesiSiswa(models.Model):
             'kelas_id': False,
             'jampelajaran_id': False,
         }}
+    
+    @api.onchange('kelas_id')
+    def _onchange_kelas_id(self):
+        self.absensi_ids = [(5, 0, 0)]
+        if self.kelas_id:
+            absensi_ids = []
+            for siswa in self.kelas_id.siswa_ids:
+                absensi_ids.append((0, 0, {
+                    'siswa_id': siswa.id,
+                    'kehadiran': 'Hadir',
+                }))
+            self.absensi_ids = absensi_ids
+        else:
+            self.absensi_ids = [(5, 0, 0)]
+        
     @api.onchange('tanggal','kelas_id','guru_id','jampelajaran_id')
     def _onchange_tanggal(self):
         if self.tanggal:
@@ -135,7 +151,17 @@ class AbsensiSiswaLine(models.Model):
     mapel_id        = fields.Many2one(comodel_name='cdn.mata_pelajaran', string='Mata pelajaran', related='absensi_id.mapel_id')
     tanggal         = fields.Date(string='Tgl Absen', related='absensi_id.tanggal', readonly=True, store=True)
     kelas_id        = fields.Many2one(comodel_name='cdn.ruang_kelas', string='Kelas', related='absensi_id.kelas_id', readonly=True, store=True)
-    siswa_id        = fields.Many2one(comodel_name='cdn.siswa', string='Siswa', required=True)
+    siswa_id        = fields.Many2one(
+        comodel_name='cdn.siswa', 
+        string='Siswa', 
+        required=True, 
+        domain="[('id', 'in', allowed_siswa_ids)]"
+    )
+    allowed_siswa_ids = fields.Many2many(
+        comodel_name='cdn.siswa', 
+        compute='_compute_allowed_siswa', 
+        store=False
+    )
     name            = fields.Char(string='Nama', related='siswa_id.name', readonly=True, store=True)
     nis             = fields.Char(string='NIS', related='siswa_id.nis', readonly=True, store=True)
     kehadiran       = fields.Selection([
@@ -144,3 +170,20 @@ class AbsensiSiswaLine(models.Model):
                             ('Izin', 'Izin'),
                             ('Alpa', 'Alpa'),
                         ], string='Kehadiran', default='Hadir')
+
+    @api.depends('absensi_id.kelas_id')
+    def _compute_allowed_siswa(self):
+        for record in self:
+            record.allowed_siswa_ids = record.absensi_id.kelas_id.siswa_ids.ids if record.absensi_id.kelas_id else []
+
+class Kbm_Siswa(models.Model):
+    _inherit            = 'cdn.siswa'
+    _description        = 'Kbm_Siswa'
+
+    
+    kbm_id = fields.One2many(
+        string='Kegiatan Belajar Mengajar',
+        comodel_name='cdn.absensi_siswa_lines',
+        inverse_name='siswa_id',
+    )
+    

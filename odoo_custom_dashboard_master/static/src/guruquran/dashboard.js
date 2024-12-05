@@ -11,10 +11,10 @@ export class OwlGuruquranDashboard extends Component {
             selectedDateRange: null,
             tempDateRange: { start: '', end: '' },
             showDatePicker: false,
-            selectedPeriod: 'today', 
+            selectedPeriod: 'thisMonth', 
             isLoading: false
         });
-        this.setPeriod('today');
+        this.setPeriod('thisMonth');
     }
 
     toggleDatePicker() {

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve" groups="point_of_sale.group_pos_user">
+    <!-- Inherit PartnerLine untuk menambahkan data di kolom Uang Saku -->
+        <t t-name="pos_wallet_odoo.LoginScreenExtensions" t-inherit="point_of_sale.LoginScreen" t-inherit-mode="extension">
+                <xpath expr="//button[@class='select-logout btn btn-dark btn-lg']" position="replace">
+                    <t t-if="hasGroupPOSUser">
+                    <button class="select-logout btn btn-dark btn-lg" t-on-click="() => this.clickBack()">
+                            <span class="d-flex flex-grow-1 align-items-center">Keluar</span>
+                        </button>
+                    </t>
+                    <t t-else="">
+                            <a href="/web/session/logout?redirect=/" class="select-logout btn btn-dark btn-lg" style="color:white;">Keluar</a>
+                    </t>
+                </xpath>
+        </t>
+</templates>
