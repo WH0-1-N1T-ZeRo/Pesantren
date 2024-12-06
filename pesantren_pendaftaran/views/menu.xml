@@ -1,16 +1,18 @@
+
 <odoo>
-    <menuitem 
-        id="pendaftaran_menu_root" 
+    <menuitem id="pendaftaran_menu_root" 
         name="Pendaftaran Santri Baru" 
-        web_icon="pesantren_pendaftaran,static/description/icon.png"
-        groups="pesantren_pendaftaran.group_pendaftaran_admin,pesantren_pendaftaran.group_pendaftaran_manager"/>
+        web_icon="pesantren_pendaftaran,static/description/icon.png" 
+        groups="pesantren_pendaftaran.group_pendaftaran_admin,pesantren_pendaftaran.group_pendaftaran_manager"
+        sequence="6"/>
+
 
     <menuitem 
         id="pendaftaran_menu" 
         name="Pendaftaran" 
         parent="pendaftaran_menu_root" 
         action="action_pendaftaran" 
-        sequence="10"/>
+        sequence="2"/>
 
     <!-- <menuitem 
         id="menu_wizard_search_siswa"

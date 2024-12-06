@@ -330,7 +330,7 @@ class PesantrenBeranda(http.Controller):
       </ul>
                     <!-- Buttons for Pendaftaran and Login -->
                     <a href="/psb" class="btn btn-light ms-2" type="submit">Pendaftaran</a>
-                    <a href="/web/login" class="btn btn-warning ms-2" type="submit">Login</a>
+                    <a href="/odoo" class="btn btn-warning ms-2" type="submit">Login</a>
                 </div>
                 </div>
             </div>

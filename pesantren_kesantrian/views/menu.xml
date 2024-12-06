@@ -6,13 +6,13 @@
         <!-- This Menu Item will appear in the Upper bar, that's why It needs NO parent or action -->
         <menuitem id="kesantrian_menu_root" name="Kesantrian" sequence="10" web_icon="pesantren_base,static/description/dqi.png" groups="pesantren_kesantrian.group_kesantrian_staff"/>
 
-        <menuitem id="data_kesantrian_menu_categ" name="Data Kesantrian" sequence="10" parent="kesantrian_menu_root" groups="pesantren_kesantrian.group_kesantrian_manager"/>
+        <menuitem id="data_kesantrian_menu_categ" name="Data Kesantrian" sequence="20" parent="kesantrian_menu_root" groups="pesantren_kesantrian.group_kesantrian_manager"/>
 
-        <menuitem id="kepesantrenan_menu_categ" name="Kepesantrenan" sequence="20" parent="kesantrian_menu_root" groups="pesantren_kesantrian.group_kesantrian_staff">
-                <menuitem id="kepesantrenan_tahfidz_menu_categ" name="Tahfidz" sequence="20"/>
-                <menuitem id="kepesantrenan_tahsin_menu_categ" name="Tahsin" sequence="30" />
-                <menuitem id="kepesantrenan_hadits_menu_categ" name="Hadits" sequence="40" />
-                <menuitem id="kepesantrenan_kepengasuhan_menu_categ" name="Kepengasuhan" sequence="50" />
+        <menuitem id="kepesantrenan_menu_categ" name="Kepesantrenan" sequence="10" parent="kesantrian_menu_root" groups="pesantren_kesantrian.group_kesantrian_staff">
+                <menuitem id="kepesantrenan_tahfidz_menu_categ" name="Tahfidz" sequence="10"/>
+                <menuitem id="kepesantrenan_tahsin_menu_categ" name="Tahsin" sequence="20" />
+                <menuitem id="kepesantrenan_hadits_menu_categ" name="Hadits" sequence="30" />
+                <menuitem id="kepesantrenan_kepengasuhan_menu_categ" name="Kepengasuhan" sequence="40" />
         </menuitem>    
 
         <menuitem id="aktivitas_kesantrian_menu_categ" name="Aktivitas" sequence="30" parent="kesantrian_menu_root"/>
