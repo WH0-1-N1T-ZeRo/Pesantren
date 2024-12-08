@@ -25,7 +25,6 @@
                 </list>
             </field>
         </record>
-
         <!-- ubig.pendaftaran form view -->
         <record id="pendaftaran_santri_view_form" model="ir.ui.view">
             <field name="name">ubig.pendaftaran.view.form</field>
@@ -65,7 +64,6 @@
                                     readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
                             </h3>
                         </div>
-                        
                         <group string="User">
                             <group>
                                 <field name="name"
@@ -103,7 +101,7 @@
                                     invisible="state in 'draft'" />
                             </group>
                             <group>
-                                <field name="virtual_account" readonly="1" />
+                                <field name="virtual_account" readonly="1"/>
                                 <field name="status_va" readonly="1"/>
                                 <field name="va_saku" readonly="state in 'diterima'"
                                     invisible="state in 'draft,terdaftar,seleksi,ditolak,batal'" />
@@ -115,14 +113,14 @@
                             <page string="Data Diri Calon Santri">
                                 <group string="Data Calon Santri">
                                     <group>
-                                        <field name="gender"
-                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                        <field name="gender" 
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'"/>
                                         <field name="tanggal_lahir"
                                             readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
                                         <field name="kota_lahir"
                                             readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
                                         <field name="golongan_darah"
-                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
+                                            readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'"/>
                                         <field name="nik"
                                             readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'"
                                             required="False" />
@@ -239,7 +237,7 @@
                                 </group>
                             </page>
                             <page string="Dokumen Pendaftaran">
-                                <group> 
+                                <group>
                                     <group string="Dokumen Anak" class="o_group">
                                         <field name="akta_kelahiran"
                                             filename="akta_kelahiran_filename" />
@@ -262,7 +260,7 @@
                                         <field name="surat_kesehatan"
                                             filename="surat_kesehatan_filename" />
                                     </group>
-                                </group>  
+                                </group>
                             </page>
                             <page string="Nilai Seleksi" invisible="state in 'draft,terdaftar,batal'" >
                                 <group string="Detail Penilaian">
@@ -295,10 +293,8 @@
                         </chatter>
                     </div>
                 </form>
-
             </field>
         </record>
-
         <!-- <record id="view_virtual_account_wizard_form" model="ir.ui.view">
             <field name="name">virtual.account.wizard.form</field>
             <field name="model">ubig.pendaftaran</field>
@@ -316,7 +312,6 @@
                 </form>
             </field>
         </record> -->
-
         <!-- action window -->
         <record id="action_pendaftaran" model="ir.actions.act_window">
             <field name="name">Pendaftaran Santri</field>
@@ -330,7 +325,6 @@
                 </p>
             </field>
         </record>
-
         <!-- Search -->
         <record id="ubig_pendaftaran_view_search" model="ir.ui.view">
             <field name="name">ubig.pendaftaran.view.search</field>
@@ -339,13 +333,11 @@
                 <search string="Pendaftaran Santri">
                     <!-- Filter untuk menampilkan data berdasarkan jenjang -->
                     <filter string="By Jenjang" name="filter_by_jenjang" domain="[('jenjang_id', '!=', False)]"/>
-
                     <!-- Filter untuk total_nilai tertinggi -->
                     <filter string="Nilai Tertinggi"
                             name="filter_by_total_nilai"
                             domain="[]" 
                             context="{'search_default_order': 'total_nilai desc'}"/>
-
                     <!-- Field pencarian -->
                     <field name="name" select="True"/>
                     <field name="nomor_pendaftaran" select="True"/>
@@ -367,7 +359,6 @@
                     <field name="email" select="True"/>
                     <field name="nik" select="True"/>
                     <field name="jenjang_id" select="True"/>
-
                     <!-- Group By berdasarkan jenjang -->
                     <group string="Group By">
                         <filter name="group_by_jenjang" string="Jenjang" context="{'group_by': 'jenjang_id'}"/>
@@ -382,8 +373,5 @@
                 </search>
             </field>
         </record>
-
-
-        
     </data>
 </odoo>

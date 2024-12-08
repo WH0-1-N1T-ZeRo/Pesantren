@@ -15,10 +15,13 @@ class ResPartner(models.Model):
     va_saku             = fields.Char(string='No. VA Uang Saku', store=True)
     bank                = fields.Many2one('ubig.bank', string="Bank", help="Pilih bank untuk membuat virtual account")
     petunjuk_pembayaran = fields.Text(related='bank.petunjuk_pembayaran', string="Petunjuk Pembayaran")
-    jns_partner         = fields.Selection(
-        string='Jenis Partner',
-        selection=[('siswa', 'Siswa'), ('ortu', 'Orang Tua'), ('guru', 'Guru'), ('umum', 'Umum'), ('calon_santri', 'Calon Santri')]
-    , default="calon_santri", readonly="true")
+    jns_partner         = fields.Selection(string='Jenis Partner', selection=[
+                        ('siswa', 'Siswa'), 
+                        ('ortu', 'Orang Tua'), 
+                        ('guru', 'Guru'), 
+                        ('umum', 'Umum'), 
+                        ('calon_santri', 'Calon Santri')]
+                        , default="calon_santri", readonly="true")
 
 class DataPendaftaran(models.Model):
     _name               = 'ubig.pendaftaran'
@@ -50,10 +53,10 @@ class DataPendaftaran(models.Model):
     kota_lahir          = fields.Char(string="Kota Kelahiran")
     tanggal_lahir       = fields.Date(string="Tanggal Lahir Calon Santri")
     golongan_darah      = fields.Selection([
-                          ('A', 'A'),
-                          ('B', 'B'),
-                          ('AB', 'AB'),
-                          ('O', 'O'),
+                        ('A', 'A'),
+                        ('B', 'B'),
+                        ('AB', 'AB'),
+                        ('O', 'O'),
                         ], string="Golongan Darah")
     kewarganegaraan     = fields.Selection(selection=[('wni','WNI'),('wna','WNA')],  string="Kewarganegaraan",  help="")
     alamat              = fields.Char(string='Alamat Calon Santri')
@@ -80,20 +83,20 @@ class DataPendaftaran(models.Model):
     telepon_ayah        = fields.Char(string="Nomor Telepon Ayah")
     pekerjaan_ayah      = fields.Many2one('cdn.ref_pekerjaan',string="Pekerjaan Ayah")
     penghasilan_ayah    = fields.Selection([
-                          ('1juta', ' < Rp. 1.000.000'),
-                          ('5juta', 'Rp. 1.000.000 - Rp. 5.000.000'),
-                          ('10juta', 'Rp. 6.000.000 - Rp. 10.000.000'),
-                          ('11juta', '> Rp. 10.000.000')
-                          ], string="Penghasilan Ayah")
+                        ('1juta', ' < Rp. 1.000.000'),
+                        ('5juta', 'Rp. 1.000.000 - Rp. 5.000.000'),
+                        ('10juta', 'Rp. 6.000.000 - Rp. 10.000.000'),
+                        ('11juta', '> Rp. 10.000.000')
+                        ], string="Penghasilan Ayah")
     email_ayah          = fields.Char(string="Email Ayah")
     agama_ayah          = fields.Selection([
-                          ('islam', 'Islam'),
-                          ('kristen', 'Kristen'),
-                          ('katolik', 'Katolik'),
-                          ('hindu', 'Hindu'),
-                          ('budha', 'Budha'),
-                          ('lainnya', 'Lainnya'),
-                          ], string="Agama Ayah")
+                        ('islam', 'Islam'),
+                        ('kristen', 'Kristen'),
+                        ('katolik', 'Katolik'),
+                        ('hindu', 'Hindu'),
+                        ('budha', 'Budha'),
+                        ('lainnya', 'Lainnya'),
+                        ], string="Agama Ayah")
     kewarganegaraan_ayah = fields.Selection(selection=[('wni','WNI'),('wna','WNA')], string="Kewarganegaraan Ayah")
     pendidikan_ayah     = fields.Many2one('cdn.ref_pendidikan', string="Riwayat Pendidikan Ayah")
 
@@ -104,20 +107,20 @@ class DataPendaftaran(models.Model):
     telepon_ibu         = fields.Char(string="Nomor Telepon Ibu")
     pekerjaan_ibu       = fields.Many2one('cdn.ref_pekerjaan', string="Pekerjaan Ibu")
     penghasilan_ibu     = fields.Selection([
-                          ('1juta', ' < Rp. 1.000.000'),
-                          ('5juta', 'Rp. 1.000.000 - Rp. 5.000.000'),
-                          ('10juta', 'Rp. 6.000.000 - Rp. 10.000.000'),
-                          ('11juta', '> Rp. 10.000.000')
-                          ], string="Penghasilan Ibu")
+                        ('1juta', ' < Rp. 1.000.000'),
+                        ('5juta', 'Rp. 1.000.000 - Rp. 5.000.000'),
+                        ('10juta', 'Rp. 6.000.000 - Rp. 10.000.000'),
+                        ('11juta', '> Rp. 10.000.000')
+                        ], string="Penghasilan Ibu")
     email_ibu           = fields.Char(string="Email Ibu")
     agama_ibu           = fields.Selection([
-                          ('islam', 'Islam'),
-                          ('kristen', 'Kristen'),
-                          ('katolik', 'Katolik'),
-                          ('hindu', 'Hindu'),
-                          ('budha', 'Budha'),
-                          ('lainnya', 'Lainnya'),
-                          ], string="Agama Ibu")
+                        ('islam', 'Islam'),
+                        ('kristen', 'Kristen'),
+                        ('katolik', 'Katolik'),
+                        ('hindu', 'Hindu'),
+                        ('budha', 'Budha'),
+                        ('lainnya', 'Lainnya'),
+                        ], string="Agama Ibu")
     kewarganegaraan_ibu = fields.Selection(selection=[('wni','WNI'),('wna','WNA')], string="Kewarganegaraan Ibu")
     pendidikan_ibu      = fields.Many2one('cdn.ref_pendidikan', string="Riwayat Pendidikan Ibu")
 
@@ -129,7 +132,7 @@ class DataPendaftaran(models.Model):
     wali_password       = fields.Char( string="Password", help="")
     wali_agama          = fields.Selection(selection=[('islam', 'Islam'), ('katolik', 'Katolik'), ('protestan', 'Protestan'), ('hindu', 'Hindu'), ('budha', 'Budha')],  string="Agama (Wali)",  help="")
     wali_hubungan       = fields.Char( string="Hubungan dengan Siswa",  help="")
-                          
+
     # Dokumen Anak
     akta_kelahiran      = fields.Binary(string="Akta Kelahiran")
     kartu_keluarga      = fields.Binary(string="Kartu Keluarga")
@@ -157,6 +160,8 @@ class DataPendaftaran(models.Model):
                             ('inactive', 'Inactive'),
                         ], string="Status Virtual Account", default='temporary')
 
+    kode_akses          = fields.Char(string="Kode Akses")
+
     # State
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -167,10 +172,6 @@ class DataPendaftaran(models.Model):
         ('batal', 'Batal'),
     ], string='Status', default='draft',
         track_visibility='onchange')
-    
-    # def _generate_virtual_account(self):
-    #     """Helper method to generate a Virtual Account"""
-    #     return f"{random.randint(10000000, 99999999)}"
 
     @api.depends('soal_ids')
 
@@ -179,44 +180,7 @@ class DataPendaftaran(models.Model):
             # Menghitung total nilai dari soal_ids
             record.total_nilai = sum(soal.nilai for soal in record.soal_ids if soal.nilai)
 
-    # Constraint untuk validasi nilai antara 1 hingga 10
-    # @api.onchange(
-    #     'tajwid', 'makhraj', 'fashahah', 'gharib', 'irama', 'tartil', 
-    #     'motivasi', 'pemahaman', 'komitmen', 'kedisiplinan', 
-    #     'pengetahuan', 'minat'
-    # )
-    # def _onchange_nilai(self):
-    #     for record in self:
-    #         fields_to_check = [
-    #             'tajwid', 'makhraj', 'fashahah', 'gharib', 'irama', 
-    #             'tartil', 'motivasi', 'pemahaman', 'komitmen', 
-    #             'kedisiplinan', 'pengetahuan', 'minat'
-    #         ]
-            
-    #         # Check each field for valid range (1-10)
-    #         for field in fields_to_check:
-    #             value = getattr(record, field)
-    #             if value and (value < 1 or value > 10):
-    #                 # Set the value to 0 to reset invalid input
-    #                 setattr(record, field, 0)
-    #                 return {
-    #                     'warning': {
-    #                         'title': 'Nilai Tidak Valid',
-    #                         'message': f'Nilai untuk {field} harus berada antara 1 - 10. Nilai telah direset ke 0.',
-    #                     }
-    #                 }
-
     @api.model
-
-    # def get_kuota_pendaftaran(self):
-    #     # Ambil nilai dari config parameter, jika tidak ada gunakan default 7
-    #     return int(self.env['ir.config_parameter'].sudo().get_param('kuota_pendaftaran', default=1))
-
-    # kuota_pendaftaran = fields.Integer(
-    #     string="Kuota Pendaftaran",
-    #     default=lambda self: self.get_kuota_pendaftaran()
-    # )
-
     def create(self, vals):
         # Get the current year
         current_year = fields.Date.context_today(self).year % 100
@@ -368,14 +332,14 @@ class DataPendaftaran(models.Model):
                     # Jika data orang tua sudah ada, gunakan data tersebut
                     return existing_orangtua
                 else:
-                     # Jika partner ada tapi data orang tua belum ada, buat data orang tua
-                     orangtua_vals = {
-                         'partner_id': existing_partner.id,
-                         'hubungan': 'wali',
-                         'email': record.wali_email,
-                     }
-                     orangtua = self.env['cdn.orangtua'].sudo().create(orangtua_vals)
-                     return orangtua
+                    # Jika partner ada tapi data orang tua belum ada, buat data orang tua
+                    orangtua_vals = {
+                        'partner_id': existing_partner.id,
+                        'hubungan': 'wali',
+                        'email': record.wali_email,
+                    }
+                    orangtua = self.env['cdn.orangtua'].sudo().create(orangtua_vals)
+                    return orangtua
             else:
                 # Jika partner belum ada, buat data partner baru
                 # Membuat data orangtua otomatis saat pendaftaran diterima
@@ -400,77 +364,6 @@ class DataPendaftaran(models.Model):
                 if partner.user_id:  # Pastikan user_id sudah ada
                     password = record.wali_password
                     partner.user_id.write({'password': password,})
-
-                # Mengirim email menggunakan mail.mail
-                # email_values = {
-                #     'subject': "Informasi Login Orang Tua Santri Baru Pesantren Daarul Qur'an Istiqomah",
-                #     'email_to': record.wali_email,
-                #     'body_html': f'''
-                #         <p>Assalamualaikum Wr.wb, Bapak/Ibu {record.wali_nama}</p>
-                #         <p>Akun OrangTua telah dibuat di sistem pesantren kami. Dengan ini kami kirimkan informasi akun login sebagai berikut:</p>
-                #         <p style="font-style: italic; color: red;">Sebelum Bapak/Ibu menggunakan akun ini, harap mengganti password demi keamanan akun.</p>
-                #         <a href="localhost:9069/web/reset_password" class="btn btn-link">Ganti Password</a>
-                #         <ul>
-                #             <li>Web Login   : Gunakan <a href="localhost:9069/odoo">Akun Anda</a></li>
-                #             <li>Email       : {record.wali_email}</li>
-                #             <li>Password    : {password}</li>
-                #         </ul>
-                #         <p>Apabila terdapat kesulitan saat login atau membutuhkan bantuan, Bapak/Ibu dapat menghubungi tim teknis kami melalui nomor telepon 0822 5207 9785/0853 9051 1124. <br> <br>
-                #         Kami harap portal ini dapat memudahkan Bapak/Ibu dalam memantau perkembangan putra/putri selama berada di pesantren. <br> <br>
-                #         Demikian informasi ini kami sampaikan. Atas perhatian dan kerjasamanya, kami ucapkan terima kasih.<br> <br> <br>
-
-                #         Hormat kami, <br>
-                #         Admin Pendaftaran <br>
-                #         Pesantren Tahfizh Daarul Qur'an Istiqomah</p>
-                #     ''',
-                # }
-
-                # email_values = {
-                #     'subject': "Informasi Login Orang Tua Santri Baru Pesantren Daarul Qur'an Istiqomah",
-                #     'email_to': record.wali_email,
-                #     'body_html': f'''
-                #         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
-                #             <div style="text-align: center; margin-bottom: 20px;">
-                #                 <img src="https://example.com/logo.png" alt="Pesantren Daarul Qur'an Istiqomah" style="max-width: 150px;">
-                #             </div>
-                #             <h2 style="color: #333; text-align: center;">Informasi Login Akun Orang Tua</h2>
-                #             <p style="color: #555;">Assalamualaikum Wr. Wb,</p>
-                #             <p style="color: #555;">Bapak/Ibu <strong>{record.wali_nama}</strong>,</p>
-                #             <p style="color: #555;">Akun Orang Tua telah dibuat di sistem pesantren kami. Berikut informasi login Anda:</p>
-                #             <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
-                #                 <tr>
-                #                     <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Email</td>
-                #                     <td style="padding: 8px; border: 1px solid #ddd;">{record.wali_email}</td>
-                #                 </tr>
-                #                 <tr>
-                #                     <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Password</td>
-                #                     <td style="padding: 8px; border: 1px solid #ddd;">{password}</td>
-                #                 </tr>
-                #                 <tr>
-                #                     <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Web Login</td>
-                #                     <td style="padding: 8px; border: 1px solid #ddd;">
-                #                         <a href="http://localhost:9069/odoo" style="color: #0066cc; text-decoration: none;">Klik di sini untuk login</a>
-                #                     </td>
-                #                 </tr>
-                #             </table>
-                #             <p style="color: #555; font-style: italic;">Sebelum menggunakan akun ini, harap mengganti password demi keamanan.</p>
-                #             <p style="text-align: center;">
-                #                 <a href="http://localhost:9069/web/reset_password" style="background-color: #0066cc; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px;">Ganti Password</a>
-                #             </p>
-                #             <p style="color: #555;">Apabila terdapat kesulitan atau membutuhkan bantuan, silakan hubungi tim teknis kami melalui nomor:</p>
-                #             <ul style="color: #555;">
-                #                 <li>0822 5207 9785</li>
-                #                 <li>0853 9051 1124</li>
-                #             </ul>
-                #             <p style="color: #555;">Kami berharap portal ini dapat membantu Bapak/Ibu memantau perkembangan putra/putri selama berada di pesantren.</p>
-                #             <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
-                #             <p style="text-align: center; color: #888; font-size: 12px;">
-                #                 Pesantren Tahfizh Daarul Qur'an Istiqomah<br>
-                #                 <a href="http://example.com" style="color: #0066cc; text-decoration: none;">Website Kami</a>
-                #             </p>
-                #         </div>
-                #     ''',
-                # }
 
                 email_values = {
                     'subject': "Informasi Login Orang Tua Santri Baru Pesantren Daarul Qur'an Istiqomah",
@@ -585,152 +478,130 @@ class DataPendaftaran(models.Model):
             siswa = self.env['cdn.siswa'].sudo().create(siswa_vals)
             return siswa
     
-
-    # def generate_password_akun_ortu(self):
-    #     # Kombinasi karakter yang akan digunakan untuk password
-    #     characters = string.ascii_letters + string.digits  # Huruf besar, kecil, dan angka
-    #     # Menghasilkan password acak sepanjang 8 karakter
-    #     password = ''.join(random.choices(characters, k=8))
-    #     return password
-    
-    # def _generate_virtual_account(self, vals, nis):
-    #     # if not self.bank or not self.bank.kode_bank:
-    #     #     raise ValueError("Kode bank tidak ditemukan. Pastikan Anda memilih bank dengan kode yang valid.")
-        
-    #     bank = self.env['ubig.bank'].browse(vals.get('bank'))
-
-    #     kode_va_bank = bank.kode_va_bank if bank else ''
-    #     account_type = "01"
-
-    #     nis = nis
-
-    #     return f"{kode_va_bank}{account_type}{nis}"
-
+    def generate_kode_akses(self):
+        # Kombinasi karakter yang akan digunakan untuk password
+        characters = string.ascii_letters + string.digits  # Huruf besar, kecil, dan angka
+        # Menghasilkan password acak sepanjang 8 karakter
+        kode_akses = ''.join(random.choices(characters, k=8))
+        return kode_akses
 
     def _generate_virtual_account_temporary(self, nopen):
         for record in self:
-            kode_bank_bri = "002"
+            config_param = self.env['ir.config_parameter'].sudo()
+            kode_bank = config_param.get_param('pesantren_pendaftaran.bank', default='451')
             # account_type = "01"
             # Pastikan NIS selalu memiliki panjang tertentu
             nopen = nopen # Contoh padding NIS menjadi 6 digit
 
-            return f"{kode_bank_bri}{nopen}"
+            return f"{kode_bank}{nopen}"
         
     def _generate_virtual_account_permanent(self, nis, jenjang):
         for record in self:
-            kode_bank_bri = "002"
+            config_param = self.env['ir.config_parameter'].sudo()
+            kode_bank = config_param.get_param('pesantren_pendaftaran.bank', default='451')
             account_type = "01"
             # Pastikan NIS selalu memiliki panjang tertentu
             nis = nis
 
             if jenjang == "sdmi":
                 kode_jenjang = "10"
-                return f"{kode_bank_bri}{kode_jenjang}{account_type}{nis}"
+                return f"{kode_bank}{kode_jenjang}{account_type}{nis}"
             elif jenjang == "smpmts":
                 kode_jenjang = "20"
-                return f"{kode_bank_bri}{kode_jenjang}{account_type}{nis}"
+                return f"{kode_bank}{kode_jenjang}{account_type}{nis}"
             elif jenjang == "smama":
                 kode_jenjang = "30"
-                return f"{kode_bank_bri}{kode_jenjang}{account_type}{nis}"
+                return f"{kode_bank}{kode_jenjang}{account_type}{nis}"
         
     def _generate_va_uangsaku(self, nis, jenjang):
         for record in self:
-            kode_bank_bri = "002"
+            config_param = self.env['ir.config_parameter'].sudo()
+            kode_bank = config_param.get_param('pesantren_pendaftaran.bank', default='451')
             account_type = "02"
             # Pastikan NIS selalu memiliki panjang tertentu
             nis = nis
 
             if jenjang == "sdmi":
                 kode_jenjang = "10"
-                return f"{kode_bank_bri}{kode_jenjang}{account_type}{nis}"
+                return f"{kode_bank}{kode_jenjang}{account_type}{nis}"
             elif jenjang == "smpmts":
                 kode_jenjang = "20"
-                return f"{kode_bank_bri}{kode_jenjang}{account_type}{nis}"
+                return f"{kode_bank}{kode_jenjang}{account_type}{nis}"
             elif jenjang == "smama":
                 kode_jenjang = "30"
-                return f"{kode_bank_bri}{kode_jenjang}{account_type}{nis}"
-        
-    # def _generate_nis(self, nisn):
-    #     for record in self:
-    #         nisn = nisn
-    #         if nisn and len(nisn) >= 5:
-    #             last_nisn = nisn[-5:]
-    #             npsn = record.jenjang_id.npsn
-    #             last_npsn = npsn[-3:]
-    #             thn_sekarang = str(datetime.now().year)
-    #             last_thn_sekarang = thn_sekarang[-2:]
-    #             nis = f"{last_nisn}{last_npsn}{last_thn_sekarang}"
-    #         else:
-    #             last_nisn = ''
-    #     return nis
-
+                return f"{kode_bank}{kode_jenjang}{account_type}{nis}"
 
     def get_formatted_tanggal(self):
         if self.tanggal_daftar:
             return format_date(self.env, self.tanggal_daftar, date_format='dd MMMM yyyy')
         return 'Tanggal tidak tersedia'
 
+# class SyaratPSB(models.Model):
+#     _name = 'syarat.pendftaran'
 
-
-# class ResConfigSettings(models.TransientModel):
-#     _inherit = 'res.config.settings'
-
-#     # Tambahkan field konfigurasi
-#     kuota_pendaftaran = fields.Integer(
-#         string="Kuota Pendaftaran",
-#         default=lambda self: int(self.env['ir.config_parameter'].sudo().get_param('kuota_pendaftaran', default=1)),
+#     syarat = fields.Char(
+#         string='Syarat',
 #     )
-
-#     # Override fungsi set_values untuk menyimpan nilai
-#     def set_values(self):
-#         super(ResConfigSettings, self).set_values()
-#         self.env['ir.config_parameter'].sudo().set_param('kuota_pendaftaran', self.kuota_pendaftaran)
-
-
+    
+#     Jumlah = fields.Integer(
+#         string='Jumlah',
+#     )
+    
+    
 class ResConfigSettings(models.TransientModel):
-   _inherit = 'res.config.settings'
-   
-   kuota_pendaftaran = fields.Integer(
+    _inherit = 'res.config.settings'
+
+    kuota_pendaftaran = fields.Integer(
         string="Kuota Pendaftaran Santri",
         config_parameter='pesantren_pendaftaran.kuota_pendaftaran',
         default=0,
         help="Jumlah kuota pendaftaran"
     )
-   tgl_mulai_pendaftaran = fields.Datetime(
+    tgl_mulai_pendaftaran = fields.Datetime(
         string="Tanggal Mulai Pendaftaran",
         config_parameter='pesantren_pendaftaran.tgl_mulai_pendaftaran',
         help="Atur tgl dibukanya pendaftaran",
     )
-   tgl_akhir_pendaftaran = fields.Datetime(
+    tgl_akhir_pendaftaran = fields.Datetime(
         string="Tanggal Akhir Pendaftaran",
         config_parameter='pesantren_pendaftaran.tgl_akhir_pendaftaran',
         help="Atur tgl akhir dari pendaftaran",
     )
-   tgl_mulai_seleksi = fields.Datetime(
+    tgl_mulai_seleksi = fields.Datetime(
         string="Tanggal Mulai Seleksi",
         config_parameter='pesantren_pendaftaran.tgl_mulai_seleksi',
         help="Atur tgl mulai seleksi",
     )
-   tgl_akhir_seleksi = fields.Datetime(
+    tgl_akhir_seleksi = fields.Datetime(
         string="Tanggal Akhir Seleksi",
         config_parameter='pesantren_pendaftaran.tgl_akhir_seleksi',
         help="Atur tgl akhir seleksi",
     )
-   tgl_pengumuman_hasil_seleksi = fields.Datetime(
+    tgl_pengumuman_hasil_seleksi = fields.Datetime(
         string="Tanggal Pengumuman Hasil Seleksi",
         config_parameter='pesantren_pendaftaran.tgl_pengumuman_hasil_seleksi',
         help="Atur tgl pengumuman hasil seleksi",
     )
-   
-   is_halaman_pengumuman = fields.Boolean(
+
+    is_halaman_pengumuman = fields.Boolean(
         string="Tampilkan Halaman Pengumuman",
         config_parameter='pesantren_pendaftaran.is_halaman_pengumuman',
         default=False,
         help="Tampilkan halaman pengumuman",
     )
+    
+    # syarat_pendaftaran =fields.Many2many(
+    #     'syarat.pendftaran',string='Syarat Pendaftaran'
+    # )
+    
+# access_penilaian_public,syarat.pendftaran,model_syarat_pendftaran,base.group_public,1,0,0,0
+# access_penilaian_user,syarat.pendftaran,model_syarat_pendftaran,base.group_user,1,0,0,0
+# access_penilaian_manager,syarat.pendftaran,model_syarat_pendftaran,pesantren_pendaftaran.group_pendaftaran_manager,1,1,1,1
 
-   @api.model
-   def set_values(self):
+    bank = fields.Selection(selection=[('451','BSI'),('002','BRI'),('009','BNI'),('014','BCA'),('008','MANDIRI'),('022','CIMB NIAGA'),], string='Bank Yang Digunakan', config_parameter='pesantren_pendaftaran.bank', help='Bank Yang Digunakan', default='451')
+
+    @api.model
+    def set_values(self):
         res = super(ResConfigSettings, self).set_values()
 
         self.env['ir.config_parameter'].set_param(
@@ -763,10 +634,15 @@ class ResConfigSettings(models.TransientModel):
             self.is_halaman_pengumuman
         )
 
+        self.env['ir.config_parameter'].set_param(
+            'pesantren_pendaftaran.bank',
+            self.bank
+        )
+
         return res
 
-   @api.model
-   def get_values(self):
+    @api.model
+    def get_values(self):
         res = super(ResConfigSettings, self).get_values()
         icp = self.env['ir.config_parameter']
         
@@ -799,6 +675,7 @@ class ResConfigSettings(models.TransientModel):
             'tgl_akhir_seleksi': tgl_akhir_seleksi,
             'tgl_pengumuman_hasil_seleksi': tgl_pengumuman_hasil_seleksi,
             'is_halaman_pengumuman': icp.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False),
+            'bank': icp.get_param('pesantren_pendaftaran.bank', default='451'),
         })
         return res
 
@@ -847,4 +724,3 @@ class SoalSeleksi(models.Model):
         for record in self:
             # Set the name of soal as the combination of penilaian and soal names
             record.name = '%s - %s' % (record.penilaian_id.name, record.name)
-

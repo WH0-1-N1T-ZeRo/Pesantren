@@ -6,6 +6,8 @@
                 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
                 integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
                 crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css"
+                rel="stylesheet" />
             <style>
 
                 .container-main {
@@ -104,7 +106,8 @@
                         <div class="collapse navbar-collapse" style="color: white;" id="navbarNav">
                             <ul class="navbar-nav ms-auto">
                                 <li class="nav-item me-3">
-                                    <a class="nav-link stext-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
+                                    <a class="nav-link stext-white" style="color: white !important;"
+                                        href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                                 </li>
                                 <li class="nav-item me-3">
                                     <a class="nav-link text-white" style="color: white !important;"
@@ -122,15 +125,21 @@
                                 </li>
                                 <t t-if="is_halaman_pengumuman">
                                     <li class="nav-item dropdown">
-                                    <a href="#" class="dropdown-link nav-link" style="color: white !important;"><i
-                                        class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
-                                    <div class="dropdown-content">
-                                        <a href="/pengumuman/sd-mi">SD / MI</a>
-                                        <a href="/pengumuman/smp-mts">SMP / MTS</a>
-                                        <a href="/pengumuman/sma-ma">SMA / MA</a>
-                                    </div>
+                                        <a href="#" class="dropdown-link nav-link"
+                                            style="color: white !important;"><i
+                                                class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
+                                        <div class="dropdown-content">
+                                            <a href="/pengumuman/sd-mi">SD / MI</a>
+                                            <a href="/pengumuman/smp-mts">SMP / MTS</a>
+                                            <a href="/pengumuman/sma-ma">SMA / MA</a>
+                                        </div>
                                     </li>
                                 </t>
+                                <li class="nav-item me-3">
+                                    <a class="nav-link text-white portalOrangTua" href="#"
+                                        style="color: white;">
+                                        <i class="fa-solid fa-user me-2"></i>Portal Orang Tua </a>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -147,7 +156,8 @@
                     <div class="offcanvas-body">
                         <ul class="navbar-nav ms-auto">
                             <li class="nav-item me-3">
-                                <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
+                                <a class="nav-link text-white" style="color: white !important;"
+                                    href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" href="/pendaftaran"><i
@@ -163,15 +173,20 @@
                             </li>
                             <t t-if="is_halaman_pengumuman">
                                 <li class="nav-item dropdown">
-                                <a href="#" class="dropdown-link nav-link" style="color: white !important;"><i
-                                    class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
-                                <div class="dropdown-content">
-                                    <a href="/pengumuman/sd-mi">SD / MI</a>
-                                    <a href="/pengumuman/smp-mts">SMP / MTS</a>
-                                    <a href="/pengumuman/sma-ma">SMA / MA</a>
-                                </div>
+                                    <a href="#" class="dropdown-link nav-link"
+                                        style="color: white !important;"><i
+                                            class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
+                                    <div class="dropdown-content">
+                                        <a href="/pengumuman/sd-mi">SD / MI</a>
+                                        <a href="/pengumuman/smp-mts">SMP / MTS</a>
+                                        <a href="/pengumuman/sma-ma">SMA / MA</a>
+                                    </div>
                                 </li>
                             </t>
+                            <li class="nav-item me-3">
+                                <a class="nav-link text-white portalOrangTua" href="#">
+                                    <i class="fa-solid fa-user me-2"></i>Portal Orang Tua </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -179,7 +194,8 @@
                 <div class="d-flex justify-content-center">
                     <div style="width: 800px; padding-top: 30px;" class="bg-white rounded mt-5 mb-3">
                         <h4 class="text-center mb-2">Alhamdulillah pendaftaran sudah berhasil</h4>
-                        <p class="text-center mb-4">Pastikan selalu memantau email wali untuk info akun orang tua dibagian menu kotak masuk (Inbox) atau Spam.</p>
+                        <p class="text-center mb-4">Pastikan selalu memantau email wali untuk info
+                            akun orang tua dibagian menu kotak masuk (Inbox) atau Spam.</p>
                         <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
                             <div>
                                 <div class="mb-4">
@@ -246,19 +262,47 @@
                                     class="text-uppercase mb-5 d-inline-block"
                                     style="background-color: #A812AE; padding: 10px; border-radius: 20px; color: white; text-decoration: none; font-size: 13px; margin-left: 30px;"
                                     target="_blank">Cetak Form Pembayaran</a>
+                                <p>Simpan kode akses ini <br /> <span class="fw-bold"
+                                        t-esc="pendaftaran.kode_akses" /> <br /> untuk digunakan di
+                                    halaman portal orang tua.</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <footer class="text-white p-2" style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <footer class="p-2"
+                    style="display: flex; justify-content: space-between; flex-wrap: wrap; color: white !important;">
                     <div class="ms-5">
-                        
+                        <ul
+                            style="list-style-type: none; display: flex; text-transform: uppercase; font-size: 13px;"
+                            class="fw-semibold">
+                            <li>
+                                <a href="/psb" class="me-4"
+                                    style="text-decoration: none; color: white;">Home</a>
+                            </li>
+                            <li>
+                                <a href="/beranda" class="me-4"
+                                    style="text-decoration: none; color: white;" target="_blank">Info
+                                    Pondok</a>
+                            </li>
+                            <li>
+                                <a
+                                    href="https://drive.google.com/drive/mobile/folders/1EYat5411joyoOmH_DkJ3g2DeJKgyyuBQ?usp=share_link&amp;fbclid=IwY2xjawGflGlleHRuA2FlbQIxMQABHTusVv9hD3VRDSLW9-671QhOL86e3KMv30smsAYW0DHkkWf7zwPlcBlbeA_aem_XXofAY-ay0syx043L5BLvw"
+                                    class="me-4" style="text-decoration: none; color: white;"
+                                    target="_blank">Brosur</a>
+                            </li>
+                            <li>
+                                <a href="" class="me-4" style="text-decoration: none; color: white;">
+                                    Panduan</a>
+                            </li>
+                        </ul>
                     </div>
                     <div class="me-5">
-                        <p class="text-center mt-1" style="color: white !important;">© 2024 TIM IT PPIB</p>
+                        <p class="text-center mt-1">© 2024 TIM IT PPIB</p>
                     </div>
                 </footer>
             </div>
+            <script
+                src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js"></script>
             <script>
                 // Cari elemen body dengan class spesifik
                 const bodyElement =
@@ -269,6 +313,71 @@
                 bodyElement.classList.remove('o_body_html');
                 bodyElement.classList.remove('container');
                 }
+
+      document.querySelectorAll('.portalOrangTua').forEach(function(element) {
+        element.addEventListener('click', function (event) {
+            event.preventDefault(); // Mencegah aksi default (navigasi link)
+
+            Swal.fire({
+                title: 'Masukkan Kode Akses',
+                input: 'text',
+                inputPlaceholder: 'Ketikkan kode akses di sini',
+                backdrop: 'false',
+                inputAttributes: {
+                    autocomplete: 'off' // Menonaktifkan autocomplete
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Masuk',
+                cancelButtonText: 'Batal',
+                didOpen: () => {
+                  // Menyembunyikan navbar offcanvas
+                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
+                  if (navbarOffcanvas) {
+                      navbarOffcanvas.style.display = 'none';
+                  }
+              },
+              willClose: () => {
+                  // Menampilkan kembali navbar offcanvas
+                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
+                  if (navbarOffcanvas) {
+                      navbarOffcanvas.style.display = '';
+                  }
+              }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (result.value) {
+                        const kodeAkses = result.value;
+
+                        // Validasi kode akses melalui AJAX
+                        fetch('/validate_kode_akses', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ kode_akses: kodeAkses }) // Data dikirim dalam format JSON
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Jika valid, arahkan ke portal orang tua
+                                window.location.href = '/portal_orang_tua?kode_akses=' + kodeAkses;
+                            } else {
+                                // Jika tidak valid, tampilkan pesan error
+                                Swal.fire('Kesalahan', data.message, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire('Kesalahan', 'Terjadi masalah pada server.', 'error');
+                        });
+
+                    } else {
+                        Swal.fire('Kesalahan', 'Kode akses tidak boleh kosong!', 'error');
+                    }
+                }
+            });
+        });
+    });
             </script>
         </t>
     </template>

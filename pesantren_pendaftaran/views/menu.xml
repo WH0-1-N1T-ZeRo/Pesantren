@@ -1,18 +1,16 @@
-
 <odoo>
-    <menuitem id="pendaftaran_menu_root" 
-        name="Pendaftaran Santri Baru" 
-        web_icon="pesantren_pendaftaran,static/description/icon.png" 
-        groups="pesantren_pendaftaran.group_pendaftaran_admin,pesantren_pendaftaran.group_pendaftaran_manager"
-        sequence="6"/>
-
+    <menuitem 
+        id="pendaftaran_menu_root" 
+        name="Pendaftaran Santri Baru"
+        groups="pesantren_pendaftaran.group_pendaftaran_manager" 
+        web_icon="pesantren_pendaftaran,static/description/icon.png"/>
 
     <menuitem 
         id="pendaftaran_menu" 
         name="Pendaftaran" 
         parent="pendaftaran_menu_root" 
         action="action_pendaftaran" 
-        sequence="2"/>
+        sequence="10"/>
 
     <!-- <menuitem 
         id="menu_wizard_search_siswa"
@@ -37,6 +35,13 @@
                 name="Jenjang Pendidikan" 
                 parent="pengaturan_umum_menu" 
                 action="action_ubig_pendidikan" 
+                sequence="1"/>
+
+            <menuitem 
+                id="menu_setting" 
+                name="Setting PSB" 
+                parent="pengaturan_umum_menu" 
+                action="res_config_settings_action" 
                 sequence="1"/>
 
         <menuitem 

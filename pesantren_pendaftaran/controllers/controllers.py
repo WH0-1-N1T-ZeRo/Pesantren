@@ -51,7 +51,7 @@ class PsbController(http.Controller):
 
 
 class PesantrenBeranda(http.Controller):
-    @http.route('/', type='http', auth='public')
+    @http.route('/beranda', type='http', auth='public')
     def index(self, **kwargs):
 
         # Ambil perusahaan yang aktif (current company)
@@ -77,7 +77,7 @@ class PesantrenBeranda(http.Controller):
             alamat_perusahaan['country']
         ]))
 
-         # Ambil nilai dari field konfigurasi
+        # Ambil nilai dari field konfigurasi
         config_obj = http.request.env['ir.config_parameter'].sudo()
 
         tgl_mulai_pendaftaran = config_obj.get_param('pesantren_pendaftaran.tgl_mulai_pendaftaran')
@@ -146,7 +146,7 @@ class PesantrenBeranda(http.Controller):
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
             </head>
             <style>
-            .bg-body-grenyellow {{ background: linear-gradient(to left, #0B5B54 40%, #ccff33 130%); }}
+            .bg-body-grenyellow {{ background: linear-gradient(to right, #009688 40%, #ccff33 130%); }}
 
             .rounded-90 {{ border-radius: 0 0 25% 0; }}
 
@@ -159,7 +159,7 @@ class PesantrenBeranda(http.Controller):
             .step-circle {{ 
                 width: 50px;
                 height: 50px;
-                background-color: #0B5B54;
+                background-color: #009688;
                 color: white;
                 font-size: 1.5rem;
                 border-radius: 50%;
@@ -172,7 +172,7 @@ class PesantrenBeranda(http.Controller):
             .step-line {{ 
                 width: 100%;
                 height: 2px;
-                background-color: #0B5B54;
+                background-color: #009688;
                 position: absolute;
                 top: 55px;
                 left: 0;
@@ -186,10 +186,10 @@ class PesantrenBeranda(http.Controller):
                 left: 50%; }}
 
             .text-green {{ 
-                color: #0B5B54; }}
+                color: #009688; }}
             .footer {{ 
-                background-color: #0B5B54;
-             }}
+                background-color: #4a4a4a;
+            }}
             .footer h5 {{
                 font-weight: bold;
             }}
@@ -299,38 +299,17 @@ class PesantrenBeranda(http.Controller):
                 <a class="navbar-brand d-flex text-white fw-bold" href="#">
                 <img src="https://i.ibb.co.com/1MFsvMq/1731466812700.png" alt="Icon Daarul Qur’an Istiqomah" class="me-2 d-md-block d-none" width="40" height="40">
                 <span class="d-md-block d-none h3">
-                    PPSB Daarul Qur’an Istiqomah
+                    PSB Daarul Qur’an Istiqomah
                 </span> 
                 <span class="d-md-none d-block h3">
                     PSBDQI
                 </span> 
                 </a>
                 <div class="d-flex justify-content-end" id="navbarSupportedContent">
-                <div class="d-flex">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-none d-md-flex" style="text-transform: uppercase; font-size: 13px;">
-        <li class="nav-item">
-          <a class="nav-link" href="/" style="color: white; text-decoration: none;">Home</a>
-        </li>
-        <!-- Dropdown Menu -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="infoPondokDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: white; text-decoration: none;">
-            Info Pondok
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="infoPondokDropdown">
-            <li>
-              <a class="dropdown-item"
-                href="https://drive.google.com/drive/mobile/folders/1EYat5411joyoOmH_DkJ3g2DeJKgyyuBQ?usp=share_link&amp;fbclid=IwY2xjawGflGlleHRuA2FlbQIxMQABHTusVv9hD3VRDSLW9-671QhOL86e3KMv30smsAYW0DHkkWf7zwPlcBlbeA_aem_XXofAY-ay0syx043L5BLvw"
-                target="_blank">Brosur</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="https://drive.google.com/drive/folders/1eVH0nZT6ib6hIGyhXNGSAkuBFk1LSwa-?usp=drive_link" target="_blank">Panduan</a>
-            </li>
-          </ul>
-        </li>
-      </ul>
+                <div>
                     <!-- Buttons for Pendaftaran and Login -->
                     <a href="/psb" class="btn btn-light ms-2" type="submit">Pendaftaran</a>
-                    <a href="/odoo" class="btn btn-warning ms-2" type="submit">Login</a>
+                    <a href="/web/login" class="btn btn-warning ms-2" type="submit">Login</a>
                 </div>
                 </div>
             </div>
@@ -349,7 +328,7 @@ class PesantrenBeranda(http.Controller):
                     <h3 class="fw-bold pb-3">Pondok Pesantren Daarul Qur’an Istiqomah</h3>
                     <h5 class="fw-bold">Daarul Qur’an Istiqomah Boarding School for Education and Science</h5>
                     <h5 class="fw-bold">Tahun Ajaran 2024 - 2025</h5>
-                    <a href="/psb" class="btn btn-light rounded-md text-primary mt-2">Daftar Sekarang</a>
+                    <a href="/psb" class="btn btn-light rounded-5 text-primary mt-2">Daftar Sekarang</a>
                 </div>
                 </div>
             </div>
@@ -438,28 +417,32 @@ class PesantrenBeranda(http.Controller):
                     <p>Untuk memenuhi persyaratan pendaftaran santri baru, perlu beberapa berkas yang harus disiapkan:</p>
                     <ul class="list-unstyled d-grid gap-2">
                     <li class="d-flex"><i class="bi bi-check-circle-fill me-2 text-warning"></i>
-                        <div class="d-flex flex-column"><strong>Photo Copy Akta Kelahiran Peserta Didik</strong> </div>
+                        <div class="d-flex flex-column"><strong>Fotocopy Akta Kelahiran 2lembar</strong> </div>
                     </li>
                     <li class="d-flex"><i class="bi bi-check-circle-fill me-2 text-warning"></i>
-                        <div class="d-flex flex-column"><strong>Photo Copy KTP orang tua/wali</strong> <span>sebanyak 3
-                            lembar</span></div>
+                        <div class="d-flex flex-column"><strong>Fotocopy KK 1lembar</strong></div>
                     </li>
                     <li class="d-flex"><i class="bi bi-check-circle-fill me-2 text-warning"></i>
-                        <div class="d-flex flex-column"><strong>Photo Copy Kartu Keluarga (KK)</strong> <span>sebanyak 3
-                            lembar</span></div>
+                        <div class="d-flex flex-column"><strong>Fotocopy KTP Orangtua (Masing-masing 1lembar)</strong></div>
                     </li>
                     <li class="d-flex"><i class="bi bi-check-circle-fill me-2 text-warning"></i>
-                        <div class="d-flex flex-column"><strong>Photo Copy STL/SKHUN/Ijazah</strong> <span>sebanyak 3 lembar</span>
+                        <div class="d-flex flex-column"><strong>Fotocopy Raport Semester akhir (menyusul)</strong>
                         </div>
                     </li>
                     <li class="d-flex"><i class="bi bi-check-circle-fill me-2 text-warning"></i>
-                        <div class="d-flex flex-column"><strong>Surat Keterangan Sehat dari Fasilitas Kesehatan</strong> </div>
+                        <div class="d-flex flex-column"><strong>Pas Foto berwarna ukuran 3x4 4lembar</strong> </div>
+                    </li>
+                    <li class="d-flex"><i class="bi bi-check-circle-fill me-2 text-warning"></i>
+                        <div class="d-flex flex-column"><strong>Pas Foto Orangtua masing-masing 1lembar (Khusus Pendaftar KB dan TK)</strong> </div>
+                    </li>
+                    <li class="d-flex"><i class="bi bi-check-circle-fill me-2 text-warning"></i>
+                        <div class="d-flex flex-column"><strong>Berkas dimasukkan dalam Map warna hijau dan diberi nama serta lembaga pendidikan</strong> </div>
                     </li>
                     </ul>
                 </div>
                 <!-- Image Section -->
                 <div class="col-md-6">
-                    <img src="pesantren_pendaftaran/static/src/img/PAGE2.44b0e259.png" class="img-fluid rounded-4"
+                    <img src="https://psb.nuruljadid.net/img/PAGE2.44b0e259.png" class="img-fluid rounded-4"
                     alt="Syarat Pendaftaran">
                 </div>
                 </div>
@@ -557,10 +540,10 @@ class PesantrenBeranda(http.Controller):
             <div class="container my-5">
                 <div class="row align-items-center">
                 <div class="col-md-6">
-                    <img src="pesantren_pendaftaran/static/src/img/PAGE3.e3b6d704.png" alt="Image" class="rounded-custom img-fluid" />
+                    <img src="https://psb.nuruljadid.net/img/PAGE3.e3b6d704.png" alt="Image" class="rounded-custom img-fluid" />
                 </div>
                 <div class="col-md-6 col-sm-12">
-                    <h3 class="fw-bold"><span class="text-green ">Informasi</span> Pelayanan Pendaftaran</h3>
+                    <h3 class="fw-bold"><span class="text-primary ">Informasi</span> Pelayanan Pendaftaran</h3>
                     <div class="accordion" id="accordionExample">
                     <div class="accordion-item mb-3">
                         <h2 class="accordion-header" id="headingOne">
@@ -637,9 +620,9 @@ class PesantrenBeranda(http.Controller):
                     <div class="col-md-4">
                     <h5>Social Pages</h5>
                     <ul class="list-unstyled">
-                        <li><a href="https://www.facebook.com/daquistiqomah?mibextid=ZbWKwL" class="text-white" style="text-decoration: auto;"><i class="bi bi-facebook"></i> Facebook</a></li>
-                        <li><a href="https://www.instagram.com/dqimedia?igsh=NTVwdWlwd3o5MTF1" class="text-white" style="text-decoration: auto;"><i class="bi bi-instagram"></i> Instagram</a></li>
-                        <li><a href="https://youtube.com/@dqimedia?si=6_A8Vr3nysaegI7B" class="text-white" style="text-decoration: auto;"><i class="bi bi-youtube"></i> Youtube</a></li>
+                        <li><a href="https://www.facebook.com/daquistiqomah?mibextid=ZbWKwL" class="text-white"><i class="bi bi-facebook"></i> Facebook</a></li>
+                        <li><a href="https://www.instagram.com/dqimedia?igsh=NTVwdWlwd3o5MTF1" class="text-white"><i class="bi bi-instagram"></i> Instagram</a></li>
+                        <li><a href="https://youtube.com/@dqimedia?si=6_A8Vr3nysaegI7B" class="text-white"><i class="bi bi-youtube"></i> Youtube</a></li>
                     </ul>
                     </div>
                     <div class="col-md-4">
@@ -849,10 +832,11 @@ class PesantrenPendaftaran(http.Controller):
                 <title>PSB - Daarul Qur'an Istiqomah</title>
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+                <link href=" https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css " rel="stylesheet">
                 <style>
-  
+
                     body {{
-                        background: linear-gradient(to bottom left, #0B5B54 40%, #f5e505 100%) !important;
+                        background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
                     }}
 
                     .offcanvas.offcanvas-end {{
@@ -882,7 +866,7 @@ class PesantrenPendaftaran(http.Controller):
                     }}
 
                     .background {{
-					    background: linear-gradient(to bottom left, #0B5B54 40%, #f5e505 100%) !important;
+					    background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
 					}}
 
 					a.effect {{
@@ -938,7 +922,7 @@ class PesantrenPendaftaran(http.Controller):
                     }}
 
                     #daftar:hover {{ 
-                        background-color: #2528D5 !important;
+                        background-color: #f5407d !important;
                     }}
 
                     /* Animasi fade-in */
@@ -968,7 +952,7 @@ class PesantrenPendaftaran(http.Controller):
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav ms-auto">
                             <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/"><i class="fa-solid fa-house me-2"></i>Beranda</a>
+                                <a class="nav-link text-white" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white pendaftaran-menu" href="#"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
@@ -987,7 +971,11 @@ class PesantrenPendaftaran(http.Controller):
                             f'<a href="/pengumuman/sma-ma">SMA / MA</a>'
                             f'</div>'
                             f'</li>' if is_halaman_pengumuman else ''}
-
+                            <li class="nav-item me-3">
+                                <a class="nav-link text-white portalOrangTua" href="#">
+                                    <i class="fa-solid fa-user me-2"></i>Portal Orang Tua
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -1021,6 +1009,11 @@ class PesantrenPendaftaran(http.Controller):
                         f'<a href="/pengumuman/sma-ma">SMA / MA</a>'
                         f'</div>'
                         f'</li>' if is_halaman_pengumuman else ''}
+                        <li class="nav-item me-3">
+                            <a class="nav-link text-white portalOrangTua" href="#">
+                                <i class="fa-solid fa-user me-2"></i>Portal Orang Tua
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -1029,7 +1022,7 @@ class PesantrenPendaftaran(http.Controller):
                 <div class="text-center text-white">
                     <h4 class="fs-2 fw-semibold mb-2">Aplikasi penerimaan santri baru</h4>
                     <span>Daarul Qur'an Istiqomah Tanah Laut Kalimantan Selatan</span> <br><br>
-                    <a href="#" style="background-color: #2d6bca; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px;" class="pendaftaran-menu" id="daftar">Daftar Sekarang</a>
+                    <a href="#" style="background-color: #e91e63; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px;" class="pendaftaran-menu" id="daftar">Daftar Sekarang</a>
                 </div>
             </div>
 
@@ -1038,9 +1031,9 @@ class PesantrenPendaftaran(http.Controller):
                     <div class="bg-white shadow-lg rounded p-3" style="width: 270px; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
                         <span class="text-uppercase text-secondary mb-3">Program Pendidikan</span>
                         <div>
-                            <i class="fa-solid fa-graduation-cap fs-1 border rounded-circle p-5" style="color: #2d6bca !important;"></i>
+                            <i class="fa-solid fa-graduation-cap fs-1 border rounded-circle p-5" style="color: #e91e63 !important;"></i>
                         </div>
-                        <span class="text-uppercase text-center fs-3 judul">Prodi</span>
+                        <span class="text-uppercase fs-3 judul">Prodi</span>
                         <div class="text-center mb-4 teks-judul">
                             <span class="text-secondary" style="font-size: 14px;">1. TK TAHFIZH</span>
                             <span class="text-secondary" style="font-size: 14px;">2. SD BILINGUAL</span>
@@ -1048,46 +1041,46 @@ class PesantrenPendaftaran(http.Controller):
                             <span class="text-secondary" style="font-size: 14px;">4. SMA / MA</span>
                         </div>
                         <div class="text-uppercase">
-                            <a href="" data-bs-toggle="modal" data-bs-target="#detailProgramPendidikan" class="effect" style="background-color: #2528D5 !important; padding: 10px 20px; border-radius: 10px; text-decoration: none; color: white;">Detail</a>
+                            <a href="" data-bs-toggle="modal" data-bs-target="#detailProgramPendidikan" class="effect" style="background-color: #9F1FB2 !important; padding: 10px 20px; border-radius: 20px; text-decoration: none; color: white;">Detail</a>
                         </div>
                     </div>
                     <div class="bg-white shadow-lg rounded p-3" style="width: 270px; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
                         <span class="text-uppercase text-secondary mb-3">Jadwal Kegiatan</span>
                         <div>
-                            <i class="fa-regular fa-calendar fs-1 border rounded-circle p-5" style="color: #2d6bca !important;"></i>
+                            <i class="fa-regular fa-calendar fs-1 border rounded-circle p-5" style="color: #e91e63 !important;"></i>
                         </div>
-                        <span class="text-uppercase text-center fs-3 judul">Jadwal Kegiatan</span>
+                        <span class="text-uppercase fs-3 judul">Jadwal Kegiatan</span>
                         <div class="text-center mb-4 teks-judul">
                             <span class="text-secondary" style="font-size: 14px;">Jadwal kegiatan PSB dan Kuota Test </span>
                         </div>
                         <div class="text-uppercase">
-                            <a href="" data-bs-toggle="modal" data-bs-target="#detailJadwalKegiatan" class="effect" style="background-color: #2528D5 !important; padding: 10px 20px; border-radius: 10px; text-decoration: none; color: white;">Detail</a>
+                            <a href="" data-bs-toggle="modal" data-bs-target="#detailJadwalKegiatan" class="effect" style="background-color: #9F1FB2 !important; padding: 10px 20px; border-radius: 20px; text-decoration: none; color: white;">Detail</a>
                         </div>
                     </div>
                     <div class="bg-white shadow-lg rounded p-3" style="width: 270px; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
                         <span class="text-uppercase text-secondary mb-3">Persyaratan</span>
                         <div>
-                            <i class="fa-solid fa-clipboard-list fs-1 border rounded-circle p-5" style="color: #2d6bca !important;"></i>
+                            <i class="fa-solid fa-clipboard-list fs-1 border rounded-circle p-5" style="color: #e91e63 !important;"></i>
                         </div>
                         <span class="text-uppercase fs-3 text-center judul">Syarat pendaftaran</span>
                         <div class="text-center mb-4 teks-judul">
                             <span class="text-secondary" style="font-size: 14px;">Persyaratan Pendaftaran dapat dilihat disini</span>
                         </div>
                         <div class="text-uppercase">
-                            <a href="" data-bs-toggle="modal" data-bs-target="#detailPersyaratan" class="effect" style="background-color: #2528D5 !important; padding: 10px 20px; border-radius: 10px; text-decoration: none; color: white;">Detail</a>
+                            <a href="" data-bs-toggle="modal" data-bs-target="#detailPersyaratan" class="effect" style="background-color: #9F1FB2 !important; padding: 10px 20px; border-radius: 20px; text-decoration: none; color: white;">Detail</a>
                         </div>
                     </div>
                     <div class="bg-white shadow-lg rounded p-3" style="width: 270px; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
                         <span class="text-uppercase text-secondary mb-3">Bantuan</span>
                         <div>
-                            <i class="fa-solid fa-lock fs-1 border rounded-circle p-5" style="color: #2d6bca !important;"></i>
+                            <i class="fa-solid fa-lock fs-1 border rounded-circle p-5" style="color: #e91e63 !important;"></i>
                         </div>
-                        <span class="text-uppercase text-center fs-3 judul">Hubungi Kami</span>
+                        <span class="text-uppercase fs-3 judul">Hubungi Kami</span>
                         <div class="text-center mb-4 teks-judul">
                             <span class="text-secondary" style="font-size: 14px;">Jika memerlukan bantuan : Telp / WA : 62271-858199 </span>
                         </div>
                         <div class="text-uppercase">
-                            <a href="/bantuan" class="effect" style="background-color: #2528D5 !important; padding: 10px 20px; border-radius: 10px; text-decoration: none; color: white;">Detail</a>
+                            <a href="/bantuan" class="effect" style="background-color: #9F1FB2 !important; padding: 10px 20px; border-radius: 20px; text-decoration: none; color: white;">Detail</a>
                         </div>
                     </div>
                 </div>
@@ -1096,7 +1089,12 @@ class PesantrenPendaftaran(http.Controller):
 
             <footer class="text-white p-2" style="display: flex; justify-content: space-between; flex-wrap: wrap;">
             	<div class="ms-5">
-            		
+            		<ul style="list-style-type: none; display: flex; text-transform: uppercase; font-size: 13px;" class="fw-semibold">
+            			<li><a href="/psb" class="me-4" style="text-decoration: none; color: white;">Home</a></li>
+            			<li><a href="/beranda" class="me-4" style="text-decoration: none; color: white;" target="_blank">Info Pondok</a></li>
+            			<li><a href="https://drive.google.com/drive/mobile/folders/1EYat5411joyoOmH_DkJ3g2DeJKgyyuBQ?usp=share_link&fbclid=IwY2xjawGflGlleHRuA2FlbQIxMQABHTusVv9hD3VRDSLW9-671QhOL86e3KMv30smsAYW0DHkkWf7zwPlcBlbeA_aem_XXofAY-ay0syx043L5BLvw" class="me-4" style="text-decoration: none; color: white;" target="_blank">Brosur</a></li>
+            			<li><a href="" class="me-4" style="text-decoration: none; color: white;">Panduan</a></li>
+            		</ul>
             	</div>
             	<div class="me-5">
             		<p class="text-center mt-1">© 2024 TIM IT PPIB</p>
@@ -1289,6 +1287,7 @@ class PesantrenPendaftaran(http.Controller):
 
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
             <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+            <script src=" https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js "></script>
 
             <script>
                 document.addEventListener("DOMContentLoaded", function() {{
@@ -1319,6 +1318,74 @@ class PesantrenPendaftaran(http.Controller):
         }});
     }});
 }});
+
+            
+document.querySelectorAll('.portalOrangTua').forEach(function(element) {{
+        element.addEventListener('click', function (event) {{
+            event.preventDefault(); // Mencegah aksi default (navigasi link)
+
+            Swal.fire({{
+                title: 'Masukkan Kode Akses',
+                input: 'text',
+                inputPlaceholder: 'Ketikkan kode akses di sini',
+                backdrop: 'false',
+                inputAttributes: {{
+                    autocomplete: 'off' // Menonaktifkan autocomplete
+                }},
+                showCancelButton: true,
+                confirmButtonText: 'Masuk',
+                cancelButtonText: 'Batal',
+                didOpen: () => {{
+                  // Menyembunyikan navbar offcanvas
+                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
+                  if (navbarOffcanvas) {{
+                      navbarOffcanvas.style.display = 'none';
+                  }}
+              }},
+              willClose: () => {{
+                  // Menampilkan kembali navbar offcanvas
+                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
+                  if (navbarOffcanvas) {{
+                      navbarOffcanvas.style.display = '';
+                  }}
+              }}
+            }}).then((result) => {{
+                if (result.isConfirmed) {{
+                    if (result.value) {{
+                        const kodeAkses = result.value;
+
+                        // Validasi kode akses melalui AJAX
+                        fetch('/validate_kode_akses', {{
+                            method: 'POST',
+                            headers: {{
+                                'Content-Type': 'application/json'
+                            }},
+                            body: JSON.stringify({{ kode_akses: kodeAkses }}) // Data dikirim dalam format JSON
+                        }})
+                        .then(response => response.json())
+                        .then(data => {{
+                            if (data.success) {{
+                                // Jika valid, arahkan ke portal orang tua
+                                window.location.href = '/portal_orang_tua?kode_akses=' + kodeAkses;
+                            }} else {{
+                                // Jika tidak valid, tampilkan pesan error
+                                Swal.fire('Kesalahan', data.message, 'error');
+                            }}
+                        }})
+                        .catch(error => {{
+                            console.error('Error:', error);
+                            Swal.fire('Kesalahan', 'Terjadi masalah pada server.', 'error');
+                        }});
+
+                    }} else {{
+                        Swal.fire('Kesalahan', 'Kode akses tidak boleh kosong!', 'error');
+                    }}
+                }}
+            }});
+        }});
+    }});
+
+
             </script>
 
 
@@ -1335,6 +1402,7 @@ class UbigPendaftaranController(http.Controller):
 
         Pendaftaran = request.env['ubig.pendaftaran']
         total_pendaftar = Pendaftaran.search_count([])
+        kode_akses = Pendaftaran.generate_kode_akses()
 
         # Mengambil nilai kuota pendaftaran dari ir.config_parameter
         config_param = request.env['ir.config_parameter'].sudo()
@@ -1349,11 +1417,14 @@ class UbigPendaftaranController(http.Controller):
             return request.render('pesantren_pendaftaran.pendaftaran_form_template', {
                 'pendidikan_list': pendidikan_list,
                 'is_halaman_pengumuman': is_halaman_pengumuman,
+                'kode_akses': kode_akses,
             })
 
     @http.route('/pendaftaran/submit', type='http', auth='public', methods=['POST'], csrf=True)
     def pendaftaran_submit(self, **post):
+
         # Ambil data dari form
+        kode_akses             = post.get('kode_akses')
         nama                   = post.get('nama')
         nik                    = post.get('nik')
         email                  = post.get('email')
@@ -1421,15 +1492,21 @@ class UbigPendaftaranController(http.Controller):
         # Data Berkas
         akta_kelahiran         = request.params.get('akta_kelahiran')
         kartu_keluarga         = request.params.get('kartu_keluarga')
-        ijazah                 = request.params.get('ijazah')
+        ijazah                 = request.params.get('ijazah') if request.params.get('ijazah') else ''
         surat_kesehatan        = request.params.get('surat_kesehatan') if request.params.get('surat_kesehatan') else ''
         pas_foto               = request.params.get('pas_foto')
-        raport_terakhir        = request.params.get('raport_terakhir')
+        raport_terakhir        = request.params.get('raport_terakhir') if request.params.get('raport_terakhir') else ''
         ktp_ortu               = request.params.get('ktp_ortu')
         skhun                  = request.params.get('skhun') if request.params.get('skhun') else ''
 
+        wali_terdaftar = request.env['ubig.pendaftaran'].sudo().search([('wali_email', '=', wali_email)])
+
+        if wali_terdaftar:
+            kode_akses = wali_terdaftar[0].kode_akses
+
         # Simpan data ke model ubig.pendaftaran
         pendaftaran = request.env['ubig.pendaftaran'].sudo().create({
+            'kode_akses'             : kode_akses,
             'name'                   : nama,
             'nik'                    : nik,
             'email'                  : email,
@@ -1581,11 +1658,13 @@ class PesantrenPsbBantuan(http.Controller):
                 <title>Bantuan - Daarul Qur'an Istiqomah</title>
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+                <link href=" https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css " rel="stylesheet">
+
 
                 <style>
 
                     body {{
-                        background: linear-gradient(to bottom left, #0B5B54 40%, #f5e505 100%) !important;
+                        background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
                     }}
 
                     .offcanvas.offcanvas-end {{
@@ -1669,7 +1748,7 @@ class PesantrenPsbBantuan(http.Controller):
                     }}
 
                     .background {{
-                        background: linear-gradient(to bottom left, #0B5B54 40%, #f5e505 100%) !important;
+                        background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
                     }}
 
                     a.effect {{
@@ -1768,6 +1847,11 @@ class PesantrenPsbBantuan(http.Controller):
                             f'<a href="/pengumuman/sma-ma">SMA / MA</a>'
                             f'</div>'
                             f'</li>' if is_halaman_pengumuman else ''}
+                            <li class="nav-item me-3">
+                                <a class="nav-link text-white portalOrangTua" href="#">
+                                    <i class="fa-solid fa-user me-2"></i>Portal Orang Tua
+                                </a>
+                            </li>
                             </ul>
                     </div>
                 </div>
@@ -1801,6 +1885,11 @@ class PesantrenPsbBantuan(http.Controller):
                         f'<a href="/pengumuman/sma-ma">SMA / MA</a>'
                         f'</div>'
                         f'</li>' if is_halaman_pengumuman else ''}
+                        <li class="nav-item me-3">
+                            <a class="nav-link text-white portalOrangTua" href="#">
+                                <i class="fa-solid fa-user me-2"></i>Portal Orang Tua
+                            </a>
+                        </li>
                         </ul>
                     </ul>
                 </div>
@@ -1820,7 +1909,7 @@ class PesantrenPsbBantuan(http.Controller):
                         <span class="badge text-bg-danger text-uppercase mb-2">Panduan Pendaftaran Online</span>
                         <p>Panduan pendaftaran online dapat didownload dengan klik link di bawah ini :</p>
                         <div class="ratio ratio-16x9 my-4">
-                        <iframe src="https://www.youtube.com/embed/R-ep97NzvsQ?si=XR3a8Dp378LT5x8K" title="YouTube video player" allowfullscreen></iframe>
+                        <iframe src="https://www.youtube.com/embed/N7eYT3LQ7tQ" title="YouTube video player" allowfullscreen></iframe>
                         </div>
                     </div>
                     </div>
@@ -1887,12 +1976,18 @@ class PesantrenPsbBantuan(http.Controller):
             </div>
 
             <footer class="text-white p-2" style="display: flex; justify-content: space-between; flex-wrap: wrap;">
-            	<div class="ms-5">
-            		
-            	</div>
-            	<div class="me-5">
-            		<p class="text-center mt-1">© 2024 TIM IT PPIB</p>
-            	</div>
+                <div class="ms-5">
+                    <ul style="list-style-type: none; display: flex; text-transform: uppercase; font-size: 13px;" class="fw-semibold">
+                        <li><a href="/psb" class="me-4" style="text-decoration: none; color: white;">Home</a></li>
+                        <li><a href="/beranda" class="me-4" style="text-decoration: none; color: white;" target="_blank">Info Pondok</a></li>
+                        <li><a href="https://drive.google.com/drive/mobile/folders/1EYat5411joyoOmH_DkJ3g2DeJKgyyuBQ?usp=share_link&fbclid=IwY2xjawGflGlleHRuA2FlbQIxMQABHTusVv9hD3VRDSLW9-671QhOL86e3KMv30smsAYW0DHkkWf7zwPlcBlbeA_aem_XXofAY-ay0syx043L5BLvw" class="me-4" style="text-decoration: none; color: white;" target="_blank">Brosur</a></li>
+                        <li><a href="" class="me-4" style="text-decoration: none; color: white;">Panduan</a></li>
+                    </ul>
+                    </ul>
+                </div>
+                <div class="me-5">
+                    <p class="text-center mt-1">© 2024 TIM IT PPIB</p>
+                </div>
             </footer>
 
             <!-- Modal -->
@@ -1915,6 +2010,7 @@ class PesantrenPsbBantuan(http.Controller):
 
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
             <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+            <script src=" https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js "></script>
 
             <script>
                 document.addEventListener("DOMContentLoaded", function() {{
@@ -1945,13 +2041,78 @@ class PesantrenPsbBantuan(http.Controller):
         }});
     }});
 }});
+
+    document.querySelectorAll('.portalOrangTua').forEach(function(element) {{
+        element.addEventListener('click', function (event) {{
+            event.preventDefault(); // Mencegah aksi default (navigasi link)
+
+            Swal.fire({{
+                title: 'Masukkan Kode Akses',
+                input: 'text',
+                inputPlaceholder: 'Ketikkan kode akses di sini',
+                backdrop: 'false',
+                inputAttributes: {{
+                    autocomplete: 'off' // Menonaktifkan autocomplete
+                }},
+                showCancelButton: true,
+                confirmButtonText: 'Masuk',
+                cancelButtonText: 'Batal',
+                didOpen: () => {{
+                  // Menyembunyikan navbar offcanvas
+                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
+                  if (navbarOffcanvas) {{
+                      navbarOffcanvas.style.display = 'none';
+                  }}
+              }},
+              willClose: () => {{
+                  // Menampilkan kembali navbar offcanvas
+                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
+                  if (navbarOffcanvas) {{
+                      navbarOffcanvas.style.display = '';
+                  }}
+              }}
+            }}).then((result) => {{
+                if (result.isConfirmed) {{
+                    if (result.value) {{
+                        const kodeAkses = result.value;
+
+                        // Validasi kode akses melalui AJAX
+                        fetch('/validate_kode_akses', {{
+                            method: 'POST',
+                            headers: {{
+                                'Content-Type': 'application/json'
+                            }},
+                            body: JSON.stringify({{ kode_akses: kodeAkses }}) // Data dikirim dalam format JSON
+                        }})
+                        .then(response => response.json())
+                        .then(data => {{
+                            if (data.success) {{
+                                // Jika valid, arahkan ke portal orang tua
+                                window.location.href = '/portal_orang_tua?kode_akses=' + kodeAkses;
+                            }} else {{
+                                // Jika tidak valid, tampilkan pesan error
+                                Swal.fire('Kesalahan', data.message, 'error');
+                            }}
+                        }})
+                        .catch(error => {{
+                            console.error('Error:', error);
+                            Swal.fire('Kesalahan', 'Terjadi masalah pada server.', 'error');
+                        }});
+
+                    }} else {{
+                        Swal.fire('Kesalahan', 'Kode akses tidak boleh kosong!', 'error');
+                    }}
+                }}
+            }});
+        }});
+    }});
+
             </script>
             </body>
             </html>
         """
 
         return request.make_response(html_response)
-
 
 class PendaftaranSeleksiSdMi(http.Controller):
     @http.route('/pengumuman/sd-mi', type='http', auth='public')
@@ -2010,7 +2171,7 @@ class PendaftaranSeleksiSmaMa(http.Controller):
 class RefDataController(http.Controller):
     @http.route('/get_provinsi', type='http', auth='public', methods=['POST'], csrf=False)
     def get_provinsi(self, **kwargs):
-         # Ambil parameter 'query' dari permintaan
+        # Ambil parameter 'query' dari permintaan
         query = request.httprequest.json.get('query', '').lower()
         
         provinces = request.env['cdn.ref_propinsi'].sudo().search([('name', 'ilike', query)])
@@ -2057,3 +2218,777 @@ class RefDataController(http.Controller):
             )
 
 
+# class ViewKartuSantri(http.Controller):
+#     @http.route('/kartusantri', type='http', auth='user', methods=['GET'])
+#     def index(self, santri_id, **kwargsj):
+
+#         # Ambil data santri berdasarkan ID
+#         santri = request.env['cdn.siswa'].sudo().browse(int(santri_id))
+#         if not santri.exists():
+#             return request.not_found()
+
+#         html_response = f"""
+#                     <html lang="en">
+
+#                         <head>
+#                             <meta charset="UTF-8">
+#                             <meta name="viewport" content="width=device-width, initial-scale=1.0">
+#                             <title>Kartu Santri</title>
+#                             <link rel="stylesheet" href="styles.css">
+#                         </head>
+#                         <style>
+#                             @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&display=swap');
+
+#                             .card-number {{
+#                                 font-family: 'Roboto Mono', monospace;
+#                                 /* Monospace font mirip ATM */
+#                                 font-size: 17.5px;
+#                                 /* Ukuran font */
+#                                 letter-spacing: 3px;
+#                                 font-weight: bold;
+#                                 padding: 10px 0px;
+#                                 display: inline-block;
+#                                 width: fit-content;
+#                                 /* Sesuaikan lebar */
+#                             }}
+
+#                             * {{
+#                                 margin: 0;
+#                                 padding: 0;
+#                                 box-sizing: border-box;
+#                             }}
+
+#                             body {{
+#                                 font-family: Arial, sans-serif;
+#                                 background-color: #eaf2f7;
+#                                 display: flex;
+#                                 justify-content: center;
+#                                 align-items: center;
+#                                 height: 100vh;
+#                             }}
+
+#                             .card-container {{
+#                                 display: flex;
+#                                 justify-content: space-between;
+#                                 align-items: center;
+#                                 flex-direction: column-reverse;
+#                                 gap: 10px;
+#                             }}
+
+#                             .card {{
+#                                 width: 450px;
+#                                 height: 260px;
+#                                 border-radius: 10px;
+#                                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+#                                 position: relative;
+#                                 overflow: hidden;
+#                             }}
+
+#                             .front {{
+#                                 background: linear-gradient(to top right, #339966 0%, #00cc66 100%);
+#                                 color: white;
+#                                 display: flex;
+#                                 flex-direction: column;
+#                                 justify-content: space-between;
+#                                 padding: 15px;
+#                             }}
+
+#                             .back .card-header {{
+#                                 font-size: 20px;
+#                                 font-weight: bold;
+#                                 display: flex;
+#                                 align-items: center;
+#                                 gap: 5px;
+#                             }}
+
+#                             .front .subtitle {{
+#                                 font-size: 14px;
+#                                 margin-top: 5px;
+#                             }}
+
+#                             /* 
+#                             .front .barcode {{
+#                                 width: 100%;
+#                             }} */
+
+#                             .front .barcode img {{
+#                                 width: 15rem;
+#                                 height: 5rem;
+#                                 background-color: #eaf2f7;
+#                                 border-radius: 5px;
+#                             }}
+
+#                             .back {{
+#                                 background: linear-gradient(to top right, #339966 0%, #00cc66 100%);
+#                                 color: white;
+#                                 display: flex;
+#                                 flex-direction: column;
+#                                 justify-content: space-between;
+#                                 padding: 15px;
+#                             }}
+
+#                             .back .card-header {{
+#                                 font-size: 20px;
+#                                 font-weight: bold;
+#                             }}
+
+#                             .back .card-info {{
+#                                 margin-top: 10px;
+#                             }}
+
+#                             .back .id {{
+#                                 font-size: 16px;
+#                                 font-weight: bold;
+#                             }}
+
+#                             .back .info {{
+#                                 font-size: 14px;
+#                             }}
+
+#                             .back .qr-code img {{
+#                                 margin-top: 20px;
+#                                 height: 140px;
+#                                 width: 120px;
+#                                 background-color: #eaf2f7;
+#                                 border-radius: 10px;
+#                                 z-index: 10;
+#                                 display: flex;
+#                                 flex-direction: column;
+#                                 position: relative;
+#                             }}
+
+
+#                             .title {{
+#                                 font-size: 17px;
+#                             }}
+
+#                             .right-s {{
+#                                 position: absolute;
+#                                 rotate: -40deg;
+#                                 right: 0px;
+#                                 bottom: 5rem;
+#                                 display: flex;
+#                                 z-index: 4;
+#                             }}
+
+#                             .sprite {{
+#                                 position: relative;
+#                                 background-color: #ffb901;
+#                                 height: 400px;
+#                                 width: 20px;
+#                             }}
+
+#                             .site {{
+#                                 position: relative;
+#                                 background-color: #0000cc;
+#                                 z-index: 3;
+#                                 height: 400px;
+#                                 width: 120px;
+#                             }}
+
+#                             .icon-card {{
+#                                 position: absolute;
+#                                 z-index: 100;
+#                                 right: 1rem;
+#                                 top: 10px;
+#                                 width: 2.5rem;
+#                                 height: 2.5rem;
+#                             }}
+
+#                             .banner {{
+#                                 border-radius: 50%;
+#                                 position: absolute;
+#                                 background-image: url('https://i.ibb.co.com/wRNC9B0/img1.jpg');
+#                                 width: 12rem;
+#                                 height: 12rem;
+#                                 background-position: center;
+#                                 background-repeat: no-repeat;
+#                                 background-size: auto;
+#                                 right: -4.7rem;
+#                                 top: 13.5%;
+#                                 box-shadow: #000000ad 3px 4px 30px;
+#                             }}
+#                         </style>
+
+#                         <body>
+#                             <div class="card-container">
+#                                 <!-- Kartu Santri Depan -->
+#                                 <div class="card front">
+#                                     <div style="display: flex; align-items: center; gap: 5px;">
+#                                         <img src="credit-card.png" style="width: 2rem; " alt="">
+#                                         <p>Universal Big Data</p>
+#                                     </div>
+#                                     <div class="card-header">
+#                                         <div>
+#                                             <h1 class="title" style="font-size: 1.7rem;">Kartu Santri</h1>
+#                                             <h3 class="subtitle" style="font-size: 1.4rem;">Daarul Qu`ran Istiqomah</h3>
+#                                         </div>
+#                                     </div>
+#                                     <div class="barcode">
+#                                         <img src="credit-card.png" alt="Barcode">
+#                                         <p>Jln. Kenanga no 5 perempatan pasar</p>
+#                                     </div>
+#                                     <div class="banner"></div>
+#                                 </div>
+
+#                                 <!-- Kartu Santri Belakang -->
+#                                 <div class="card back">
+#                                     <div class="card-header">
+#                                         <img src="credit-card.png" class="icon-card" alt="">
+#                                         <div class="right-s">
+#                                             <div class="sprite"></div>
+#                                             <div class="site"></div>
+#                                         </div>
+#                                         <img src="../dqi.png" width="45px" height="45px" alt="img">
+#                                         <div>
+#                                             <span class="title">Kartu Santri</span>
+#                                             <br>
+#                                             <span class="subtitle">Daarul Qu`ran Istiqomah</span>
+#                                         </div>
+#                                     </div>
+#                                     <div style="display: flex; align-items: end; justify-content: space-between;">
+#                                         <div class="card-info">
+#                                             <p class="card-number">1234.5678.1234.5678</p>
+#                                             <p class="info">Nama: {santri.name}</p>
+#                                             <p class="info">Telp: {santri.phone}</p>
+#                                             <p class="info">Alamat: {santri.street}</p>
+#                                         </div>
+#                                         <div class="qr-code">
+#                                             <img src="qr-code.png" alt="QR Code">
+#                                             <p style="font-weight: bold; text-align: center; margin-top: 5px;">
+#                                                 DQI 14
+#                                             </p>
+#                                         </div>
+#                                     </div>
+#                                 </div>
+#                             </div>
+#                         </body>
+
+#                         </html>
+        
+#                 """
+
+#         return request.make_response(html_response)
+
+class PortalOrangTua(http.Controller):
+    @http.route('/validate_kode_akses', type='http', auth='public', methods=['POST'], csrf=False)
+    def validate_kode_akses(self, **kwargs):
+        try:
+            # Parse JSON dari body request
+            data = json.loads(request.httprequest.data)
+            kode_akses = data.get('kode_akses')
+
+            # Cari kode akses di model Odoo
+            record = request.env['ubig.pendaftaran'].sudo().search([('kode_akses', '=', kode_akses)], limit=1)
+            if record:
+                return request.make_response(json.dumps({'success': True, 'message': 'Kode akses valid!'}), 
+                        headers=[('Content-Type', 'application/json')])
+            return request.make_response(json.dumps({'success': False, 'message': 'Kode akses tidak ditemukan.'}),
+                        headers=[('Content-Type', 'application/json')])
+        except Exception as e:
+            return request.make_response(json.dumps({'success': False, 'message': str(e)}),
+                        headers=[('Content-Type', 'application/json')])
+
+
+class PortalOrangTua(http.Controller):
+    @http.route('/portal_orang_tua', type='http', auth='public', website=True)
+    def portal_orang_tua(self, kode_akses=None):
+        # Validasi kode akses
+        record = request.env['ubig.pendaftaran'].sudo().search([('kode_akses', '=', kode_akses)])
+
+        if not kode_akses:
+            return request.redirect('/error_page')
+
+        if not record:
+            return request.redirect('/error_page')
+
+        first_record = record[0]
+        
+        # Ambil nilai dari field konfigurasi
+        config_obj = http.request.env['ir.config_parameter'].sudo()
+
+        is_halaman_pengumuman = config_obj.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False)
+
+        # Daftar status yang akan ditampilkan
+        state_list = [
+            ('batal', 'Batal'),
+            ('draft', 'Draft'),
+            ('terdaftar', 'Terdaftar'),
+            ('seleksi', 'Seleksi'),
+            ('diterima', 'Diterima'),
+            ('ditolak', 'Ditolak'),
+        ]
+
+        state_progress = {
+            'batal': 0,
+            'draft': 25,
+            'terdaftar': 50,
+            'seleksi': 75,
+            'diterima': 100,
+        }
+
+        state_tooltip_messages = {
+            'batal': "Status ini menunjukkan bahwa pendaftaran dibatalkan oleh peserta atau sistem.",
+            'draft': "Status ini menunjukkan bahwa pendaftaran masih dalam tahap draft, Calon Sudah terdaftar, tetapi belum membayar biaya pendaftaran.",
+            'terdaftar': "Status ini menunjukkan bahwa pendaftaran sudah berhasil, dan data sudah konfirmasi oleh Ponpes.",
+            'seleksi': "Status ini menunjukkan bahwa pendaftaran sedang dalam tahap seleksi, Calon Santri Melalukan Membaca Al-Qur'an & Wawancara.",
+            'diterima': "Status ini menunjukkan bahwa pendaftaran telah diterima, dan peserta memenuhi syarat.",
+            'ditolak': "Status ini menunjukkan bahwa pendaftaran ditolak karena tidak memenuhi kriteria atau persyaratan.",
+        }
+
+        # Membuat HTML dinamis untuk setiap record
+        rows_html = ''
+        for rec in record:
+            state_html = ''
+            # Buat HTML untuk status pendaftaran siswa
+            for state_key, state_label in state_list:
+                tooltip_message = state_tooltip_messages.get(state_key, "Tidak ada informasi status.")
+                if state_key == rec.state:
+                    state_html += f'<span class="badge me-1 mb-2 text-bg-primary" title="Ini adalah status pendaftaran saat ini dari anak anda. {tooltip_message}" data-bs-toggle="tooltip" data-bs-placement="bottom">{state_label}</span>'
+                else:
+                    state_html += f'<span class="badge text-bg-secondary me-1 mb-2 inactive" title="{tooltip_message}" data-bs-toggle="tooltip" data-bs-placement="bottom">{state_label}</span>'
+            
+            # Progress bar untuk pendaftaran
+            if rec.state == "ditolak":
+                progress_html = ''
+            else:
+                progress_html = f"""
+                <div class="progress" style="height: 20px;">
+                    <div class="progress-bar" role="progressbar" style="width: {state_progress.get(rec.state, 0)}%" 
+                        aria-valuenow="{state_progress.get(rec.state, 0)}" aria-valuemin="0" aria-valuemax="100">
+                    </div>
+                </div>
+                Pendaftaran: {state_progress.get(rec.state, 0)}%
+                """
+
+            # Menambahkan HTML untuk satu baris data siswa
+            rows_html += f"""
+            <tr>
+                <td><span class="text-capitalize">{rec.partner_id.name}</span></td>
+                <td>
+                    <div class="d-flex justify-content-center">
+                        <div class="mb-2">
+                            {state_html}
+                        </div>
+                    </div>
+                    {progress_html}
+                </td>
+                <td>
+                    <div class="progress" style="height: 20px;">
+                        <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    Pembayaran: 50%
+                </td>
+            </tr>
+            """
+
+        # Membuat HTML dinamis
+        html_content = f"""
+                <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Portal Orang Tua - Daarul Qur'an Istiqomah</title>
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+                <style>
+
+                    body {{
+                        background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
+                    }}
+
+                    .offcanvas.offcanvas-end {{
+                        
+                        width: 250px; /* Lebar kustom untuk offcanvas */
+                    }}
+                    
+                    .offcanvas .nav-link {{
+                        color: #ffffff; /* teks warna putih */
+                    }}
+                    
+                    .offcanvas .btn-close {{
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        filter: invert(1);
+                    }}
+
+                    .background {{
+                        background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
+                    }}
+
+                    a.effect {{
+                        transition: .1s !important;
+                    }}
+
+                    a.effect:hover {{
+                        box-shadow: 0 3px 10px rgba(0,0,0,0.2) !important;
+                    }}
+
+                    /* Desain Dropdown */
+                    .dropdown {{
+                        position: relative;
+                    }}
+
+                    .dropdown-link {{
+                        cursor: pointer;
+                    }}
+
+                    .dropdown-content {{
+                        display: none;
+                        position: absolute;
+                        top: 100%;
+                        right: 0;
+                        background-color: #ffffff;
+                        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+                        border-radius: 5px;
+                        min-width: 150px;
+                        z-index: 1;
+                        overflow: hidden;
+                    }}
+
+                    .dropdown-content a {{
+                        color: #333;
+                        padding: 10px 15px;
+                        display: block;
+                        text-decoration: none;
+                        transition: background-color 0.2s;
+                    }}
+
+                    .dropdown-content a:hover {{
+                        background-color: #f1f1f1;
+                    }}
+
+                    /* Menampilkan dropdown saat hover */
+                    .dropdown:hover .dropdown-content {{
+                        display: block;
+                        animation: fadeIn 0.3s;
+                    }}
+
+                    /* Animasi fade-in */
+                    @keyframes fadeIn {{
+                        from {{
+                        opacity: 0;
+                        transform: translateY(-10px);
+                        }}
+                        to {{
+                        opacity: 1;
+                        transform: translateY(0);
+                        }}
+                    }}
+
+                    .card-header {{
+                    background-color: #9fc912;
+                    color: white;
+                    font-size: 1.2rem;
+                    font-weight: bold;
+                }}
+
+                .card-body {{
+                    background-color: white;
+                    color: #333;
+                }}
+
+                .table th, .table td {{
+                    vertical-align: middle;
+                }}
+
+                .progress-bar {{
+                    background-color: #28a745;
+                }}
+
+                .status-card {{
+                    border-left: 5px solid #4CAF50;
+                }}
+
+                .inactive {{
+                    opacity: 0.6;
+                }}
+
+                .progress-bar {{
+                    transition: width 1s ease-in-out;
+                }}
+
+                @media (max-width: 767px) {{
+                    .table thead {{
+                        display: none;
+                    }}
+
+                    .table, .table tbody, .table tr, .table td {{
+                        display: block;
+                        width: 100%;
+                    }}
+
+                    .table td {{
+                        text-align: right;
+                        position: relative;
+                        padding-left: 50%;
+                    }}
+
+                    .table td::before {{
+                        content: attr(data-label);
+                        position: ab        solute;
+                        left: 10px;
+                        font-weight: bold;
+                    }}
+                }}
+
+                </style>
+                
+            </head>
+            <body>
+
+            <nav class="navbar navbar-expand-lg" style="height: 65px;">
+                <div class="container-fluid">
+                    <a class="navbar-brand ms-5 text-white fw-semibold" href="/psb">
+                        <img src="https://i.ibb.co.com/f9j819p/1731466812700.png" alt="1731466812700" width="50" alt="Logo Pesantren">
+                        Daarul Qur'an Istiqomah
+                    </a>
+                    <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item me-3">
+                                <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
+                            </li>
+                            <li class="nav-item me-3">
+                                <a class="nav-link text-white pendaftaran-menu" href="#"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
+                            </li>
+                            <li class="nav-item me-3">
+                                <a class="nav-link text-white" href="/web/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                            </li>
+                            <li class="nav-item me-3">
+                                <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
+                            </li>
+                            {f'<li class="nav-item dropdown">'
+                            f'<a href="#" class="dropdown-link nav-link text-white"><i class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>'
+                            f'<div class="dropdown-content">'
+                            f'<a href="/pengumuman/sd-mi">SD / MI</a>'
+                            f'<a href="/pengumuman/smp-mts">SMP / MTS</a>'
+                            f'<a href="/pengumuman/sma-ma">SMA / MA</a>'
+                            f'</div>'
+                            f'</li>' if is_halaman_pengumuman else ''}
+                            </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="offcanvas offcanvas-end background" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                <a class="navbar-brand mt-1 text-white fw-semibold" href="/psb" style="display: flex; flex-direction: column; align-items: center;">
+                    <img src="https://i.ibb.co.com/f9j819p/1731466812700.png" alt="1731466812700" width="50" alt="">
+                    Daarul Qur'an Istiqomah
+                </a>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                        <li class="nav-item me-3">
+                            <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
+                        </li>
+                        <li class="nav-item me-3">
+                            <a class="nav-link text-white pendaftaran-menu" href="#"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
+                        </li>
+                        <li class="nav-item me-3">
+                            <a class="nav-link text-white" href="/web/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                        </li>
+                        <li class="nav-item me-3">
+                            <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
+                        </li>
+                        {f'<li class="nav-item dropdown">'
+                        f'<a href="#" class="dropdown-link nav-link text-white"><i class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>'
+                        f'<div class="dropdown-content">'
+                        f'<a href="/pengumuman/sd-mi">SD / MI</a>'
+                        f'<a href="/pengumuman/smp-mts">SMP / MTS</a>'
+                        f'<a href="/pengumuman/sma-ma">SMA / MA</a>'
+                        f'</div>'
+                        f'</li>' if is_halaman_pengumuman else ''}
+                        </ul>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="container my-5">
+                <h2 class="text-center mb-4 text-white">Selamat Datang Bapak/Ibu, <span class="text-capitalize">{first_record.wali_nama}</span></h2>
+
+                <!-- Progres PSB Anak -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Progres PSB Anak Anda
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Nama Siswa</th>
+                                    <th>Status Pendaftaran</th>
+                                    <th>Status Pembayaran</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {rows_html}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Info Pembayaran PSB -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Informasi Pembayaran PSB
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="mb-3">Biaya PSB:</h5>
+                                {''.join([f"""
+                                <div class="mb-1" style="border-bottom: 1px solid black;">
+                                    <h6>- {data.partner_id.name}</h6>
+                                    <p>Jenjang : {data.jenjang.replace('sdmi', 'SD / MI').replace('smpmts', 'SMP / MTS').replace('smama', 'SMA / MA')}</p>
+                                    <p>
+                                        <strong>
+                                            {'Rp ' + str(f"{int(data.biaya):,}").replace(',', '.') + ' (Belum Bayar)' if data.state == 'draft' else 
+                                            'Rp 0 (Sudah Bayar)' if data.state in ['terdaftar', 'seleksi', 'diterima'] else
+                                            '' if data.state == 'ditolak' else 
+                                            'Pendaftaran Dibatalkan'}
+                                        </strong>
+                                    </p>
+                                </div>
+                                """ for data in record])}
+                                <div class="mt-3 mb-3">
+                                    <h6><strong>Total Bayar : Rp {str(f"{sum(int(data.biaya) if data.state == 'draft' else 0 for data in record):,}").replace(',', '.')}</strong></h6>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Instruksi Pembayaran:</h5>
+                                <span>Melalui Mobile Bank BSI:</span>
+                                <ul>
+                                <li>Login ke aplikasi BSI Mobile.</li>
+                                <li>Pilih menu Pembayaran &gt; Virtual Account.</li>
+                                <li>Masukkan nomor Virtual Account yang diberikan.</li>
+                                <li>Verifikasi dan konfirmasi pembayaran.</li>
+                                <li>Pembayaran berhasil dan Anda akan menerima bukti transaksi.</li>
+                                </ul>
+                                <span>Melalui ATM Bank BSI:</span>
+                                <ul>
+                                <li>Masukkan kartu ATM dan PIN.</li>
+                                <li>Pilih Pembayaran &gt; Virtual Account.</li>
+                                <li>Masukkan nomor Virtual Account.</li>
+                                <li>Verifikasi pembayaran dan lanjutkan.</li>
+                                <li>Pembayaran berhasil dan Anda menerima bukti pembayaran.</li>
+                                </ul>
+                                <p>Silakan melakukan pembayaran melalui transfer bank ke rekening yang tertera di bawah ini.</p>
+                                <p><strong>Rekening: BSI 1234567890</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Riwayat Pembayaran -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Riwayat Pembayaran
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal Pembayaran</th>
+                                    <th>Jumlah Pembayaran</th>
+                                    <th>Status Pembayaran</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>15 Jan 2024</td>
+                                    <td>IDR 1.250.000,-</td>
+                                    <td><span class="badge bg-success">Lunas</span></td>
+                                </tr>
+                                <tr>
+                                    <td>20 Jan 2024</td>
+                                    <td>IDR 1.250.000,-</td>
+                                    <td><span class="badge bg-warning">Menunggu Konfirmasi</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="text-white p-2" style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <div class="ms-5">
+                    <ul style="list-style-type: none; display: flex; text-transform: uppercase; font-size: 13px;" class="fw-semibold">
+                        <li><a href="/psb" class="me-4" style="text-decoration: none; color: white;">Home</a></li>
+                        <li><a href="/beranda" class="me-4" style="text-decoration: none; color: white;" target="_blank">Info Pondok</a></li>
+                        <li><a href="https://drive.google.com/drive/mobile/folders/1EYat5411joyoOmH_DkJ3g2DeJKgyyuBQ?usp=share_link&fbclid=IwY2xjawGflGlleHRuA2FlbQIxMQABHTusVv9hD3VRDSLW9-671QhOL86e3KMv30smsAYW0DHkkWf7zwPlcBlbeA_aem_XXofAY-ay0syx043L5BLvw" class="me-4" style="text-decoration: none; color: white;" target="_blank">Brosur</a></li>
+                        <li><a href="" class="me-4" style="text-decoration: none; color: white;">Panduan</a></li>
+                    </ul>
+                    </ul>
+                </div>
+                <div class="me-5">
+                    <p class="text-center mt-1">© 2024 TIM IT PPIB</p>
+                </div>
+            </footer>
+
+            <!-- Modal -->
+            <div class="modal fade" id="modalPendaftaranTutup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Pendaftaran ditutup!</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Mohon maaf, pendaftaran telah ditutup karena kuota telah terpenuhi.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {{
+
+    // Tangkap semua elemen dengan class 'pendaftaran-menu'
+    document.querySelectorAll(".pendaftaran-menu").forEach(function(menu) {{
+        menu.addEventListener("click", function(event) {{
+            event.preventDefault(); // Cegah navigasi default
+
+            // Panggil API untuk memeriksa kuota
+            $.ajax({{
+                url: "/pendaftaran/check",
+                type: "POST",
+                contentType: 'application/json', // Pastikan tipe konten JSON
+                dataType: 'json',
+                success: function(response) {{
+                    if (response.is_full) {{
+                        // Tampilkan modal jika kuota penuh
+                        $("#modalPendaftaranTutup").modal("show");
+                    }} else {{
+                        // Jika kuota tersedia, arahkan ke halaman pendaftaran
+                        window.location.href = "/pendaftaran";
+                    }}
+                }},
+                error: function() {{
+                    alert("Terjadi kesalahan saat memeriksa kuota. Silakan coba lagi.");
+                }}
+            }});
+        }});
+    }});
+
+}});
+
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            console.log(tooltipTriggerList)
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+            </script>
+            </body>
+            </html>
+        """
+        return request.make_response(html_content, headers=[('Content-Type', 'text/html')])

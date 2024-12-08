@@ -3,11 +3,13 @@
   <template id="pendaftaran_form_template" name="Pendaftaran Form">
     <t t-call="web.html_container">
       <t t-set="title">Pendaftaran - Daarul Qur'an Istiqomah</t>
+      <link rel="icon" type="image/x-icon" href="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" />
       <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
       <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css" />
       <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css"
         rel="stylesheet" />
+      <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css" rel="stylesheet"/>
       <style>
         .main-container {
         background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
@@ -206,6 +208,11 @@
                     </div>
                   </li>
                 </t>
+                <li class="nav-item me-3">
+                    <a class="nav-link text-white portalOrangTua" style="color: white !important;" href="#">
+                        <i class="fa-solid fa-user me-2"></i>Portal Orang Tua
+                    </a>
+                </li>
               </ul>
             </div>
           </div>
@@ -248,6 +255,11 @@
                   </div>
                 </li>
               </t>
+              <li class="nav-item me-3">
+                  <a class="nav-link text-white portalOrangTua" href="#">
+                      <i class="fa-solid fa-user me-2"></i>Portal Orang Tua
+                  </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -255,7 +267,7 @@
         <form class="needs-validation" action="/pendaftaran/submit" method="post"
           enctype="multipart/form-data" novalidate="true">
           <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
-
+          <input type="hidden" name="kode_akses" t-att-value="kode_akses" />
           <div class="container" id="containerDataDiri">
             <div style="max-width: 100%;" class="bg-white rounded mt-5 p-3">
               <div class="step-indicator mb-3">
@@ -791,7 +803,7 @@
                           autocomplete="off"
                         />
                         <div class="invalid-feedback">
-                          Password harus minimal 8 karakter, mengandung huruf besar, huruf kecil, dan angka.
+                          Kata Sandi harus minimal 8 karakter, mengandung huruf besar, huruf kecil, dan angka.
                         </div>
                         <i
                           class="fa-solid fa-eye-slash fs-5 position-absolute"
@@ -977,9 +989,10 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="mb-3">
-                      <label for="ijazah" class="form-label">Ijazah<span class="text-danger">*</span></label>
-                      <input type="file" name="ijazah" class="form-control" id="ijazah"
-                        placeholder="Ijazah" required="true" autocomplete="off" />
+                      <label for="ktp_ortu" class="form-label">KTP Orang Tua<span
+                          class="text-danger">*</span></label>
+                      <input type="file" name="ktp_ortu" class="form-control" id="ktp_ortu"
+                        placeholder="KTP Orang TUa" required="true" autocomplete="off" />
                       <div class="invalid-feedback">
                         Masukkan File.
                       </div>
@@ -999,14 +1012,9 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="mb-3">
-                      <label for="raport_terakhir" class="form-label">Raport Terakhir<span
-                          class="text-danger">*</span></label>
+                      <label for="raport_terakhir" class="form-label">Raport Terakhir (Jika Ada)</label>
                       <input type="file" name="raport_terakhir" class="form-control"
-                        id="raport_terakhir" placeholder="Raport Terakhir" required="true"
-                        autocomplete="off" />
-                      <div class="invalid-feedback">
-                        Masukkan File.
-                      </div>
+                        id="raport_terakhir" placeholder="Raport Terakhir" autocomplete="off" />
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -1021,13 +1029,9 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="mb-3">
-                      <label for="ktp_ortu" class="form-label">KTP Orang Tua<span
-                          class="text-danger">*</span></label>
-                      <input type="file" name="ktp_ortu" class="form-control" id="ktp_ortu"
-                        placeholder="KTP Orang TUa" required="true" autocomplete="off" />
-                      <div class="invalid-feedback">
-                        Masukkan File.
-                      </div>
+                      <label for="ijazah" class="form-label">Ijazah (Jika Ada)</label>
+                      <input type="file" name="ijazah" class="form-control" id="ijazah"
+                        placeholder="Ijazah" autocomplete="off" />
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -1051,12 +1055,31 @@
           </div>
 
         </form>
-        <footer class="text-white p-2" style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+        <footer class="p-2"
+          style="display: flex; justify-content: space-between; flex-wrap: wrap; color: white !important;">
           <div class="ms-5">
-            
+            <ul
+              style="list-style-type: none; display: flex; text-transform: uppercase; font-size: 13px;"
+              class="fw-semibold">
+              <li>
+                <a href="/psb" class="me-4" style="text-decoration: none; color: white;">Home</a>
+              </li>
+              <li>
+                <a href="/beranda" class="me-4" style="text-decoration: none; color: white;"
+                  target="_blank">Info Pondok</a>
+              </li>
+              <li>
+                <a
+                  href="https://drive.google.com/drive/mobile/folders/1EYat5411joyoOmH_DkJ3g2DeJKgyyuBQ?usp=share_link&amp;fbclid=IwY2xjawGflGlleHRuA2FlbQIxMQABHTusVv9hD3VRDSLW9-671QhOL86e3KMv30smsAYW0DHkkWf7zwPlcBlbeA_aem_XXofAY-ay0syx043L5BLvw"
+                  class="me-4" style="text-decoration: none; color: white;" target="_blank">Brosur</a>
+              </li>
+              <li>
+                <a href="" class="me-4" style="text-decoration: none; color: white;">Panduan</a>
+              </li>
+            </ul>
           </div>
           <div class="me-5">
-            <p class="text-center mt-1" style="color: white !important;">© 2024 TIM IT PPIB</p>
+            <p class="text-center mt-1 text-white">© 2024 TIM IT PPIB</p>
           </div>
         </footer>
       </div>
@@ -1064,6 +1087,7 @@
       <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
       <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js"></script>
       <script type="text/javascript">
 
         (() => {
@@ -1150,7 +1174,7 @@
 
     fileInputs.forEach(fileInput => {
       // Abaikan validasi jika input adalah SKHUN atau Surat Kesehatan
-      if (fileInput.id === 'skhun' || fileInput.id === 'surat_kesehatan') {
+      if (fileInput.id === 'skhun' || fileInput.id === 'surat_kesehatan' || fileInput.id === 'ijazah' || fileInput.id === 'raport_terakhir') {
         return;
       }
       if (fileInput.files.length === 0) {
@@ -1174,6 +1198,12 @@
       const currentContainer = document.getElementById(currentStep);
 
       if (!validateInputs(currentContainer)) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Perhatian',
+          text: 'Terdapat data yang belum di isi.',
+          confirmButtonText: 'OK',
+        });
         return;
       }
 
@@ -1247,7 +1277,12 @@
     if (isInputValid &amp;&amp; isFileValid) {
       form.submit(); // Kirim form jika validasi berhasil
     } else {
-      alert('Mohon lengkapi semua data dan berkas yang diperlukan sebelum mengirim form.');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Perhatian',
+        text: 'Mohon lengkapi semua data dan berkas yang diperlukan sebelum mengirim form.',
+        confirmButtonText: 'OK',
+      });
     }
   });
 })();
@@ -1457,6 +1492,72 @@
               }
           });
       });
+
+      document.querySelectorAll('.portalOrangTua').forEach(function(element) {
+        element.addEventListener('click', function (event) {
+            event.preventDefault(); // Mencegah aksi default (navigasi link)
+
+            Swal.fire({
+                title: 'Masukkan Kode Akses',
+                input: 'text',
+                inputPlaceholder: 'Ketikkan kode akses di sini',
+                backdrop: 'false',
+                inputAttributes: {
+                    autocomplete: 'off' // Menonaktifkan autocomplete
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Masuk',
+                cancelButtonText: 'Batal',
+                didOpen: () => {
+                  // Menyembunyikan navbar offcanvas
+                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
+                  if (navbarOffcanvas) {
+                      navbarOffcanvas.style.display = 'none';
+                  }
+              },
+              willClose: () => {
+                  // Menampilkan kembali navbar offcanvas
+                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
+                  if (navbarOffcanvas) {
+                      navbarOffcanvas.style.display = '';
+                  }
+              }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (result.value) {
+                        const kodeAkses = result.value;
+
+                        // Validasi kode akses melalui AJAX
+                        fetch('/validate_kode_akses', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ kode_akses: kodeAkses }) // Data dikirim dalam format JSON
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Jika valid, arahkan ke portal orang tua
+                                window.location.href = '/portal_orang_tua?kode_akses=' + kodeAkses;
+                            } else {
+                                // Jika tidak valid, tampilkan pesan error
+                                Swal.fire('Kesalahan', data.message, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire('Kesalahan', 'Terjadi masalah pada server.', 'error');
+                        });
+
+                    } else {
+                        Swal.fire('Kesalahan', 'Kode akses tidak boleh kosong!', 'error');
+                    }
+                }
+            });
+        });
+    });
+
 
       function togglePasswordVisibility() {
         // Ambil elemen input password
