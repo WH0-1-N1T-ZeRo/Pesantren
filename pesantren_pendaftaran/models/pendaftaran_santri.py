@@ -21,7 +21,7 @@ class ResPartner(models.Model):
                         ('guru', 'Guru'), 
                         ('umum', 'Umum'), 
                         ('calon_santri', 'Calon Santri')]
-                        , default="calon_santri", readonly="true")
+                        , default="calon_santri", readonly=True)
 
 class DataPendaftaran(models.Model):
     _name               = 'ubig.pendaftaran'
