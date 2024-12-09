@@ -309,7 +309,7 @@ class PesantrenBeranda(http.Controller):
                 <div>
                     <!-- Buttons for Pendaftaran and Login -->
                     <a href="/psb" class="btn btn-light ms-2" type="submit">Pendaftaran</a>
-                    <a href="/web/login" class="btn btn-warning ms-2" type="submit">Login</a>
+                    <a href="/odoo" class="btn btn-warning ms-2" type="submit">Login</a>
                 </div>
                 </div>
             </div>
@@ -442,7 +442,7 @@ class PesantrenBeranda(http.Controller):
                 </div>
                 <!-- Image Section -->
                 <div class="col-md-6">
-                    <img src="https://psb.nuruljadid.net/img/PAGE2.44b0e259.png" class="img-fluid rounded-4"
+                    <img src="pesantren_pendaftaran/static/src/img/PAGE2.44b0e259.png" class="img-fluid rounded-4"
                     alt="Syarat Pendaftaran">
                 </div>
                 </div>
@@ -540,7 +540,7 @@ class PesantrenBeranda(http.Controller):
             <div class="container my-5">
                 <div class="row align-items-center">
                 <div class="col-md-6">
-                    <img src="https://psb.nuruljadid.net/img/PAGE3.e3b6d704.png" alt="Image" class="rounded-custom img-fluid" />
+                    <img src="pesantren_pendaftaran/static/src/img/PAGE3.e3b6d704.png" alt="Image" class="rounded-custom img-fluid" />
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <h3 class="fw-bold"><span class="text-primary ">Informasi</span> Pelayanan Pendaftaran</h3>
@@ -958,7 +958,7 @@ class PesantrenPendaftaran(http.Controller):
                                 <a class="nav-link text-white pendaftaran-menu" href="#"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                             </li>
                             <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/web/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                <a class="nav-link text-white" href="/odoo"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
@@ -996,7 +996,7 @@ class PesantrenPendaftaran(http.Controller):
                             <a class="nav-link text-white pendaftaran-menu" href="#"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                         </li>
                         <li class="nav-item me-3">
-                            <a class="nav-link text-white" href="/web/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                            <a class="nav-link text-white" href="/odoo"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                         </li>
                         <li class="nav-item me-3">
                             <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
@@ -1834,7 +1834,7 @@ class PesantrenPsbBantuan(http.Controller):
                                 <a class="nav-link text-white pendaftaran-menu" href="#"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                             </li>
                             <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/web/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                <a class="nav-link text-white" href="/odoo"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
@@ -1872,7 +1872,7 @@ class PesantrenPsbBantuan(http.Controller):
                             <a class="nav-link text-white pendaftaran-menu" href="#"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                         </li>
                         <li class="nav-item me-3">
-                            <a class="nav-link text-white" href="/web/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                            <a class="nav-link text-white" href="/odoo"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                         </li>
                         <li class="nav-item me-3">
                             <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
@@ -2757,7 +2757,7 @@ class PortalOrangTua(http.Controller):
                                 <a class="nav-link text-white pendaftaran-menu" href="#"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                             </li>
                             <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/web/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                <a class="nav-link text-white" href="/odoo"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
@@ -2790,7 +2790,7 @@ class PortalOrangTua(http.Controller):
                             <a class="nav-link text-white pendaftaran-menu" href="#"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                         </li>
                         <li class="nav-item me-3">
-                            <a class="nav-link text-white" href="/web/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                            <a class="nav-link text-white" href="/odoo"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                         </li>
                         <li class="nav-item me-3">
                             <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>

@@ -391,7 +391,7 @@ class DataPendaftaran(models.Model):
                                         </table>
                                     </div>
                                     <p style="text-align: center;">
-                                        <a href="http://localhost:9069/odoo" style="background-color: #0066cc; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">
+                                        <a href="http://139.99.118.226:8070/odoo" style="background-color: #0066cc; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">
                                             Masuk Ke Akun Anda
                                         </a>
                                     </p>
