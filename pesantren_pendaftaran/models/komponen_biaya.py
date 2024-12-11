@@ -14,4 +14,4 @@ class komponen_biaya(models.Model):
     product_id          = fields.Many2one(comodel_name="product.product", string='Produk', required=True)
     biaya_tahunan       = fields.One2many(comodel_name='ubig.biaya_daftarulang', inverse_name='name', string='Biaya Tahunan Jenjang Pendidikan')
     active              = fields.Boolean(string='Active', default=True)
-
+    

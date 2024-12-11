@@ -41,7 +41,6 @@
                         <group>
                             <group>
                                 <field name="jenjang" readonly="status == 'konfirm'" />
-                                <field name="npsn" readonly="status == 'konfirm'" />
                                 <field name="biaya" readonly="status == 'konfirm'" />
                                 <field name="keterangan" readonly="status == 'konfirm'" />
                             </group>

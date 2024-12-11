@@ -11,6 +11,7 @@
         rel="stylesheet" />
       <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css" rel="stylesheet"/>
       <style>
+
         .main-container {
         background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
         }
@@ -117,7 +118,7 @@
         /* Pastikan invalid-feedback tidak memengaruhi tata letak */
         .khusus .invalid-feedback {
           position: absolute; /* Agar tetap di dalam container */
-          bottom: -40px; /* Sesuaikan jarak ke bawah */
+          bottom: -20px; /* Sesuaikan jarak ke bawah */
           left: 0;
           font-size: 0.875rem; /* Ukuran teks */
         }
@@ -129,7 +130,7 @@
         }
 
         .step-indicator {
-          background-color: #EAE7E7;
+   overflow-auto        background-color: #EAE7E7;
           padding: 0px 10px; /* Mengurangi padding */
           display: flex;
           justify-content: space-between;
@@ -166,6 +167,13 @@
             font-size: 8px;  /* Ukuran font lebih kecil di layar kecil */
             padding: 4px 10px;  /* Mengurangi padding lebih lanjut */
           }
+          /* Pastikan invalid-feedback tidak memengaruhi tata letak */
+          .khusus .invalid-feedback {
+            position: absolute; /* Agar tetap di dalam container */
+            bottom: -45px; /* Sesuaikan jarak ke bawah */
+            left: 0;
+            font-size: 0.875rem; /* Ukuran teks */
+          }
         }
 
       </style>
@@ -173,7 +181,7 @@
         <nav class="navbar navbar-expand-lg" style="height: 65px;">
           <div class="container-fluid">
             <a class="navbar-brand ms-5 fw-semibold" href="/psb" style="color: white !important;">
-              <img src="https://i.ibb.co.com/f9j819p/1731466812700.png" width="50"
+              <img src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" width="50"
                 alt="Logo Pesantren" /> Daarul Qur'an Istiqomah </a>
             <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="offcanvas"
               data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
@@ -187,10 +195,10 @@
                 </li>
                 <li class="nav-item me-3">
                   <a class="nav-link" style="color: white !important;" href="/pendaftaran"><i
-                      class="fa-solid fa-note-sticky me-2 pendaftaran-menu"></i>Pendaftaran</a>
+                      class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                 </li>
                 <li class="nav-item me-3">
-                  <a class="nav-link" style="color: white !important;" href="/web/login"><i
+                  <a class="nav-link" style="color: white !important;" href="/login"><i
                       class="fa-solid fa-fingerprint me-2"></i>Login</a>
                 </li>
                 <li class="nav-item me-3">
@@ -208,11 +216,6 @@
                     </div>
                   </li>
                 </t>
-                <li class="nav-item me-3">
-                    <a class="nav-link text-white portalOrangTua" style="color: white !important;" href="#">
-                        <i class="fa-solid fa-user me-2"></i>Portal Orang Tua
-                    </a>
-                </li>
               </ul>
             </div>
           </div>
@@ -237,7 +240,7 @@
                   Pendaftaran</a>
               </li>
               <li class="nav-item me-3">
-                <a class="nav-link" style="color: white !important;" href="/web/login"><i
+                <a class="nav-link" style="color: white !important;" href="/login"><i
                     class="fa-solid fa-fingerprint me-2"></i>Login</a>
               </li>
               <li class="nav-item me-3">
@@ -255,11 +258,6 @@
                   </div>
                 </li>
               </t>
-              <li class="nav-item me-3">
-                  <a class="nav-link text-white portalOrangTua" href="#">
-                      <i class="fa-solid fa-user me-2"></i>Portal Orang Tua
-                  </a>
-              </li>
             </ul>
           </div>
         </div>
@@ -267,10 +265,107 @@
         <form class="needs-validation" action="/pendaftaran/submit" method="post"
           enctype="multipart/form-data" novalidate="true">
           <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
-          <input type="hidden" name="kode_akses" t-att-value="kode_akses" />
-          <div class="container" id="containerDataDiri">
+
+          <div class="container" id="containerDataUsername">
             <div style="max-width: 100%;" class="bg-white rounded mt-5 p-3">
-              <div class="step-indicator mb-3">
+              <div class="step-indicator mb-3 overflow-auto">
+                <span class="fw-semibold step active">
+                  Data Login</span>
+                <span class="fw-semibold step">Data
+                  Siswa</span>
+                <span class="fw-semibold step">Data Orang
+                  Tua</span>
+                <span class="fw-semibold step">Data Sekolah
+                  Asal</span>
+                <span class="fw-semibold step">Data Berkas</span>
+              </div>
+              <h4 class="fw-semibold fs-3 mb-4">Data Login</h4>
+              <div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="mb-3">
+                      <label for="email" class="form-label">Email<span class="text-danger">*</span></label>
+                      <input type="email" name="email" class="form-control" id="email"
+                        placeholder="Email" required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan email.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-12">
+                    <div class="mb-3 khusus">
+                      <label for="password" class="form-label">Kata Sandi<span class="text-danger">*</span></label>
+                      <div class="d-flex align-items-center position-relative">
+                        <input
+                          type="password"
+                          name="password"
+                          class="form-control pe-5"
+                          id="password"
+                          placeholder="Kata Sandi"
+                          required="true"
+                          autocomplete="off"
+                        />
+                        <div class="invalid-feedback">
+                          Kata Sandi harus minimal 8 karakter, mengandung huruf besar, huruf kecil, dan angka.
+                        </div>
+                        <i
+                          class="fa-solid fa-eye-slash fs-5 position-absolute"
+                          style="right: 35px; cursor: pointer; color: #333;"
+                          onclick="togglePasswordVisibility()"
+                        ></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="mb-3 khusus">
+                      <label for="password2" class="form-label">Konfirmasi Kata Sandi<span class="text-danger">*</span></label>
+                      <div class="d-flex align-items-center position-relative">
+                        <input
+                          type="password"
+                          name="password2"
+                          class="form-control pe-5"
+                          id="password2"
+                          placeholder="Konfirmasi Kata Sandi"
+                          required="true"
+                          autocomplete="off"
+                        />
+                        <div class="invalid-feedback">
+                          Konfirmasi kata sandi harus sesuai.
+                        </div>
+                        <i
+                          class="fa-solid fa-eye-slash fs-5 position-absolute"
+                          style="right: 35px; cursor: pointer; color: #333;"
+                          onclick="togglePassword2Visibility()"
+                        ></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-3 d-flex justify-content-end">
+                  <button type="button"
+                    style="background-color: #4CAF50 !important; text-decoration: none; color: white; padding: 10px 20px; text-align: center; display: inline-block; font-size: 16px; border-radius: 5px; cursor: pointer;"
+                    class="btn btn-success btn-next" data-next="containerDataDiri">Selanjutnya</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+         
+
+
+
+          
+          <div class="container" id="containerDataDiri" style="display: none;">
+            <div style="max-width: 100%;" class="bg-white rounded mt-5 p-3">
+              <div class="step-indicator mb-3 overflow-auto">
+                <span class="fw-semibold step">
+                  Data Login</span>
                 <span class="fw-semibold step active">Data
                   Siswa</span>
                 <span class="fw-semibold step">Data Orang
@@ -510,7 +605,10 @@
                   </div>
                 </div>
 
-                <div class="mb-3 d-flex justify-content-end">
+                <div class="mb-3 d-flex justify-content-between">
+                  <button type="button"
+                    style="background-color: #4CAF50 !important; text-decoration: none; color: white; padding: 10px 20px; text-align: center; display: inline-block; font-size: 16px; border-radius: 5px; cursor: pointer;"
+                    class="btn btn-secondary btn-prev" data-prev="containerDataUsername">Kembali</button>
                   <button type="button"
                     style="background-color: #4CAF50 !important; text-decoration: none; color: white; padding: 10px 20px; text-align: center; display: inline-block; font-size: 16px; border-radius: 5px; cursor: pointer;"
                     class="btn btn-success btn-next" data-next="containerDataOrangTua">Selanjutnya</button>
@@ -521,7 +619,9 @@
 
           <div class="container" id="containerDataOrangTua" style="display: none;">
             <div style="max-width: 100%;" class="bg-white rounded mt-5 p-3">
-              <div class="step-indicator mb-3">
+              <div class="step-indicator mb-3 overflow-auto">
+                <span class="fw-semibold step">
+                  Data Login</span>
                 <span class="fw-semibold step">Data Siswa</span>
                 <span class="fw-semibold step active">Data
                   Orang Tua</span>
@@ -767,9 +867,8 @@
               </div>
               <div class="mb-3">
                 <h5 class="fw-semibold mb-1">Data Wali</h5>
-                <p class="mb-3" style="font-style: italic; color: grey;">*Data ini akan digunakan untuk membuat akun orang tua, Email wali harus aktif.</p>
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-md-6">
                     <div class="mb-3">
                       <label for="wali_nama" class="form-label">Nama Wali<span class="text-danger">*</span></label>
                       <input type="text" name="wali_nama" class="form-control" id="wali_nama"
@@ -779,37 +878,13 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-6">
                     <div class="mb-3">
                       <label for="wali_email" class="form-label">Email Wali<span class="text-danger">*</span></label>
                       <input type="email" name="wali_email" class="form-control" id="wali_email"
                         placeholder="Email Wali" required="true" autocomplete="off" />
                       <div class="invalid-feedback">
                         Masukkan email.
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="mb-3 khusus">
-                      <label for="password" class="form-label">Kata Sandi<span class="text-danger">*</span></label>
-                      <div class="d-flex align-items-center position-relative">
-                        <input
-                          type="password"
-                          name="password"
-                          class="form-control pe-5"
-                          id="password"
-                          placeholder="Kata Sandi"
-                          required="true"
-                          autocomplete="off"
-                        />
-                        <div class="invalid-feedback">
-                          Kata Sandi harus minimal 8 karakter, mengandung huruf besar, huruf kecil, dan angka.
-                        </div>
-                        <i
-                          class="fa-solid fa-eye-slash fs-5 position-absolute"
-                          style="right: 35px; cursor: pointer; color: #333;"
-                          onclick="togglePasswordVisibility()"
-                        ></i>
                       </div>
                     </div>
                   </div>
@@ -860,7 +935,9 @@
 
           <div class="container" id="containerDataSekolahAsal" style="display: none;">
             <div style="max-width: 100%;" class="bg-white rounded mt-5 p-3">
-              <div class="step-indicator mb-3">
+              <div class="step-indicator mb-3 overflow-auto">
+                <span class="fw-semibold step">
+                  Data Login</span>
                 <span class="fw-semibold step">Data Siswa</span>
                 <span class="fw-semibold step">Data Orang
                   Tua</span>
@@ -950,7 +1027,9 @@
 
           <div class="container" id="containerDataBerkas" style="display: none;">
             <div style="max-width: 100%;" class="bg-white rounded mt-5 p-3">
-              <div class="step-indicator mb-3">
+              <div class="step-indicator mb-3 overflow-auto">
+                <span class="fw-semibold step">
+                  Data Login</span>
                 <span class="fw-semibold step">Data Siswa</span>
                 <span class="fw-semibold step">Data Orang
                   Tua</span>
@@ -1153,6 +1232,17 @@
           input.classList.remove('is-invalid');
           input.classList.add('is-valid');
         }
+      } else if (input.id === 'password2') {
+         // Validasi khusus konfirmasi password
+          const passwordInput = container.querySelector('#password');
+          if (input.value === passwordInput.value &amp;&amp; input.value.trim() !== '') {
+              input.classList.remove('is-invalid');
+              input.classList.add('is-valid');
+          } else {
+              input.classList.add('is-invalid');
+              input.classList.remove('is-valid');
+              isValid = false;
+          }
       } else if (!input.checkValidity()) {
         // Validasi umum
         input.classList.add('is-invalid');
@@ -1254,6 +1344,16 @@
         } else {
           input.classList.add('is-invalid');
           input.classList.remove('is-valid');
+        }
+      } else if (input.id === 'password2') {
+        // Validasi khusus konfirmasi password
+        const passwordInput = document.querySelector('#password');
+        if (input.value === passwordInput.value &amp;&amp; input.value.trim() !== '') {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+        } else {
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
         }
       } else if (!input.checkValidity()) {
         input.classList.add('is-invalid');
@@ -1492,71 +1592,6 @@
               }
           });
       });
-
-      document.querySelectorAll('.portalOrangTua').forEach(function(element) {
-        element.addEventListener('click', function (event) {
-            event.preventDefault(); // Mencegah aksi default (navigasi link)
-
-            Swal.fire({
-                title: 'Masukkan Kode Akses',
-                input: 'text',
-                inputPlaceholder: 'Ketikkan kode akses di sini',
-                backdrop: 'false',
-                inputAttributes: {
-                    autocomplete: 'off' // Menonaktifkan autocomplete
-                },
-                showCancelButton: true,
-                confirmButtonText: 'Masuk',
-                cancelButtonText: 'Batal',
-                didOpen: () => {
-                  // Menyembunyikan navbar offcanvas
-                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
-                  if (navbarOffcanvas) {
-                      navbarOffcanvas.style.display = 'none';
-                  }
-              },
-              willClose: () => {
-                  // Menampilkan kembali navbar offcanvas
-                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
-                  if (navbarOffcanvas) {
-                      navbarOffcanvas.style.display = '';
-                  }
-              }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    if (result.value) {
-                        const kodeAkses = result.value;
-
-                        // Validasi kode akses melalui AJAX
-                        fetch('/validate_kode_akses', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ kode_akses: kodeAkses }) // Data dikirim dalam format JSON
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // Jika valid, arahkan ke portal orang tua
-                                window.location.href = '/portal_orang_tua?kode_akses=' + kodeAkses;
-                            } else {
-                                // Jika tidak valid, tampilkan pesan error
-                                Swal.fire('Kesalahan', data.message, 'error');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            Swal.fire('Kesalahan', 'Terjadi masalah pada server.', 'error');
-                        });
-
-                    } else {
-                        Swal.fire('Kesalahan', 'Kode akses tidak boleh kosong!', 'error');
-                    }
-                }
-            });
-        });
-    });
 
 
       function togglePasswordVisibility() {

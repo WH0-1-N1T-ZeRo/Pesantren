@@ -47,7 +47,7 @@
                                 <td>:</td>
                                 <td><span class="text-uppercase"><t t-esc="pendaftaran.golongan_darah"/></span></td>
                             </tr>
-                            <tr style="background-color: #E6E4E4;">
+                            <tr>
                                 <td>Email</td>
                                 <td>:</td>
                                 <td><t t-esc="pendaftaran.email"/></td>
@@ -55,12 +55,12 @@
                         </tbody>
                         </table>
                         <div>
-                        <h5 class="fw-bold">Langkah Selanjutnya lakukan pembayaran melalui : <br/> Virtual Account Bank BRI <br/> Nomor : 808989898894798778</h5>
+                        <h5 class="fw-bold">Langkah Selanjutnya lakukan pembayaran melalui : <br/> Nomor Rekening Bank BSI <br/> Nomor : <span t-esc="no_rekening" /></h5>
                         </div>
                         <br/>
                         <div>
                         <div>
-                            <span>Kalimantan, <t t-esc="pendaftaran.get_formatted_tanggal()" /> <br/> Panitia PSB,</span> <br/> <br/> <br/>
+                            <span>Kalimantan Selatan, <t t-esc="pendaftaran.get_formatted_tanggal()" /> <br/> Panitia PSB,</span> <br/> <br/> <br/>
                             <span>(...................................)</span>
                         </div>
                         </div>

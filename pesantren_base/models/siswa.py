@@ -99,7 +99,7 @@ class siswa(models.Model):
     tahunajaran_id      = fields.Many2one(comodel_name="cdn.ref_tahunajaran",  string="Thn Ajaran",  help="")
     ruang_kelas_id      = fields.Many2one(comodel_name="cdn.ruang_kelas",  string="Ruang Kelas",  help="")
     ekstrakulikuler_ids = fields.Many2many("cdn.ekstrakulikuler",string="Ekstrakulikuler")
-    jenjang             = fields.Selection(selection=[('sd','SD/MI'),('smp','SMP/MTS'),('sma','SMA/MA/SMK')],  string="Jenjang", related="ruang_kelas_id.name.jenjang", readonly=True, store=True, help="")
+    jenjang             = fields.Selection(selection=[('paud','PAUD'),('tk','TK/RA'),('sd','SD/MI'),('smp','SMP/MTS'),('sma','SMA/MA/SMK')],  string="Jenjang", related="ruang_kelas_id.name.jenjang", readonly=True, store=True, help="")
     tingkat             = fields.Many2one(comodel_name="cdn.tingkat",  string="Tingkat", related="ruang_kelas_id.name.tingkat", readonly=True, store=True, help="")
 
     # Data Pendaftaran

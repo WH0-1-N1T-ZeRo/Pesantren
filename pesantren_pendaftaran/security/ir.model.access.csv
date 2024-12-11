@@ -27,4 +27,3 @@ access_soal_seleksi_manager,soal.seleksi,model_seleksi_soal,pesantren_pendaftara
 access_penilaian_public,cdn.penilaian,model_seleksi_penilaian,base.group_public,1,0,0,0
 access_penilaian_user,cdn.penilaian,model_seleksi_penilaian,base.group_user,1,0,0,0
 access_penilaian_manager,cdn.penilaian,model_seleksi_penilaian,pesantren_pendaftaran.group_pendaftaran_manager,1,1,1,1
-

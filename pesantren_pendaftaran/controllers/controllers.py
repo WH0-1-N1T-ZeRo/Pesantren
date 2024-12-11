@@ -9,45 +9,46 @@ import datetime
 from odoo.exceptions import UserError
 import hashlib
 import locale
+import base64
 
-class PsbController(http.Controller):
-    @http.route('/psb/statistics', type='http', auth='public', methods=['POST'], csrf=False)
-    def get_statistics(self):
-        Pendaftaran = request.env['ubig.pendaftaran'].sudo()
-        data = Pendaftaran.get_psb_statistics()
+# class PsbController(http.Controller):
+#     @http.route('/psb/statistics', type='http', auth='public', methods=['POST'], csrf=False)
+#     def get_statistics(self):
+#         Pendaftaran = request.env['ubig.pendaftaran'].sudo()
+#         data = Pendaftaran.get_psb_statistics()
 
-        if request.httprequest.headers.get('Content-Type') == 'application/json':
-            # Permintaan JSON
-            return json.dumps(data)
-        else:
-            # Permintaan HTTP biasa
-            return request.make_response(
-                json.dumps(data),
-                headers={'Content-Type': 'application/json'}
-            )
+#         if request.httprequest.headers.get('Content-Type') == 'application/json':
+#             # Permintaan JSON
+#             return json.dumps(data)
+#         else:
+#             # Permintaan HTTP biasa
+#             return request.make_response(
+#                 json.dumps(data),
+#                 headers={'Content-Type': 'application/json'}
+#             )
         
-    @http.route('/pendaftaran/check', type='http', auth='public', methods=['POST'], csrf=False)
-    def check_kuota(self):
-        Pendaftaran = request.env['ubig.pendaftaran'].sudo()
-        total_pendaftar = Pendaftaran.search_count([])
+#     @http.route('/pendaftaran/check', type='http', auth='public', methods=['POST'], csrf=False)
+#     def check_kuota(self):
+#         Pendaftaran = request.env['ubig.pendaftaran'].sudo()
+#         total_pendaftar = Pendaftaran.search_count([])
 
-        # Mengambil nilai kuota pendaftaran dari ir.config_parameter
-        config_param = request.env['ir.config_parameter'].sudo()
-        kuota_pendaftaran = int(config_param.get_param('pesantren_pendaftaran.kuota_pendaftaran', default=0))
+#         # Mengambil nilai kuota pendaftaran dari ir.config_parameter
+#         config_param = request.env['ir.config_parameter'].sudo()
+#         kuota_pendaftaran = int(config_param.get_param('pesantren_pendaftaran.kuota_pendaftaran', default=0))
 
-        data = {
-            'is_full': total_pendaftar >= kuota_pendaftaran # True jika kuota penuh
-        }
+#         data = {
+#             'is_full': total_pendaftar >= kuota_pendaftaran # True jika kuota penuh
+#         }
 
-        if request.httprequest.headers.get('Content-Type') == 'application/json':
-            # Permintaan JSON
-            return json.dumps(data)
-        else:
-            # Permintaan HTTP biasa
-            return request.make_response(
-                json.dumps(data),
-                headers={'Content-Type': 'application/json'}
-            )
+#         if request.httprequest.headers.get('Content-Type') == 'application/json':
+#             # Permintaan JSON
+#             return json.dumps(data)
+#         else:
+#             # Permintaan HTTP biasa
+#             return request.make_response(
+#                 json.dumps(data),
+#                 headers={'Content-Type': 'application/json'}
+#             )
 
 
 class PesantrenBeranda(http.Controller):
@@ -77,7 +78,7 @@ class PesantrenBeranda(http.Controller):
             alamat_perusahaan['country']
         ]))
 
-        # Ambil nilai dari field konfigurasi
+         # Ambil nilai dari field konfigurasi
         config_obj = http.request.env['ir.config_parameter'].sudo()
 
         tgl_mulai_pendaftaran = config_obj.get_param('pesantren_pendaftaran.tgl_mulai_pendaftaran')
@@ -189,7 +190,7 @@ class PesantrenBeranda(http.Controller):
                 color: #009688; }}
             .footer {{ 
                 background-color: #4a4a4a;
-            }}
+             }}
             .footer h5 {{
                 font-weight: bold;
             }}
@@ -309,7 +310,7 @@ class PesantrenBeranda(http.Controller):
                 <div>
                     <!-- Buttons for Pendaftaran and Login -->
                     <a href="/psb" class="btn btn-light ms-2" type="submit">Pendaftaran</a>
-                    <a href="/odoo" class="btn btn-warning ms-2" type="submit">Login</a>
+                    <a href="/login" class="btn btn-warning ms-2" type="submit">Login</a>
                 </div>
                 </div>
             </div>
@@ -335,7 +336,7 @@ class PesantrenBeranda(http.Controller):
             <!-- banner end -->
 
             <!-- Step Pendaftaran -->
-            <div class="container">
+            <!-- <div class="container">
                 <div class="row shadow rounded mt-5 mb-5 p-5" style="background-color: #EAF1FB;">
                     <div class="col-3 col-sm-3 col-md-3 col-lg-3">
                         <div class="card-item">
@@ -362,7 +363,7 @@ class PesantrenBeranda(http.Controller):
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             
             <div class="container text-center my-3">
                 <h1 class="fw-bold"><span class="text-green">Alur</span> Pendaftaran Online</h1>
@@ -442,7 +443,7 @@ class PesantrenBeranda(http.Controller):
                 </div>
                 <!-- Image Section -->
                 <div class="col-md-6">
-                    <img src="pesantren_pendaftaran/static/src/img/PAGE2.44b0e259.png" class="img-fluid rounded-4"
+                    <img src="https://psb.nuruljadid.net/img/PAGE2.44b0e259.png" class="img-fluid rounded-4"
                     alt="Syarat Pendaftaran">
                 </div>
                 </div>
@@ -540,7 +541,7 @@ class PesantrenBeranda(http.Controller):
             <div class="container my-5">
                 <div class="row align-items-center">
                 <div class="col-md-6">
-                    <img src="pesantren_pendaftaran/static/src/img/PAGE3.e3b6d704.png" alt="Image" class="rounded-custom img-fluid" />
+                    <img src="https://psb.nuruljadid.net/img/PAGE3.e3b6d704.png" alt="Image" class="rounded-custom img-fluid" />
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <h3 class="fw-bold"><span class="text-primary ">Informasi</span> Pelayanan Pendaftaran</h3>
@@ -729,29 +730,6 @@ function animateCount(elementId, targetValue) {{
     requestAnimationFrame(updateNumber);
 }}
 
-function updateStatistics() {{
-    $.ajax({{
-        url: '/psb/statistics',
-        type: 'POST',
-        contentType: 'application/json', // Pastikan tipe konten JSON
-        dataType: 'json',
-        success: function (data) {{
-            // Gunakan fungsi animasi untuk memperbarui angka
-            animateCount("count-kuota", data.kuota_pendaftaran);
-            animateCount("count-pendaftar", data.total_pendaftar);
-            animateCount("count-diterima", data.total_diterima);
-            animateCount("count-sisa", data.sisa_kuota);
-        }},
-        error: function (err) {{
-            console.error('Error fetching statistics:', err);
-        }}
-    }});
-}}
-
-// Panggil fungsi ini setiap beberapa detik
-setInterval(updateStatistics, 5000);
-// Jalankan pertama kali saat halaman dimuat
-$(document).ready(updateStatistics);
 
 
 
@@ -944,7 +922,7 @@ class PesantrenPendaftaran(http.Controller):
             <nav class="navbar navbar-expand-lg" style="height: 65px;">
                 <div class="container-fluid">
                     <a class="navbar-brand ms-5 text-white fw-semibold" href="/psb">
-                    	<img src="https://i.ibb.co.com/f9j819p/1731466812700.png" alt="1731466812700" width="50" alt="Logo Pesantren">       Daarul Qur'an Istiqomah
+                    	<img src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" alt="1731466812700" width="50" alt="Logo Pesantren">       Daarul Qur'an Istiqomah
                 	</a>
                     <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
                         <span class="navbar-toggler-icon"></span>
@@ -955,10 +933,10 @@ class PesantrenPendaftaran(http.Controller):
                                 <a class="nav-link text-white" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                             </li>
                             <li class="nav-item me-3">
-                                <a class="nav-link text-white pendaftaran-menu" href="#"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
+                                <a class="nav-link text-white" href="/pendaftaran"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                             </li>
                             <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/odoo"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                <a class="nav-link text-white" href="/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
@@ -971,11 +949,6 @@ class PesantrenPendaftaran(http.Controller):
                             f'<a href="/pengumuman/sma-ma">SMA / MA</a>'
                             f'</div>'
                             f'</li>' if is_halaman_pengumuman else ''}
-                            <li class="nav-item me-3">
-                                <a class="nav-link text-white portalOrangTua" href="#">
-                                    <i class="fa-solid fa-user me-2"></i>Portal Orang Tua
-                                </a>
-                            </li>
                         </ul>
                     </div>
                 </div>
@@ -984,7 +957,7 @@ class PesantrenPendaftaran(http.Controller):
             <div class="offcanvas offcanvas-end background" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 <a class="navbar-brand mt-1 text-white fw-semibold" href="/psb" style="display: flex; flex-direction: column; align-items: center;">
-                    <img src="https://i.ibb.co.com/f9j819p/1731466812700.png" alt="1731466812700" width="50" alt="Logo Pesantren">
+                    <img src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" alt="1731466812700" width="50" alt="Logo Pesantren">
                     Daarul Qur'an Istiqomah
                 </a>
                 <div class="offcanvas-body">
@@ -993,10 +966,10 @@ class PesantrenPendaftaran(http.Controller):
                             <a class="nav-link text-white" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                         </li>
                         <li class="nav-item me-3">
-                            <a class="nav-link text-white pendaftaran-menu" href="#"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
+                            <a class="nav-link text-white" href="/pendaftaran"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                         </li>
                         <li class="nav-item me-3">
-                            <a class="nav-link text-white" href="/odoo"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                            <a class="nav-link text-white" href="/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                         </li>
                         <li class="nav-item me-3">
                             <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
@@ -1009,11 +982,6 @@ class PesantrenPendaftaran(http.Controller):
                         f'<a href="/pengumuman/sma-ma">SMA / MA</a>'
                         f'</div>'
                         f'</li>' if is_halaman_pengumuman else ''}
-                        <li class="nav-item me-3">
-                            <a class="nav-link text-white portalOrangTua" href="#">
-                                <i class="fa-solid fa-user me-2"></i>Portal Orang Tua
-                            </a>
-                        </li>
                     </ul>
                 </div>
             </div>
@@ -1022,7 +990,7 @@ class PesantrenPendaftaran(http.Controller):
                 <div class="text-center text-white">
                     <h4 class="fs-2 fw-semibold mb-2">Aplikasi penerimaan santri baru</h4>
                     <span>Daarul Qur'an Istiqomah Tanah Laut Kalimantan Selatan</span> <br><br>
-                    <a href="#" style="background-color: #e91e63; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px;" class="pendaftaran-menu" id="daftar">Daftar Sekarang</a>
+                    <a href="/pendaftaran" style="background-color: #e91e63; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px;" class=" id="daftar">Daftar Sekarang</a>
                 </div>
             </div>
 
@@ -1033,12 +1001,12 @@ class PesantrenPendaftaran(http.Controller):
                         <div>
                             <i class="fa-solid fa-graduation-cap fs-1 border rounded-circle p-5" style="color: #e91e63 !important;"></i>
                         </div>
-                        <span class="text-uppercase fs-3 judul">Prodi</span>
+                        <span class="text-uppercase text-center fs-3 judul">Jenjang Pendidikan</span>
                         <div class="text-center mb-4 teks-judul">
-                            <span class="text-secondary" style="font-size: 14px;">1. TK TAHFIZH</span>
-                            <span class="text-secondary" style="font-size: 14px;">2. SD BILINGUAL</span>
-                            <span class="text-secondary" style="font-size: 14px;">3. SMP / MTS</span>
-                            <span class="text-secondary" style="font-size: 14px;">4. SMA / MA</span>
+                            <span class="text-secondary" style="font-size: 14px;">1. Paud baby Qu (KB dan TK)</span>
+                            <span class="text-secondary" style="font-size: 14px;">2. SD Tahfizh bilingual</span>
+                            <span class="text-secondary" style="font-size: 14px;">3. SMP Tahfizh bilingual</span>
+                            <span class="text-secondary" style="font-size: 14px;">4. MA Tahfizh bilingual</span>
                         </div>
                         <div class="text-uppercase">
                             <a href="" data-bs-toggle="modal" data-bs-target="#detailProgramPendidikan" class="effect" style="background-color: #9F1FB2 !important; padding: 10px 20px; border-radius: 20px; text-decoration: none; color: white;">Detail</a>
@@ -1077,7 +1045,7 @@ class PesantrenPendaftaran(http.Controller):
                         </div>
                         <span class="text-uppercase fs-3 judul">Hubungi Kami</span>
                         <div class="text-center mb-4 teks-judul">
-                            <span class="text-secondary" style="font-size: 14px;">Jika memerlukan bantuan : Telp / WA : 62271-858199 </span>
+                            <span class="text-secondary" style="font-size: 14px;">Jika memerlukan bantuan : Telp / WA : 0853-9051-1124 </span>
                         </div>
                         <div class="text-uppercase">
                             <a href="/bantuan" class="effect" style="background-color: #9F1FB2 !important; padding: 10px 20px; border-radius: 20px; text-decoration: none; color: white;">Detail</a>
@@ -1114,11 +1082,12 @@ class PesantrenPendaftaran(http.Controller):
                         <div class="col-md-8">
                             <div>
                                 <span class="fw-semibold">PEMBUKAAN PROGRAM PENDIDIKAN (Putra dan Putri)</span>
-                                <ul class="text-secondary">
-                                    <li>Program TK TAHFIZH</li>
-                                    <li>Program SD BILINGUAH</li>
-                                    <li>Program SMP dan MTS</li>
-                                    <li>Program SMA dan MA</li>
+                                <ul class="text-secondary">                                   
+                                    <li>KB (2 - 3tahun)</li>
+                                    <li>TK ( 4 - 5tahun)</li>
+                                    <li>SD Tahfizh Bilinglual</li>
+                                    <li>SMP Tahfizh bilingual</li>
+                                    <li>MA Tahfizh bilingual</li>
                                 </ul>
                             </div>
                         </div>
@@ -1133,7 +1102,7 @@ class PesantrenPendaftaran(http.Controller):
                                 <span class="fw-semibold">PELAKSANAAN TEST MASUK</span>
                                 <p class="text-secondary">Seluruh test dilaksanakan dalam 2 Gelombang <br>
                                     Test
-                                    dilaksanakan secara ONLINE menggunakan media ZOOM meeting</p>
+                                    dilaksanakan secara OFFLINE</p>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -1177,7 +1146,7 @@ class PesantrenPendaftaran(http.Controller):
                                 <p class="text-secondary">Pendaftaran dilaksanakan pada: <br>
                                         Gel 1: {tgl_mulai_pendaftaran_formatted} - {tgl_akhir_pendaftaran_formatted} <br>
                                         Gel 2: {tgl_mulai_pendaftaran_formatted} - {tgl_akhir_pendaftaran_formatted} <br> melalui website <a href="/pendaftaran"
-                                    class="text-decoration-none text-primary">https://psb.daarulquranistiqomah</a></p>
+                                    class="text-decoration-none text-primary">https://aplikasi.dqi.ac.id/psb</a></p>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -1227,27 +1196,22 @@ class PesantrenPendaftaran(http.Controller):
                             <div>
                                 <span class="fw-semibold">SYARAT UTAMA PENDAFTARAN :</span>
                                 <ol class="text-secondary">
-                                    <li>Telah duduk dikelas terakhir SD/MI/sederajat untuk Program SMP & MTS</li>
-                                    <li>Telah duduk dikelas terakhir SMP/MTs/sederajat untuk program SMA & MA</li>
-                                    <li>Tidak mempunyai riwayat penyakit menular dan berbahaya.</li>
-                                    <li>Menandatangani surat pernyataan penyanggupan wali santri bermaterai dan diupload
-                                    </li>
-                                    <li>Mengisi formulir online secara lengkap dan benar melalui laman https://psb.daarulquranistiqomah
-                                    </li>
-                                    <li>Membayar biaya pendaftran untuk program TK TAHFIZH sebesar Rp.75.000,-</li>
-                                    <li>Membayar biaya pendaftran untuk program SD Bilingual sebesar Rp.90.000,-</li>
-                                    <li>Membayar biaya pendaftran untuk program SMP & MTS sebesar Rp.100.000,-</li>
-                                    <li>Membayar biaya pendaftran untuk program SMA & MA sebesar Rp.120.000,-</li>
+                                    <li>Mengisi formulir online secara lengkap dan benar melalui laman https://dqi.ac.id/psb</li>
+                                    <li>Membayar biaya pendaftran untuk program Paud baby Qu KB A & B(usia 2 - 3th) sebesar Rp.350.000</li>
+                                    <li>Membayar biaya pendaftran untuk program TK sebesar Rp.300.000</li>
+                                    <li>Membayar biaya pendaftran untuk program SD Tahfizh bilingual sebesar Rp.300.000</li>
+                                    <li>Membayar biaya pendaftran untuk program SMP Tahfizh bilingual sebesar Rp.300.000</li>
+                                    <li>Membayar biaya pendaftran untuk program MA Tahfizh bilingual sebesar Rp.300.000</li>
                                     <li>
-                                        Menguplod berkas :
+                                        Syarat Pendaftaran :
                                         <ul type="disc" class="text-secondary">
-                                            <li>Akte Kelahiran</li>
-                                            <li>Kartu Keluarga</li>
-                                            <li>KTP Orangtua/Wali</li>
-                                            <li>Ijazah</li>
-                                            <li>Raport Pendidikan Terakhir</li>
-                                            <li>Pas foto terbaru dengan 80% wajah dengan latar belakang merah</li>
-                                            <li>Surat Keterangan Sehat</li>
+                                            <li>Fotocopy Akta Kelahiran 2 lembar</li>
+                                            <li>Fotocopy KK 1 lembar</li>
+                                            <li>Fotocopy KTP Orangtua (Masing-masing 1 lembar)</li>
+                                            <li>Fotocopy Raport Semester akhir (menyusul)</li>
+                                            <li>Pas Foto berwarna ukuran 3x4 4lembar</li>
+                                            <li>Pas Foto Orangtua masing-masing 1lembar (Khusus Pendaftar KB dan TK)</li>
+                                            <li>Berkas dimasukkan dalam Map warna hijau dan diberi nama serta lembaga pendidikan</li>
                                         </ul>
                                     </li>
                                 </ol>
@@ -1289,105 +1253,6 @@ class PesantrenPendaftaran(http.Controller):
             <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
             <script src=" https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js "></script>
 
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {{
-    // Tangkap semua elemen dengan class 'pendaftaran-menu'
-    document.querySelectorAll(".pendaftaran-menu").forEach(function(menu) {{
-        menu.addEventListener("click", function(event) {{
-            event.preventDefault(); // Cegah navigasi default
-
-            // Panggil API untuk memeriksa kuota
-            $.ajax({{
-                url: "/pendaftaran/check",
-                type: "POST",
-                contentType: 'application/json', // Pastikan tipe konten JSON
-                dataType: 'json',
-                success: function(response) {{
-                    if (response.is_full) {{
-                        // Tampilkan modal jika kuota penuh
-                        $("#modalPendaftaranTutup").modal("show");
-                    }} else {{
-                        // Jika kuota tersedia, arahkan ke halaman pendaftaran
-                        window.location.href = "/pendaftaran";
-                    }}
-                }},
-                error: function() {{
-                    alert("Terjadi kesalahan saat memeriksa kuota. Silakan coba lagi.");
-                }}
-            }});
-        }});
-    }});
-}});
-
-            
-document.querySelectorAll('.portalOrangTua').forEach(function(element) {{
-        element.addEventListener('click', function (event) {{
-            event.preventDefault(); // Mencegah aksi default (navigasi link)
-
-            Swal.fire({{
-                title: 'Masukkan Kode Akses',
-                input: 'text',
-                inputPlaceholder: 'Ketikkan kode akses di sini',
-                backdrop: 'false',
-                inputAttributes: {{
-                    autocomplete: 'off' // Menonaktifkan autocomplete
-                }},
-                showCancelButton: true,
-                confirmButtonText: 'Masuk',
-                cancelButtonText: 'Batal',
-                didOpen: () => {{
-                  // Menyembunyikan navbar offcanvas
-                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
-                  if (navbarOffcanvas) {{
-                      navbarOffcanvas.style.display = 'none';
-                  }}
-              }},
-              willClose: () => {{
-                  // Menampilkan kembali navbar offcanvas
-                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
-                  if (navbarOffcanvas) {{
-                      navbarOffcanvas.style.display = '';
-                  }}
-              }}
-            }}).then((result) => {{
-                if (result.isConfirmed) {{
-                    if (result.value) {{
-                        const kodeAkses = result.value;
-
-                        // Validasi kode akses melalui AJAX
-                        fetch('/validate_kode_akses', {{
-                            method: 'POST',
-                            headers: {{
-                                'Content-Type': 'application/json'
-                            }},
-                            body: JSON.stringify({{ kode_akses: kodeAkses }}) // Data dikirim dalam format JSON
-                        }})
-                        .then(response => response.json())
-                        .then(data => {{
-                            if (data.success) {{
-                                // Jika valid, arahkan ke portal orang tua
-                                window.location.href = '/portal_orang_tua?kode_akses=' + kodeAkses;
-                            }} else {{
-                                // Jika tidak valid, tampilkan pesan error
-                                Swal.fire('Kesalahan', data.message, 'error');
-                            }}
-                        }})
-                        .catch(error => {{
-                            console.error('Error:', error);
-                            Swal.fire('Kesalahan', 'Terjadi masalah pada server.', 'error');
-                        }});
-
-                    }} else {{
-                        Swal.fire('Kesalahan', 'Kode akses tidak boleh kosong!', 'error');
-                    }}
-                }}
-            }});
-        }});
-    }});
-
-
-            </script>
-
 
             </body>
             </html>
@@ -1401,34 +1266,26 @@ class UbigPendaftaranController(http.Controller):
     def pendaftaran_form(self, **kwargs):
 
         Pendaftaran = request.env['ubig.pendaftaran']
-        total_pendaftar = Pendaftaran.search_count([])
-        kode_akses = Pendaftaran.generate_kode_akses()
 
         # Mengambil nilai kuota pendaftaran dari ir.config_parameter
         config_param = request.env['ir.config_parameter'].sudo()
-        kuota_pendaftaran = int(config_param.get_param('pesantren_pendaftaran.kuota_pendaftaran', default=0))
         is_halaman_pengumuman = config_param.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default='False') == 'True'
 
-        if total_pendaftar >= kuota_pendaftaran:
-            return request.redirect('/psb')
-        else:
-            # Render form pendaftaran HTML
-            pendidikan_list = request.env['ubig.pendidikan'].sudo().search([])
-            return request.render('pesantren_pendaftaran.pendaftaran_form_template', {
-                'pendidikan_list': pendidikan_list,
-                'is_halaman_pengumuman': is_halaman_pengumuman,
-                'kode_akses': kode_akses,
-            })
+        pendidikan_list = request.env['ubig.pendidikan'].sudo().search([])
+        return request.render('pesantren_pendaftaran.pendaftaran_form_template', {
+            'pendidikan_list': pendidikan_list,
+            'is_halaman_pengumuman': is_halaman_pengumuman,
+        })
 
     @http.route('/pendaftaran/submit', type='http', auth='public', methods=['POST'], csrf=True)
     def pendaftaran_submit(self, **post):
 
         # Ambil data dari form
-        kode_akses             = post.get('kode_akses')
+        # kode_akses             = post.get('kode_akses')
         nama                   = post.get('nama')
         nik                    = post.get('nik')
         email                  = post.get('email')
-        # password               = post.get('password')
+        password               = post.get('password')
         jenjang_id             = post.get('jenjang_id')
         gender                 = request.params.get('gender')
         kota_lahir             = post.get('kota_lahir')
@@ -1489,28 +1346,60 @@ class UbigPendaftaranController(http.Controller):
         status_sekolah_asal    = request.params.get('status_sekolah_asal')
         npsn                   = post.get('npsn')
 
+        # Ambil file dari request
+        uploaded_files = request.httprequest.files
+
         # Data Berkas
-        akta_kelahiran         = request.params.get('akta_kelahiran')
-        kartu_keluarga         = request.params.get('kartu_keluarga')
-        ijazah                 = request.params.get('ijazah') if request.params.get('ijazah') else ''
-        surat_kesehatan        = request.params.get('surat_kesehatan') if request.params.get('surat_kesehatan') else ''
-        pas_foto               = request.params.get('pas_foto')
-        raport_terakhir        = request.params.get('raport_terakhir') if request.params.get('raport_terakhir') else ''
-        ktp_ortu               = request.params.get('ktp_ortu')
-        skhun                  = request.params.get('skhun') if request.params.get('skhun') else ''
+        # akta_kelahiran         = request.params.get('akta_kelahiran')
+        # kartu_keluarga         = request.params.get('kartu_keluarga')
+        # ijazah                 = request.params.get('ijazah') if request.params.get('ijazah') else ''
+        # surat_kesehatan        = request.params.get('surat_kesehatan') if request.params.get('surat_kesehatan') else ''
+        # pas_foto               = request.params.get('pas_foto')
+        # raport_terakhir        = request.params.get('raport_terakhir') if request.params.get('raport_terakhir') else ''
+        # ktp_ortu               = request.params.get('ktp_ortu')
+        # skhun                  = request.params.get('skhun') if request.params.get('skhun') else ''
+
+        # Ambil setiap file, konversi ke Base64, dan proses
+        akta_kelahiran = uploaded_files.get('akta_kelahiran')
+        kartu_keluarga = uploaded_files.get('kartu_keluarga')
+        ijazah = uploaded_files.get('ijazah')
+        surat_kesehatan = uploaded_files.get('surat_kesehatan')
+        pas_foto = uploaded_files.get('pas_foto')
+        raport_terakhir = uploaded_files.get('raport_terakhir')
+        ktp_ortu = uploaded_files.get('ktp_ortu')
+        skhun = uploaded_files.get('skhun')
+
+        # Fungsi bantu untuk memproses file
+        def process_file(file):
+            if file:
+                # Baca file dan konversi ke Base64
+                file_content = file.read()
+                file_base64 = base64.b64encode(file_content)
+                return file_base64
+            return None
+
+        # Konversi file yang diunggah
+        akta_kelahiran_b64 = process_file(akta_kelahiran)
+        kartu_keluarga_b64 = process_file(kartu_keluarga)
+        ijazah_b64 = process_file(ijazah)
+        surat_kesehatan_b64 = process_file(surat_kesehatan)
+        pas_foto_b64 = process_file(pas_foto)
+        raport_terakhir_b64 = process_file(raport_terakhir)
+        ktp_ortu_b64 = process_file(ktp_ortu)
+        skhun_b64 = process_file(skhun)
 
         wali_terdaftar = request.env['ubig.pendaftaran'].sudo().search([('wali_email', '=', wali_email)])
 
-        if wali_terdaftar:
-            kode_akses = wali_terdaftar[0].kode_akses
+        # if wali_terdaftar:
+        #     kode_akses = wali_terdaftar[0].kode_akses
 
         # Simpan data ke model ubig.pendaftaran
         pendaftaran = request.env['ubig.pendaftaran'].sudo().create({
-            'kode_akses'             : kode_akses,
+            # 'kode_akses'             : kode_akses,
             'name'                   : nama,
             'nik'                    : nik,
             'email'                  : email,
-            # 'password'               : password,
+            'password'               : password,
             'jenjang_id'             : int(jenjang_id),
             'gender'                 : gender,
             'kota_lahir'             : kota_lahir,
@@ -1564,14 +1453,14 @@ class UbigPendaftaranController(http.Controller):
             'npsn'                   : npsn,
 
             # Data Berkas
-            'akta_kelahiran'         : akta_kelahiran.read() if akta_kelahiran else False,
-            'kartu_keluarga'         : kartu_keluarga.read() if kartu_keluarga else False,
-            'ijazah'                 : ijazah.read() if ijazah else False,
-            'surat_kesehatan'        : surat_kesehatan.read() if surat_kesehatan else False,
-            'pas_foto'               : pas_foto.read() if pas_foto else False,
-            'raport_terakhir'        : raport_terakhir.read() if raport_terakhir else False,
-            'ktp_ortu'               : ktp_ortu.read() if ktp_ortu else False,
-            'skhun'                  : skhun.read() if skhun else False,
+            'akta_kelahiran'         : akta_kelahiran_b64 if akta_kelahiran_b64 else False,
+            'kartu_keluarga'         : kartu_keluarga_b64 if kartu_keluarga_b64 else False,
+            'ijazah'                 : ijazah_b64 if ijazah_b64 else False,
+            'surat_kesehatan'        : surat_kesehatan_b64 if surat_kesehatan_b64 else False,
+            'pas_foto'               : pas_foto_b64 if pas_foto_b64 else False,
+            'raport_terakhir'        : raport_terakhir_b64 if raport_terakhir_b64 else False,
+            'ktp_ortu'               : ktp_ortu_b64 if ktp_ortu_b64 else False,
+            'skhun'                  : skhun_b64 if skhun_b64 else False,
             'state'                  : 'draft'  # set status awal menjadi 'terdaftar'
         })
 
@@ -1584,62 +1473,167 @@ class UbigPendaftaranController(http.Controller):
     def pendaftaran_success(self, token=None, **kwargs):
 
         Pendaftaran = request.env['ubig.pendaftaran']
-        total_pendaftar = Pendaftaran.search_count([])
 
         # Mengambil nilai kuota pendaftaran dari ir.config_parameter
         config_param = request.env['ir.config_parameter'].sudo()
-        kuota_pendaftaran = int(config_param.get_param('pesantren_pendaftaran.kuota_pendaftaran', default=0))
         is_halaman_pengumuman = config_param.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False) == 'True'
+        no_rekening = config_param.get_param('pesantren_pendaftaran.no_rekening', default='7181863913')
+        # Menangkap Token pendaftaran dari URL
+        token = request.params.get('token')
 
-        if total_pendaftar >= kuota_pendaftaran:
-            return request.redirect('/psb')
-        else:
-            # Menangkap Token pendaftaran dari URL
-            token = request.params.get('token')
+        if not token:
+            return request.not_found()
 
-            if not token:
-                return request.not_found()
+        # Cari pendaftaran berdasarkan token
+        pendaftaran = Pendaftaran.sudo().search([('token', '=', token)], limit=1)
+        if not pendaftaran:
+            return request.not_found()
 
-            # Cari pendaftaran berdasarkan token
-            pendaftaran = Pendaftaran.sudo().search([('token', '=', token)], limit=1)
-            if not pendaftaran:
-                return request.not_found()
+        # Kirim email
+        if pendaftaran.email:
+            # Contoh password (validasi minimal 8 karakter sudah dilakukan)
+            password = pendaftaran.password
 
-            return request.render('pesantren_pendaftaran.pendaftaran_success_template', {
-                'pendaftaran': pendaftaran,
-                'is_halaman_pengumuman': is_halaman_pengumuman,
-            })
+            # Sembunyikan bagian tengah kecuali dua karakter awal dan dua karakter akhir
+            masked_password = password[:2] + '*' * (len(password) - 4) + password[-2:]
+
+            email_values = {
+                'subject': "Informasi Login Sistem Pesantren Daarul Qur'an Istiqomah",
+                'email_to': pendaftaran.email,
+                'body_html': f'''
+                    <div style="background-color: #d9eaf7; padding: 20px; font-family: Arial, sans-serif;">
+                        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden;">
+                            <!-- Header -->
+                            <div style="background-color: #0066cc; color: #ffffff; text-align: center; padding: 20px;">
+                                <h1 style="margin: 0; font-size: 24px;">Pesantren Daarul Qur'an Istiqomah</h1>
+                            </div>
+                            <!-- Body -->
+                            <div style="padding: 20px; color: #555555;">
+                                <p style="margin: 0 0 10px;">Assalamualaikum Wr. Wb,</p>
+                                <p style="margin: 0 0 20px;">
+                                    Bapak/Ibu <strong>{pendaftaran.wali_nama}</strong>,<br>
+                                    Akun Login telah dibuat di sistem pesantren kami. Berikut adalah informasi login Anda:
+                                </p>
+                                <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                                    <h3>Akun Login</h3>
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <tr>
+                                            <td style="padding: 8px; font-weight: bold; color: #333333;">Email :</td>
+                                            <td style="padding: 8px; color: #555555;">{pendaftaran.email}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px; font-weight: bold; color: #333333;">Kata Sandi :</td>
+                                            <td style="padding: 8px; color: #555555;">{masked_password}</td>
+                                        </tr>
+                                    </table>
+
+                                    <h3>Data Pendaftaran</h3>
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <tr>
+                                            <td style="padding: 8px; font-weight: bold; color: #333333;">Nama :</td>
+                                            <td style="padding: 8px; color: #555555;">{pendaftaran.partner_id.name}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px; font-weight: bold; color: #333333;">TTL :</td>
+                                            <td style="padding: 8px; color: #555555;">{pendaftaran.kota_lahir}, {pendaftaran.tanggal_lahir}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px; font-weight: bold; color: #333333;">Alamat :</td>
+                                            <td style="padding: 8px; color: #555555;">{pendaftaran.alamat}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px; font-weight: bold; color: #333333;">NIK :</td>
+                                            <td style="padding: 8px; color: #555555;">{pendaftaran.nik}</td>
+                                        </tr>
+                                    </table>
+
+                                    <h3>Jenjang Pendidikan Yang Dipilih</h3>
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <tr>
+                                            <td style="padding: 8px; font-weight: bold; color: #333333;">Jenjang :</td>
+                                            <td style="padding: 8px; color: #555555;">{pendaftaran.jenjang_id.name}</td>
+                                        </tr>
+                                    </table>
+
+                                    <h3>Informasi Pembayaran</h3>
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <tr>
+                                            <td style="padding: 8px; font-weight: bold; color: #333333;">Bank :</td>
+                                            <td style="padding: 8px; color: #555555;">BSI</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px; font-weight: bold; color: #333333;">Nomor Rekening :</td>
+                                            <td style="padding: 8px; color: #555555;">{no_rekening}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px; font-weight: bold; color: #333333;">Sejumlah :</td>
+                                            <td style="padding: 8px; color: #555555;">Rp. {str('{:,.2f}'.format(pendaftaran.biaya)).replace(',', '.').replace('.', ',', 1)}</td>
+                                        </tr>
+                                    </table>
+
+                                </div>
+                                <p style="text-align: center;">
+                                    <a href="https://aplikasi.dqi.ac.id/login" style="background-color: #0066cc; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">
+                                        Masuk Ke Akun Anda
+                                    </a>
+                                </p>
+                                <p style="margin: 20px 0;">
+                                    Apabila terdapat kesulitan atau membutuhkan bantuan, silakan hubungi tim teknis kami melalui nomor:
+                                </p>
+                                <ul style="margin: 0; padding-left: 20px; color: #555555;">
+                                    <li>0822 5207 9785</li>
+                                    <li>0853 9051 1124</li>
+                                </ul>
+                                <p style="margin: 20px 0;">
+                                    Kami berharap portal ini dapat membantu Bapak/Ibu memantau perkembangan putra/putri selama berada di pesantren.
+                                </p>
+                            </div>
+                            <!-- Footer -->
+                            <div style="background-color: #f1f1f1; text-align: center; padding: 10px;">
+                                <p style="font-size: 12px; color: #888888; margin: 0;">
+                                    &copy; 2024 Pesantren Tahfizh Daarul Qur'an Istiqomah. All rights reserved.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                ''',
+            }
+
+            mail = request.env['mail.mail'].sudo().create(email_values)
+            mail.send()
+
+        return request.render('pesantren_pendaftaran.pendaftaran_success_template', {
+            'pendaftaran': pendaftaran,
+            'is_halaman_pengumuman': is_halaman_pengumuman,
+            'no_rekening': no_rekening,
+        })
 
 class PesantrenCetakPembayaran(http.Controller):
     @http.route('/pendaftaran/cetak', type='http', auth='public')
     def pendaftaran_cetak(self, token=None, **kwargs):
 
         Pendaftaran = request.env['ubig.pendaftaran']
-        total_pendaftar = Pendaftaran.search_count([])
 
         # Mengambil nilai kuota pendaftaran dari ir.config_parameter
         config_param = request.env['ir.config_parameter'].sudo()
-        kuota_pendaftaran = int(config_param.get_param('pesantren_pendaftaran.kuota_pendaftaran', default=0))
+        no_rekening = config_param.get_param('pesantren_pendaftaran.no_rekening', default='7181863913')
 
-        if total_pendaftar >= kuota_pendaftaran:
-            return request.redirect('/psb')
-        else:
+        # Menangkap Token pendaftaran dari URL
+        token = request.params.get('token')
 
-            # Menangkap Token pendaftaran dari URL
-            token = request.params.get('token')
+        # Cek apakah Token ada
+        if not token:
+            return request.not_found()
 
-            # Cek apakah Token ada
-            if not token:
-                return request.not_found()
+        # Mengambil data pendaftaran berdasarkan Token
+        pendaftaran = Pendaftaran.sudo().search([('token', '=', token)], limit=1)
+        if not pendaftaran:
+            return request.not_found()
 
-            # Mengambil data pendaftaran berdasarkan Token
-            pendaftaran = Pendaftaran.sudo().search([('token', '=', token)], limit=1)
-            if not pendaftaran:
-                return request.not_found()
-
-            return request.render('pesantren_pendaftaran.pendaftaran_cetak_form_pembayaran_template', {
-                'pendaftaran': pendaftaran,
-            })
+        return request.render('pesantren_pendaftaran.pendaftaran_cetak_form_pembayaran_template', {
+            'pendaftaran': pendaftaran,
+            'no_rekening': no_rekening,
+        })
 
 class PesantrenPsbBantuan(http.Controller):
     @http.route('/bantuan', auth='public')
@@ -1819,7 +1813,7 @@ class PesantrenPsbBantuan(http.Controller):
             <nav class="navbar navbar-expand-lg" style="height: 65px;">
                 <div class="container-fluid">
                     <a class="navbar-brand ms-5 text-white fw-semibold" href="/psb">
-                        <img src="https://i.ibb.co.com/f9j819p/1731466812700.png" alt="1731466812700" width="50" alt="Logo Pesantren">
+                        <img src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" alt="1731466812700" width="50" alt="Logo Pesantren">
                         Daarul Qur'an Istiqomah
                     </a>
                     <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
@@ -1831,10 +1825,10 @@ class PesantrenPsbBantuan(http.Controller):
                                 <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                             </li>
                             <li class="nav-item me-3">
-                                <a class="nav-link text-white pendaftaran-menu" href="#"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
+                                <a class="nav-link text-white" href="/pendaftaran"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                             </li>
                             <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/odoo"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                <a class="nav-link text-white" href="/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
@@ -1847,11 +1841,6 @@ class PesantrenPsbBantuan(http.Controller):
                             f'<a href="/pengumuman/sma-ma">SMA / MA</a>'
                             f'</div>'
                             f'</li>' if is_halaman_pengumuman else ''}
-                            <li class="nav-item me-3">
-                                <a class="nav-link text-white portalOrangTua" href="#">
-                                    <i class="fa-solid fa-user me-2"></i>Portal Orang Tua
-                                </a>
-                            </li>
                             </ul>
                     </div>
                 </div>
@@ -1860,7 +1849,7 @@ class PesantrenPsbBantuan(http.Controller):
             <div class="offcanvas offcanvas-end background" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 <a class="navbar-brand mt-1 text-white fw-semibold" href="/psb" style="display: flex; flex-direction: column; align-items: center;">
-                    <img src="https://i.ibb.co.com/f9j819p/1731466812700.png" alt="1731466812700" width="50" alt="">
+                    <img src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" alt="1731466812700" width="50" alt="">
                     Daarul Qur'an Istiqomah
                 </a>
                 <div class="offcanvas-body">
@@ -1869,10 +1858,10 @@ class PesantrenPsbBantuan(http.Controller):
                             <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                         </li>
                         <li class="nav-item me-3">
-                            <a class="nav-link text-white pendaftaran-menu" href="#"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
+                            <a class="nav-link text-white" href="/pendaftaran"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                         </li>
                         <li class="nav-item me-3">
-                            <a class="nav-link text-white" href="/odoo"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                            <a class="nav-link text-white" href="/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                         </li>
                         <li class="nav-item me-3">
                             <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
@@ -1922,14 +1911,14 @@ class PesantrenPsbBantuan(http.Controller):
                     <div class="timeline-content bg-white rounded p-3">
                         <span class="badge text-bg-success text-uppercase mb-3">Alur Pendaftaran Santri Baru</span>
                         <ul>
-                        <li>Buka website <a href="/psb" class="text-decoration-none" style="color: purple;">https://psb.daarulquranistiqomah.or.id/</a></li>
+                        <li>Buka website <a href="/psb" class="text-decoration-none" style="color: purple;">https://aplikasi.dqi.ac.id/psb</a></li>
                         <li>Klik menu daftar dan isikan data yang tersedia.</li>
-                        <li>Login di <a href="/web/login" class="text-decoration-none" style="color: purple;">https://psb.daarulquranistiqomah.or.id/login</a></li>
+                        <li>Login di <a href="/login" class="text-decoration-none" style="color: purple;">https://aplikasi.dqi.ac.id/login</a></li>
                         <li>Upload berkas yang dipersyaratkan dan bukti pembayaran.</li>
                         <li>Tunggu verifikasi maksimal 3 hari.</li>
                         <li>Login kembali dan pilih tanggal tes.</li>
-                        <li>Ikuti tes seleksi online menggunakan aplikasi ZOOM meeting.</li>
-                        <li>Lihat hasil tes di <a href="/psb" class="text-decoration-none" style="color: purple;">https://psb.daarulquranistiqomah.or.id/login</a></li>
+                        <li>Ikuti tes seleksi Offline.</li>
+                        <li>Lihat hasil tes di <a href="/" class="text-decoration-none" style="color: purple;">https://aplikasi.dqi.ac.id/psb</a></li>
                         <li>Setelah pembayaran daftar ulang, tunggu pengumuman serah terima santri baru.</li>
                         </ul>
                     </div>
@@ -1957,19 +1946,16 @@ class PesantrenPsbBantuan(http.Controller):
                     <div class="text-secondary mb-4">
                     <span>Pondok Pesantren Daarul Qur'an Istiqomah</span><br>
                     <span>Jl. Ambawang, RT.03/RW.01, Karang Taruna, Kec. Pelaihari, Kabupaten Tanah Laut, Kalimantan Selatan 70815 </span><br>
-                    <span>Telp/Whatsapp: <a href="#" class="text-decoration-none" style="color: purple;">(+62 271) 858199</a></span><br>
-                    <span>Email: <a href="#" style="color: purple;">daarulquranistiqomah@gmail.com</a></span>
+                    <span>Telp/Whatsapp: <a href="https://api.whatsapp.com/send?phone=%2B6282252079785" class="text-decoration-none" style="color: purple;">0822-5207-9785</a></span><br>
                     </div>
                     <div class="text-secondary mb-4">
                     <span>Informasi PSB & Konsultasi Pendidikan:</span><br>
-                    <a href="#" class="text-decoration-none" style="color: purple;">+62 812 7812 9773</a><br>
-                    <span>Informasi PSB & Konsultasi Pendidikan:</span><br>
-                    <a href="#" class="text-decoration-none" style="color: purple;">+62 896 3203 3096</a><br>
-                    <span>Informasi Keuangan:</span><br>
-                    <a href="#" class="text-decoration-none" style="color: purple;">+62 822 2733 1234</a>
+                    <a href="#" class="text-decoration-none" style="color: purple;">0853-9051-1124</a><br>
                     </div>
-                    <h5>Silahkan hubungi kami</h5>
-                    <span class="text-uppercase" style="color: purple;">@daqubanat_</span>
+                    <h5>Media Sosial Kami</h5>
+                    <span class="text-uppercase" style="color: purple;">Instagram : @daqubanat_</span>
+                    <span class="text-uppercase" style="color: purple;">Facebook  : @Daarul Quran Istiqomah</span>
+                    <span class="text-uppercase" style="color: purple;">Youtube   : @dqimedia</span>
                 </div>
                 </div>
             </div>
@@ -2011,103 +1997,6 @@ class PesantrenPsbBantuan(http.Controller):
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
             <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
             <script src=" https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js "></script>
-
-            <script>
-                document.addEventListener("DOMContentLoaded", function() {{
-    // Tangkap semua elemen dengan class 'pendaftaran-menu'
-    document.querySelectorAll(".pendaftaran-menu").forEach(function(menu) {{
-        menu.addEventListener("click", function(event) {{
-            event.preventDefault(); // Cegah navigasi default
-
-            // Panggil API untuk memeriksa kuota
-            $.ajax({{
-                url: "/pendaftaran/check",
-                type: "POST",
-                contentType: 'application/json', // Pastikan tipe konten JSON
-                dataType: 'json',
-                success: function(response) {{
-                    if (response.is_full) {{
-                        // Tampilkan modal jika kuota penuh
-                        $("#modalPendaftaranTutup").modal("show");
-                    }} else {{
-                        // Jika kuota tersedia, arahkan ke halaman pendaftaran
-                        window.location.href = "/pendaftaran";
-                    }}
-                }},
-                error: function() {{
-                    alert("Terjadi kesalahan saat memeriksa kuota. Silakan coba lagi.");
-                }}
-            }});
-        }});
-    }});
-}});
-
-    document.querySelectorAll('.portalOrangTua').forEach(function(element) {{
-        element.addEventListener('click', function (event) {{
-            event.preventDefault(); // Mencegah aksi default (navigasi link)
-
-            Swal.fire({{
-                title: 'Masukkan Kode Akses',
-                input: 'text',
-                inputPlaceholder: 'Ketikkan kode akses di sini',
-                backdrop: 'false',
-                inputAttributes: {{
-                    autocomplete: 'off' // Menonaktifkan autocomplete
-                }},
-                showCancelButton: true,
-                confirmButtonText: 'Masuk',
-                cancelButtonText: 'Batal',
-                didOpen: () => {{
-                  // Menyembunyikan navbar offcanvas
-                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
-                  if (navbarOffcanvas) {{
-                      navbarOffcanvas.style.display = 'none';
-                  }}
-              }},
-              willClose: () => {{
-                  // Menampilkan kembali navbar offcanvas
-                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
-                  if (navbarOffcanvas) {{
-                      navbarOffcanvas.style.display = '';
-                  }}
-              }}
-            }}).then((result) => {{
-                if (result.isConfirmed) {{
-                    if (result.value) {{
-                        const kodeAkses = result.value;
-
-                        // Validasi kode akses melalui AJAX
-                        fetch('/validate_kode_akses', {{
-                            method: 'POST',
-                            headers: {{
-                                'Content-Type': 'application/json'
-                            }},
-                            body: JSON.stringify({{ kode_akses: kodeAkses }}) // Data dikirim dalam format JSON
-                        }})
-                        .then(response => response.json())
-                        .then(data => {{
-                            if (data.success) {{
-                                // Jika valid, arahkan ke portal orang tua
-                                window.location.href = '/portal_orang_tua?kode_akses=' + kodeAkses;
-                            }} else {{
-                                // Jika tidak valid, tampilkan pesan error
-                                Swal.fire('Kesalahan', data.message, 'error');
-                            }}
-                        }})
-                        .catch(error => {{
-                            console.error('Error:', error);
-                            Swal.fire('Kesalahan', 'Terjadi masalah pada server.', 'error');
-                        }});
-
-                    }} else {{
-                        Swal.fire('Kesalahan', 'Kode akses tidak boleh kosong!', 'error');
-                    }}
-                }}
-            }});
-        }});
-    }});
-
-            </script>
             </body>
             </html>
         """
@@ -2470,44 +2359,48 @@ class RefDataController(http.Controller):
 
 #         return request.make_response(html_response)
 
-class PortalOrangTua(http.Controller):
-    @http.route('/validate_kode_akses', type='http', auth='public', methods=['POST'], csrf=False)
-    def validate_kode_akses(self, **kwargs):
-        try:
-            # Parse JSON dari body request
-            data = json.loads(request.httprequest.data)
-            kode_akses = data.get('kode_akses')
+# class PortalOrangTua(http.Controller):
+    # @http.route('/validate_kode_akses', type='http', auth='public', methods=['POST'], csrf=False)
+    # def validate_kode_akses(self, **kwargs):
+    #     try:
+    #         # Parse JSON dari body request
+    #         data = json.loads(request.httprequest.data)
+    #         kode_akses = data.get('kode_akses')
 
-            # Cari kode akses di model Odoo
-            record = request.env['ubig.pendaftaran'].sudo().search([('kode_akses', '=', kode_akses)], limit=1)
-            if record:
-                return request.make_response(json.dumps({'success': True, 'message': 'Kode akses valid!'}), 
-                        headers=[('Content-Type', 'application/json')])
-            return request.make_response(json.dumps({'success': False, 'message': 'Kode akses tidak ditemukan.'}),
-                        headers=[('Content-Type', 'application/json')])
-        except Exception as e:
-            return request.make_response(json.dumps({'success': False, 'message': str(e)}),
-                        headers=[('Content-Type', 'application/json')])
+    #         # Cari kode akses di model Odoo
+    #         record = request.env['ubig.pendaftaran'].sudo().search([('kode_akses', '=', kode_akses)], limit=1)
+    #         if record:
+    #             return request.make_response(json.dumps({'success': True, 'message': 'Kode akses valid!'}), 
+    #                     headers=[('Content-Type', 'application/json')])
+    #         return request.make_response(json.dumps({'success': False, 'message': 'Kode akses tidak ditemukan.'}),
+    #                     headers=[('Content-Type', 'application/json')])
+    #     except Exception as e:
+    #         return request.make_response(json.dumps({'success': False, 'message': str(e)}),
+    #                     headers=[('Content-Type', 'application/json')])
 
 
 class PortalOrangTua(http.Controller):
     @http.route('/portal_orang_tua', type='http', auth='public', website=True)
-    def portal_orang_tua(self, kode_akses=None):
-        # Validasi kode akses
-        record = request.env['ubig.pendaftaran'].sudo().search([('kode_akses', '=', kode_akses)])
+    def portal_orang_tua(self, *kwargs):
+        # Ambil data dari sesi
+        user_id = request.session.get('user_id')
+        
+        record = request.env['ubig.pendaftaran'].sudo().search([('id', '=', user_id)])
 
-        if not kode_akses:
-            return request.redirect('/error_page')
+        if not user_id or not record:
+            return request.redirect('/login')
 
-        if not record:
-            return request.redirect('/error_page')
+        email = record.email
 
-        first_record = record[0]
+        records = request.env['ubig.pendaftaran'].sudo().search([('email', '=', email)])
+
+        first_record = records[0]
         
         # Ambil nilai dari field konfigurasi
         config_obj = http.request.env['ir.config_parameter'].sudo()
 
         is_halaman_pengumuman = config_obj.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False)
+        no_rekening = config_obj.get_param('pesantren_pendaftaran.no_rekening', default='7181863913')
 
         # Daftar status yang akan ditampilkan
         state_list = [
@@ -2538,7 +2431,12 @@ class PortalOrangTua(http.Controller):
 
         # Membuat HTML dinamis untuk setiap record
         rows_html = ''
-        for rec in record:
+        for rec in records:
+            csrf_token = request.csrf_token()  # Ambil CSRF token
+            # Tentukan status pembayaran dan kelas badge
+            status_text = rec.status_pembayaran.replace('belumbayar', 'Belum Bayar').replace('sudahbayar', 'Sudah Bayar')
+            badge_class = 'success' if rec.status_pembayaran == 'sudahbayar' else 'danger'
+            is_disabled = 'disabled' if rec.status_pembayaran == 'sudahbayar' else ''
             state_html = ''
             # Buat HTML untuk status pendaftaran siswa
             for state_key, state_label in state_list:
@@ -2574,10 +2472,35 @@ class PortalOrangTua(http.Controller):
                     {progress_html}
                 </td>
                 <td>
-                    <div class="progress" style="height: 20px;">
-                        <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                    <span class="badge text-bg-{badge_class}">{status_text}</span>
+                </td>
+                <td>
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadModal-{rec.id}" {is_disabled}>
+                    Upload Bukti
+                    </button>
+                    
+                    <!-- Modal -->
+                    <div class="modal fade" id="uploadModal-{rec.id}" tabindex="-1" aria-labelledby="uploadModalLabel-{rec.id}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="uploadModalLabel-{rec.id}">Upload Bukti Pembayaran</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/upload_bukti_pembayaran" method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="csrf_token" value="{csrf_token}">
+                                        <input type="hidden" name="record_id" value="{rec.id}">
+                                        <div class="mb-3">
+                                            <label for="buktiPembayaran-{rec.id}" class="form-label">Pilih File</label>
+                                            <input type="file" class="form-control" id="buktiPembayaran-{rec.id}" name="bukti_pembayaran" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-success">Upload</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    Pembayaran: 50%
                 </td>
             </tr>
             """
@@ -2742,7 +2665,7 @@ class PortalOrangTua(http.Controller):
             <nav class="navbar navbar-expand-lg" style="height: 65px;">
                 <div class="container-fluid">
                     <a class="navbar-brand ms-5 text-white fw-semibold" href="/psb">
-                        <img src="https://i.ibb.co.com/f9j819p/1731466812700.png" alt="1731466812700" width="50" alt="Logo Pesantren">
+                        <img src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" alt="1731466812700" width="50" alt="Logo Pesantren">
                         Daarul Qur'an Istiqomah
                     </a>
                     <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
@@ -2754,10 +2677,10 @@ class PortalOrangTua(http.Controller):
                                 <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                             </li>
                             <li class="nav-item me-3">
-                                <a class="nav-link text-white pendaftaran-menu" href="#"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
+                                <a class="nav-link text-white" href="/pendaftaran"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                             </li>
                             <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/odoo"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                <a class="nav-link text-white" href="/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
@@ -2770,6 +2693,9 @@ class PortalOrangTua(http.Controller):
                             f'<a href="/pengumuman/sma-ma">SMA / MA</a>'
                             f'</div>'
                             f'</li>' if is_halaman_pengumuman else ''}
+                            <li class="nav-item me-3">
+                                <a class="nav-link text-white" href="/logout" onclick="return confirm('Apakah anda yakin untuk logout?');"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a>
+                            </li>
                             </ul>
                     </div>
                 </div>
@@ -2778,7 +2704,7 @@ class PortalOrangTua(http.Controller):
             <div class="offcanvas offcanvas-end background" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 <a class="navbar-brand mt-1 text-white fw-semibold" href="/psb" style="display: flex; flex-direction: column; align-items: center;">
-                    <img src="https://i.ibb.co.com/f9j819p/1731466812700.png" alt="1731466812700" width="50" alt="">
+                    <img src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" alt="1731466812700" width="50" alt="">
                     Daarul Qur'an Istiqomah
                 </a>
                 <div class="offcanvas-body">
@@ -2787,10 +2713,10 @@ class PortalOrangTua(http.Controller):
                             <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                         </li>
                         <li class="nav-item me-3">
-                            <a class="nav-link text-white pendaftaran-menu" href="#"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
+                            <a class="nav-link text-white" href="/pendaftaran"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                         </li>
                         <li class="nav-item me-3">
-                            <a class="nav-link text-white" href="/odoo"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                            <a class="nav-link text-white" href="/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                         </li>
                         <li class="nav-item me-3">
                             <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
@@ -2803,6 +2729,9 @@ class PortalOrangTua(http.Controller):
                         f'<a href="/pengumuman/sma-ma">SMA / MA</a>'
                         f'</div>'
                         f'</li>' if is_halaman_pengumuman else ''}
+                        <li class="nav-item me-3">
+                            <a class="nav-link text-white" href="/logout" onclick="return confirm('Apakah anda yakin untuk logout?');"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a>
+                        </li>
                         </ul>
                     </ul>
                 </div>
@@ -2823,6 +2752,7 @@ class PortalOrangTua(http.Controller):
                                     <th>Nama Siswa</th>
                                     <th>Status Pendaftaran</th>
                                     <th>Status Pembayaran</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -2844,17 +2774,17 @@ class PortalOrangTua(http.Controller):
                                 {''.join([f"""
                                 <div class="mb-1" style="border-bottom: 1px solid black;">
                                     <h6>- {data.partner_id.name}</h6>
-                                    <p>Jenjang : {data.jenjang.replace('sdmi', 'SD / MI').replace('smpmts', 'SMP / MTS').replace('smama', 'SMA / MA')}</p>
+                                    <p>Jenjang : {data.jenjang.replace('sdmi', 'SD / MI').replace('smpmts', 'SMP / MTS').replace('smama', 'SMA / MA').replace('paud', 'PAUD').replace('tk', 'TK')}</p>
                                     <p>
                                         <strong>
-                                            {'Rp ' + str(f"{int(data.biaya):,}").replace(',', '.') + ' (Belum Bayar)' if data.state == 'draft' else 
-                                            'Rp 0 (Sudah Bayar)' if data.state in ['terdaftar', 'seleksi', 'diterima'] else
-                                            '' if data.state == 'ditolak' else 
-                                            'Pendaftaran Dibatalkan'}
+                                            {'Rp ' + str(f"{int(data.biaya):,}").replace(',', '.') + ' (Belum Bayar)' if data.status_pembayaran == 'belumbayar' else 
+                                            'Rp 0 (Sudah Bayar)' if data.status_pembayaran == 'sudahbayar' else 
+                                            'Pendaftaran Dibatalkan' if data.state == 'ditolak' else ''}
                                         </strong>
+
                                     </p>
                                 </div>
-                                """ for data in record])}
+                                """ for data in records])}
                                 <div class="mt-3 mb-3">
                                     <h6><strong>Total Bayar : Rp {str(f"{sum(int(data.biaya) if data.state == 'draft' else 0 for data in record):,}").replace(',', '.')}</strong></h6>
                                 </div>
@@ -2864,28 +2794,30 @@ class PortalOrangTua(http.Controller):
                                 <span>Melalui Mobile Bank BSI:</span>
                                 <ul>
                                 <li>Login ke aplikasi BSI Mobile.</li>
-                                <li>Pilih menu Pembayaran &gt; Virtual Account.</li>
-                                <li>Masukkan nomor Virtual Account yang diberikan.</li>
-                                <li>Verifikasi dan konfirmasi pembayaran.</li>
+                                <li>Pilih menu Transfer.</li>
+                                <li>Masukkan nomor rekening tujuan.</li>
+                                <li>Masukkan jumlah pembayaran.</li>
+                                <li>Tambahkan catatan (opsional) jika diperlukan.</li>
                                 <li>Pembayaran berhasil dan Anda akan menerima bukti transaksi.</li>
                                 </ul>
                                 <span>Melalui ATM Bank BSI:</span>
                                 <ul>
                                 <li>Masukkan kartu ATM dan PIN.</li>
-                                <li>Pilih Pembayaran &gt; Virtual Account.</li>
-                                <li>Masukkan nomor Virtual Account.</li>
+                                <li>Pilih menu Transfer.</li>
+                                <li>Pilih tujuan transfer:</li>
+                                <li>Masukkan nomor rekening tujuan.</li>
                                 <li>Verifikasi pembayaran dan lanjutkan.</li>
                                 <li>Pembayaran berhasil dan Anda menerima bukti pembayaran.</li>
                                 </ul>
                                 <p>Silakan melakukan pembayaran melalui transfer bank ke rekening yang tertera di bawah ini.</p>
-                                <p><strong>Rekening: BSI 1234567890</strong></p>
+                                <p><strong>Rekening: BSI {no_rekening}</strong></p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Riwayat Pembayaran -->
-                <div class="card mb-4">
+                <!-- <div class="card mb-4">
                     <div class="card-header">
                         Riwayat Pembayaran
                     </div>
@@ -2912,7 +2844,7 @@ class PortalOrangTua(http.Controller):
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <footer class="text-white p-2" style="display: flex; justify-content: space-between; flex-wrap: wrap;">
@@ -2952,36 +2884,6 @@ class PortalOrangTua(http.Controller):
             <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
             <script>
-                document.addEventListener("DOMContentLoaded", function() {{
-
-    // Tangkap semua elemen dengan class 'pendaftaran-menu'
-    document.querySelectorAll(".pendaftaran-menu").forEach(function(menu) {{
-        menu.addEventListener("click", function(event) {{
-            event.preventDefault(); // Cegah navigasi default
-
-            // Panggil API untuk memeriksa kuota
-            $.ajax({{
-                url: "/pendaftaran/check",
-                type: "POST",
-                contentType: 'application/json', // Pastikan tipe konten JSON
-                dataType: 'json',
-                success: function(response) {{
-                    if (response.is_full) {{
-                        // Tampilkan modal jika kuota penuh
-                        $("#modalPendaftaranTutup").modal("show");
-                    }} else {{
-                        // Jika kuota tersedia, arahkan ke halaman pendaftaran
-                        window.location.href = "/pendaftaran";
-                    }}
-                }},
-                error: function() {{
-                    alert("Terjadi kesalahan saat memeriksa kuota. Silakan coba lagi.");
-                }}
-            }});
-        }});
-    }});
-
-}});
 
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
             console.log(tooltipTriggerList)
@@ -2992,3 +2894,80 @@ class PortalOrangTua(http.Controller):
             </html>
         """
         return request.make_response(html_content, headers=[('Content-Type', 'text/html')])
+
+class PesantrenLogin(http.Controller):
+    @http.route('/login', type='http', auth='public')
+    def index(self, **kwargs):
+        return request.render('pesantren_pendaftaran.pendaftaran_login_template')
+    
+    @http.route('/login/submit', type='http', auth='public', methods=['POST'], csrf=True)
+    def login(self, **post):
+        email = post.get('email')
+        
+        record = request.env['ubig.pendaftaran'].sudo().search([('email', '=', email)], limit=1)
+
+        if record:
+            password = post.get('password')
+            if record.password == password:
+                request.session['user_id'] = record.id
+                return request.redirect('/portal_orang_tua')
+            else:
+                return """
+                    <html>
+                        <head>
+                            <script>
+                                alert('Kata sandi salah!');
+                                window.location.href = '/login'; // Redirect ke halaman login
+                            </script>
+                        </head>
+                    </html>
+                """
+        else:
+            return """
+                    <html>
+                        <head>
+                            <script>
+                                alert('Email belum terdaftar!');
+                                window.location.href = '/login'; // Redirect ke halaman login
+                            </script>
+                        </head>
+                    </html>
+                """
+
+    @http.route('/logout', type='http', auth='public')
+    def logout(self, **kwargs):
+        request.session.logout()  # Menghapus semua data dalam sesi
+        return request.redirect('/login')
+
+
+class UploadBuktiPembayaran(http.Controller):
+    @http.route('/upload_bukti_pembayaran', type='http', auth='public', methods=['POST'], csrf=True)
+    def upload_bukti_pembayaran(self, **post):
+        record_id = post.get('record_id')
+        # Ambil file dari request
+        uploaded_files = request.httprequest.files
+
+        bukti_pembayaran = uploaded_files.get('bukti_pembayaran')
+
+        # Fungsi bantu untuk memproses file
+        def process_file(file):
+            if file:
+                # Baca file dan konversi ke Base64
+                file_content = file.read()
+                file_base64 = base64.b64encode(file_content)
+                return file_base64
+            return None
+        
+        bukti_pembayaran_b64 = process_file(bukti_pembayaran)
+
+        if record_id and bukti_pembayaran_b64:
+            # Cari record berdasarkan ID
+            record = request.env['ubig.pendaftaran'].sudo().browse(int(record_id))
+            if record:
+                # Update field dengan file yang diunggah
+                record.sudo().write({
+                    'bukti_pembayaran': bukti_pembayaran_b64,
+                    'status_pembayaran': 'sudahbayar',  # Update status pembayaran
+                })
+                return request.redirect('/portal_orang_tua')
+

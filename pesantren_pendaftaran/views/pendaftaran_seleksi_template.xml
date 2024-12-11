@@ -99,7 +99,7 @@
                             <!-- <img src="logoweb.png" alt="Logo" width="30" height="24"
                             class="d-inline-block align-text-top"> -->
                             <img
-                                src="https://i.ibb.co.com/f9j819p/1731466812700.png" width="50"
+                                src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" width="50"
                                 alt="Logo Pesantren" /> Daarul Qur'an Istiqomah </a>
                         <button class="navbar-toggler ms-auto" type="button"
                             data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
@@ -117,7 +117,7 @@
                                 </li>
                                 <li class="nav-item me-3">
                                     <a class="nav-link" style="color: white !important;"
-                                        href="/web/login">
+                                        href="/login">
                                         <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                                 </li>
                                 <li class="nav-item me-3">
@@ -134,11 +134,6 @@
                                         <a href="/pengumuman/sma-ma">SMA / MA</a>
                                     </div>
                                 </li>
-                                <li class="nav-item me-3">
-                                    <a class="nav-link text-white portalOrangTua" href="#"
-                                        style="color: white;">
-                                        <i class="fa-solid fa-user me-2"></i>Portal Orang Tua </a>
-                                </li>
                             </ul>
                         </div>
                     </div>
@@ -150,7 +145,7 @@
                         data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     <a class="navbar-brand mt-1 text-white fw-semibold" href="/psb"
                         style="display: flex; flex-direction: column; align-items: center;">
-                        <img src="https://i.ibb.co.com/f9j819p/1731466812700.png" width="50"
+                        <img src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" width="50"
                             alt="Logo Pesantren" /> Daarul Qur'an Istiqomah </a>
                     <div class="offcanvas-body">
                         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
@@ -163,7 +158,7 @@
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link" style="color: white !important;"
-                                    href="/web/login">
+                                    href="/login">
                                     <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                             </li>
                             <li class="nav-item me-3">
@@ -180,11 +175,6 @@
                                     <a href="/pengumuman/sma-ma">SMA / MA</a>
                                 </div>
                             </li>
-                                    <li class="nav-item me-3">
-                                        <a class="nav-link text-white portalOrangTua" href="#"
-                                            style="color: white;">
-                                            <i class="fa-solid fa-user me-2"></i>Portal Orang Tua </a>
-                                    </li>
                         </ul>
                     </div>
                 </div>
@@ -295,70 +285,7 @@
                     });
                 });
 
-      document.querySelectorAll('.portalOrangTua').forEach(function(element) {
-        element.addEventListener('click', function (event) {
-            event.preventDefault(); // Mencegah aksi default (navigasi link)
-
-            Swal.fire({
-                title: 'Masukkan Kode Akses',
-                input: 'text',
-                inputPlaceholder: 'Ketikkan kode akses di sini',
-                backdrop: 'false',
-                inputAttributes: {
-                    autocomplete: 'off' // Menonaktifkan autocomplete
-                },
-                showCancelButton: true,
-                confirmButtonText: 'Masuk',
-                cancelButtonText: 'Batal',
-                didOpen: () => {
-                  // Menyembunyikan navbar offcanvas
-                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
-                  if (navbarOffcanvas) {
-                      navbarOffcanvas.style.display = 'none';
-                  }
-              },
-              willClose: () => {
-                  // Menampilkan kembali navbar offcanvas
-                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
-                  if (navbarOffcanvas) {
-                      navbarOffcanvas.style.display = '';
-                  }
-              }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    if (result.value) {
-                        const kodeAkses = result.value;
-
-                        // Validasi kode akses melalui AJAX
-                        fetch('/validate_kode_akses', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ kode_akses: kodeAkses }) // Data dikirim dalam format JSON
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // Jika valid, arahkan ke portal orang tua
-                                window.location.href = '/portal_orang_tua?kode_akses=' + kodeAkses;
-                            } else {
-                                // Jika tidak valid, tampilkan pesan error
-                                Swal.fire('Kesalahan', data.message, 'error');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            Swal.fire('Kesalahan', 'Terjadi masalah pada server.', 'error');
-                        });
-
-                    } else {
-                        Swal.fire('Kesalahan', 'Kode akses tidak boleh kosong!', 'error');
-                    }
-                }
-            });
-        });
-    });
+      
             </script>
 
         </t>
@@ -465,7 +392,7 @@
                             <!-- <img src="logoweb.png" alt="Logo" width="30" height="24"
                             class="d-inline-block align-text-top"> -->
                             <img
-                                src="https://i.ibb.co.com/f9j819p/1731466812700.png" width="50"
+                                src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" width="50"
                                 alt="Logo Pesantren" /> Daarul Qur'an Istiqomah </a>
                         <button class="navbar-toggler ms-auto" type="button"
                             data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar2"
@@ -486,7 +413,7 @@
                                         <i class="fa-solid fa-lock me-2"></i>Bantuan</a>
                                 </li>
                                 <li class="nav-item me-3">
-                                    <a class="nav-link" style="color: white !important;" href="/web/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                    <a class="nav-link" style="color: white !important;" href="/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a href="#" class="dropdown-link nav-link"
@@ -498,11 +425,6 @@
                                         <a href="/pengumuman/sma-ma">SMA / MA</a>
                                     </div>
                                 </li>
-                                    <li class="nav-item me-3">
-                                        <a class="nav-link text-white portalOrangTua" href="#"
-                                            style="color: white;">
-                                            <i class="fa-solid fa-user me-2"></i>Portal Orang Tua </a>
-                                    </li>
                             </ul>
                         </div>
                     </div>
@@ -514,7 +436,7 @@
                         data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     <a class="navbar-brand mt-1 text-white fw-semibold" href="/psb"
                         style="display: flex; flex-direction: column; align-items: center;">
-                        <img src="https://i.ibb.co.com/f9j819p/1731466812700.png" width="50"
+                        <img src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" width="50"
                             alt="Logo Pesantren" /> Daarul Qur'an Istiqomah </a>
                     <div class="offcanvas-body">
                         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
@@ -526,7 +448,7 @@
                                     <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                             </li>
                             <li class="nav-item me-3">
-                                <a class="nav-link" style="color: white !important;" href="/web/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                <a class="nav-link" style="color: white !important;" href="/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" href="/bantuan">
@@ -541,11 +463,6 @@
                                     <a href="/pengumuman/smp-mts">SMP / MTS</a>
                                     <a href="/pengumuman/sma-ma">SMA / MA</a>
                                 </div>
-                            </li>
-                                <li class="nav-item me-3">
-                                    <a class="nav-link text-white portalOrangTua" href="#"
-                                        style="color: white;">
-                                <i class="fa-solid fa-user me-2"></i>Portal Orang Tua </a>
                             </li>
                         </ul>
                     </div>
@@ -657,70 +574,7 @@
                     });
                 });
 
-      document.querySelectorAll('.portalOrangTua').forEach(function(element) {
-        element.addEventListener('click', function (event) {
-            event.preventDefault(); // Mencegah aksi default (navigasi link)
-
-            Swal.fire({
-                title: 'Masukkan Kode Akses',
-                input: 'text',
-                inputPlaceholder: 'Ketikkan kode akses di sini',
-                backdrop: 'false',
-                inputAttributes: {
-                    autocomplete: 'off' // Menonaktifkan autocomplete
-                },
-                showCancelButton: true,
-                confirmButtonText: 'Masuk',
-                cancelButtonText: 'Batal',
-                didOpen: () => {
-                  // Menyembunyikan navbar offcanvas
-                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
-                  if (navbarOffcanvas) {
-                      navbarOffcanvas.style.display = 'none';
-                  }
-              },
-              willClose: () => {
-                  // Menampilkan kembali navbar offcanvas
-                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
-                  if (navbarOffcanvas) {
-                      navbarOffcanvas.style.display = '';
-                  }
-              }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    if (result.value) {
-                        const kodeAkses = result.value;
-
-                        // Validasi kode akses melalui AJAX
-                        fetch('/validate_kode_akses', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ kode_akses: kodeAkses }) // Data dikirim dalam format JSON
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // Jika valid, arahkan ke portal orang tua
-                                window.location.href = '/portal_orang_tua?kode_akses=' + kodeAkses;
-                            } else {
-                                // Jika tidak valid, tampilkan pesan error
-                                Swal.fire('Kesalahan', data.message, 'error');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            Swal.fire('Kesalahan', 'Terjadi masalah pada server.', 'error');
-                        });
-
-                    } else {
-                        Swal.fire('Kesalahan', 'Kode akses tidak boleh kosong!', 'error');
-                    }
-                }
-            });
-        });
-    });
+      
             </script>
 
         </t>
@@ -826,7 +680,7 @@
                             <!-- <img src="logoweb.png" alt="Logo" width="30" height="24"
                             class="d-inline-block align-text-top"> -->
                             <img
-                                src="https://i.ibb.co.com/f9j819p/1731466812700.png" width="50"
+                                src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" width="50"
                                 alt="Logo Pesantren" /> Daarul Qur'an Istiqomah </a>
                         <button class="navbar-toggler ms-auto" type="button"
                             data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar3"
@@ -843,7 +697,7 @@
                                         <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                                 </li>
                                 <li class="nav-item me-3">
-                                    <a class="nav-link text-white" href="/web/login">
+                                    <a class="nav-link text-white" href="/login">
                                         <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                                 </li>
                                 <li class="nav-item me-3">
@@ -860,11 +714,6 @@
                                         <a href="/pengumuman/sma-ma">SMA / MA</a>
                                     </div>
                                 </li>
-                                    <li class="nav-item me-3">
-                                        <a class="nav-link text-white portalOrangTua" href="#"
-                                            style="color: white;">
-                                            <i class="fa-solid fa-user me-2"></i>Portal Orang Tua </a>
-                                    </li>
                             </ul>
                         </div>
                     </div>
@@ -876,7 +725,7 @@
                         data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     <a class="navbar-brand mt-1 text-white fw-semibold" href="/psb"
                         style="display: flex; flex-direction: column; align-items: center;">
-                        <img src="https://i.ibb.co.com/f9j819p/1731466812700.png" width="50"
+                        <img src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" width="50"
                             alt="Logo Pesantren" /> Daarul Qur'an Istiqomah </a>
                     <div class="offcanvas-body">
                         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
@@ -888,7 +737,7 @@
                                     <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                             </li>
                             <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/web/login">
+                                <a class="nav-link text-white" href="/login">
                                     <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
                             </li>
                             <li class="nav-item me-3">
@@ -905,11 +754,6 @@
                                     <a href="/pengumuman/sma-ma">SMA / MA</a>
                                 </div>
                             </li>
-                                    <li class="nav-item me-3">
-                                        <a class="nav-link text-white portalOrangTua" href="#"
-                                            style="color: white;">
-                                            <i class="fa-solid fa-user me-2"></i>Portal Orang Tua </a>
-                                    </li>
                         </ul>
                     </div>
                 </div>
@@ -1020,70 +864,7 @@
                     });
                 });
 
-      document.querySelectorAll('.portalOrangTua').forEach(function(element) {
-        element.addEventListener('click', function (event) {
-            event.preventDefault(); // Mencegah aksi default (navigasi link)
-
-            Swal.fire({
-                title: 'Masukkan Kode Akses',
-                input: 'text',
-                inputPlaceholder: 'Ketikkan kode akses di sini',
-                backdrop: 'false',
-                inputAttributes: {
-                    autocomplete: 'off' // Menonaktifkan autocomplete
-                },
-                showCancelButton: true,
-                confirmButtonText: 'Masuk',
-                cancelButtonText: 'Batal',
-                didOpen: () => {
-                  // Menyembunyikan navbar offcanvas
-                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
-                  if (navbarOffcanvas) {
-                      navbarOffcanvas.style.display = 'none';
-                  }
-              },
-              willClose: () => {
-                  // Menampilkan kembali navbar offcanvas
-                  const navbarOffcanvas = document.querySelector('.offcanvas'); // Ganti dengan selector navbar offcanvas Anda
-                  if (navbarOffcanvas) {
-                      navbarOffcanvas.style.display = '';
-                  }
-              }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    if (result.value) {
-                        const kodeAkses = result.value;
-
-                        // Validasi kode akses melalui AJAX
-                        fetch('/validate_kode_akses', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ kode_akses: kodeAkses }) // Data dikirim dalam format JSON
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // Jika valid, arahkan ke portal orang tua
-                                window.location.href = '/portal_orang_tua?kode_akses=' + kodeAkses;
-                            } else {
-                                // Jika tidak valid, tampilkan pesan error
-                                Swal.fire('Kesalahan', data.message, 'error');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            Swal.fire('Kesalahan', 'Terjadi masalah pada server.', 'error');
-                        });
-
-                    } else {
-                        Swal.fire('Kesalahan', 'Kode akses tidak boleh kosong!', 'error');
-                    }
-                }
-            });
-        });
-    });
+      
             </script>
 
         </t>

@@ -47,7 +47,7 @@
     'license': 'LGPL-3',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'pesantren_base'],
+    'depends': ['base', 'pesantren_base',],
 
     # always loaded
     'data': [
@@ -64,6 +64,7 @@
         'views/ref_biaya.xml',
         'views/pendaftaran_form_template.xml',
         'views/pendaftaran_succses_template.xml',
+        'views/pendaftaran_login_template.xml',
         'views/pendaftaran_cetak_form_pembayaran_template.xml',
         'views/pendaftaran_seleksi_template.xml',
         'views/komponen_biaya.xml',
@@ -75,8 +76,8 @@
         # report
         'report/ubig_pendaftaran_report.xml',
 
-        # wizard
         
+        # wizard
 
         # Menu
         'views/menu.xml'

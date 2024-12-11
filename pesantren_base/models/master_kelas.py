@@ -11,7 +11,7 @@ class master_kelas(models.Model):
     _description        = "Tabel Data Master Kelas"
 
     name                = fields.Char(required=True, string="Nama Kelas",  help="",  copy=False )
-    jenjang             = fields.Selection(selection=[('sd','SD/MI'),('smp','SMP/MTS'),('sma','SMA/MA')],  string="Jenjang", required=True, help="")
+    jenjang             = fields.Selection(selection=[('paud','PAUD'),('tk','TK/RA'),('sd','SD/MI'),('smp','SMP/MTS'),('sma','SMA/MA')],  string="Jenjang", required=True, help="")
     tingkat             = fields.Many2one(comodel_name="cdn.tingkat", string="Tingkat", required=True)
     jurusan_id          = fields.Many2one(comodel_name='cdn.master_jurusan', string='Jurusan / Peminatan')
     

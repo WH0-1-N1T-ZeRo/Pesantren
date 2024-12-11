@@ -21,7 +21,7 @@ class ResPartner(models.Model):
                         ('guru', 'Guru'), 
                         ('umum', 'Umum'), 
                         ('calon_santri', 'Calon Santri')]
-                        , default="calon_santri", readonly=True)
+                        , default="calon_santri", readonly="true")
 
 class DataPendaftaran(models.Model):
     _name               = 'ubig.pendaftaran'
@@ -160,7 +160,13 @@ class DataPendaftaran(models.Model):
                             ('inactive', 'Inactive'),
                         ], string="Status Virtual Account", default='temporary')
 
-    kode_akses          = fields.Char(string="Kode Akses")
+    # kode_akses          = fields.Char(string="Kode Akses")
+
+    bukti_pembayaran = fields.Binary(string="Bukti Pembayaran")
+    status_pembayaran = fields.Selection([
+        ('belumbayar','Belum Bayar'),
+        ('sudahbayar','Sudah Bayar')
+        ], string="Status Pembayaran", default="belumbayar")
 
     # State
     state = fields.Selection([
@@ -211,22 +217,22 @@ class DataPendaftaran(models.Model):
                 record.status_va = 'temporary'
         return record
 
-    def get_psb_statistics(self):
-        total_pendaftar = self.search_count([])
-        total_diterima = self.search_count([('state', '=', 'diterima')])
+    # def get_psb_statistics(self):
+    #     total_pendaftar = self.search_count([])
+    #     total_diterima = self.search_count([('state', '=', 'diterima')])
         
-        # Mengambil nilai kuota pendaftaran dari ir.config_parameter
-        config_param = self.env['ir.config_parameter'].sudo()
-        kuota_pendaftaran = int(config_param.get_param('pesantren_pendaftaran.kuota_pendaftaran', default=0))
+    #     # Mengambil nilai kuota pendaftaran dari ir.config_parameter
+    #     config_param = self.env['ir.config_parameter'].sudo()
+    #     kuota_pendaftaran = int(config_param.get_param('pesantren_pendaftaran.kuota_pendaftaran', default=0))
 
-        sisa_kuota = kuota_pendaftaran - total_pendaftar
+    #     sisa_kuota = kuota_pendaftaran - total_pendaftar
 
-        return {
-            'total_pendaftar': total_pendaftar,
-            'total_diterima': total_diterima,
-            'kuota_pendaftaran': kuota_pendaftaran,
-            'sisa_kuota': max(sisa_kuota, 0),  # Pastikan tidak negatif
-        }
+    #     return {
+    #         'total_pendaftar': total_pendaftar,
+    #         'total_diterima': total_diterima,
+    #         'kuota_pendaftaran': kuota_pendaftaran,
+    #         'sisa_kuota': max(sisa_kuota, 0),  # Pastikan tidak negatif
+    #     }
     
     def hapus_pendaftaran_kadaluarsa(self):
         # Tentukan zona waktu Anda, misalnya 'Asia/Jakarta' untuk WIB
@@ -336,7 +342,7 @@ class DataPendaftaran(models.Model):
                     orangtua_vals = {
                         'partner_id': existing_partner.id,
                         'hubungan': 'wali',
-                        'email': record.wali_email,
+                        'email': record.email,
                     }
                     orangtua = self.env['cdn.orangtua'].sudo().create(orangtua_vals)
                     return orangtua
@@ -345,7 +351,7 @@ class DataPendaftaran(models.Model):
                 # Membuat data orangtua otomatis saat pendaftaran diterima
                 partner_vals = {
                     'name': record.wali_nama,
-                    'email': record.wali_email,  # Asumsi field email ada di model Pendaftaran
+                    'email': record.email,  # Asumsi field email ada di model Pendaftaran
                     'phone': record.wali_telp,  # Asumsi field phone ada di model Pendaftaran
                     'city': record.kota_id.name,
                 }
@@ -356,18 +362,18 @@ class DataPendaftaran(models.Model):
                 orangtua_vals = {
                     'partner_id': partner.id,
                     'hubungan': 'wali',
-                    'email': record.wali_email,
+                    'email': record.email,
                 }
                 orangtua = self.env['cdn.orangtua'].sudo().create(orangtua_vals)
 
                 # Mengatur password untuk user_id yang sudah dibuat otomatis
                 if partner.user_id:  # Pastikan user_id sudah ada
-                    password = record.wali_password
+                    password = record.password
                     partner.user_id.write({'password': password,})
 
                 email_values = {
                     'subject': "Informasi Login Orang Tua Santri Baru Pesantren Daarul Qur'an Istiqomah",
-                    'email_to': record.wali_email,
+                    'email_to': record.email,
                     'body_html': f'''
                         <div style="background-color: #d9eaf7; padding: 20px; font-family: Arial, sans-serif;">
                             <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden;">
@@ -386,12 +392,12 @@ class DataPendaftaran(models.Model):
                                         <table style="width: 100%; border-collapse: collapse;">
                                             <tr>
                                                 <td style="padding: 8px; font-weight: bold; color: #333333;">Email</td>
-                                                <td style="padding: 8px; color: #555555;">{record.wali_email}</td>
+                                                <td style="padding: 8px; color: #555555;">{record.email}</td>
                                             </tr>
                                         </table>
                                     </div>
                                     <p style="text-align: center;">
-                                        <a href="http://139.99.118.226:8070/odoo" style="background-color: #0066cc; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">
+                                        <a href="/odoo" style="background-color: #0066cc; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">
                                             Masuk Ke Akun Anda
                                         </a>
                                     </p>
@@ -536,27 +542,15 @@ class DataPendaftaran(models.Model):
             return format_date(self.env, self.tanggal_daftar, date_format='dd MMMM yyyy')
         return 'Tanggal tidak tersedia'
 
-# class SyaratPSB(models.Model):
-#     _name = 'syarat.pendftaran'
-
-#     syarat = fields.Char(
-#         string='Syarat',
-#     )
-    
-#     Jumlah = fields.Integer(
-#         string='Jumlah',
-#     )
-    
-    
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
-    kuota_pendaftaran = fields.Integer(
-        string="Kuota Pendaftaran Santri",
-        config_parameter='pesantren_pendaftaran.kuota_pendaftaran',
-        default=0,
-        help="Jumlah kuota pendaftaran"
-    )
+    # kuota_pendaftaran = fields.Integer(
+    #     string="Kuota Pendaftaran Santri",
+    #     config_parameter='pesantren_pendaftaran.kuota_pendaftaran',
+    #     default=0,
+    #     help="Jumlah kuota pendaftaran"
+    # )
     tgl_mulai_pendaftaran = fields.Datetime(
         string="Tanggal Mulai Pendaftaran",
         config_parameter='pesantren_pendaftaran.tgl_mulai_pendaftaran',
@@ -589,25 +583,22 @@ class ResConfigSettings(models.TransientModel):
         default=False,
         help="Tampilkan halaman pengumuman",
     )
-    
-    # syarat_pendaftaran =fields.Many2many(
-    #     'syarat.pendftaran',string='Syarat Pendaftaran'
-    # )
-    
-# access_penilaian_public,syarat.pendftaran,model_syarat_pendftaran,base.group_public,1,0,0,0
-# access_penilaian_user,syarat.pendftaran,model_syarat_pendftaran,base.group_user,1,0,0,0
-# access_penilaian_manager,syarat.pendftaran,model_syarat_pendftaran,pesantren_pendaftaran.group_pendaftaran_manager,1,1,1,1
 
-    bank = fields.Selection(selection=[('451','BSI'),('002','BRI'),('009','BNI'),('014','BCA'),('008','MANDIRI'),('022','CIMB NIAGA'),], string='Bank Yang Digunakan', config_parameter='pesantren_pendaftaran.bank', help='Bank Yang Digunakan', default='451')
+    bank        = fields.Selection(selection=[('451','BSI'),('002','BRI'),('009','BNI'),('014','BCA'),('008','MANDIRI'),('022','CIMB NIAGA'),], string='Bank Yang Digunakan', config_parameter='pesantren_pendaftaran.bank', help='Bank Yang Digunakan', default='451')
+    no_rekening = fields.Char(
+        string="Rekening Pembayaran", 
+        config_parameter='pesantren_pendaftaran.no_rekening',
+        default='7181863913',
+        help="Nomor Rekening Untuk Pembayaran PSB")
 
     @api.model
     def set_values(self):
         res = super(ResConfigSettings, self).set_values()
 
-        self.env['ir.config_parameter'].set_param(
-            'pesantren_pendaftaran.kuota_pendaftaran',
-            self.kuota_pendaftaran
-        )
+        # self.env['ir.config_parameter'].set_param(
+        #     'pesantren_pendaftaran.kuota_pendaftaran',
+        #     self.kuota_pendaftaran
+        # )
         self.env['ir.config_parameter'].set_param(
             'pesantren_pendaftaran.tgl_mulai_pendaftaran',
             self.tgl_mulai_pendaftaran.strftime('%Y-%m-%d %H:%M:%S') if self.tgl_mulai_pendaftaran else False
@@ -639,6 +630,11 @@ class ResConfigSettings(models.TransientModel):
             self.bank
         )
 
+        self.env['ir.config_parameter'].set_param(
+            'pesantren_pendaftaran.no_rekening',
+            self.no_rekening
+        )
+
         return res
 
     @api.model
@@ -668,7 +664,7 @@ class ResConfigSettings(models.TransientModel):
             tgl_pengumuman_hasil_seleksi = (datetime.now() + timedelta(days=10)).strftime('%Y-%m-%d %H:%M:%S')
 
         res.update({
-            'kuota_pendaftaran': int(icp.get_param('pesantren_pendaftaran.kuota_pendaftaran', default=0)),
+            # 'kuota_pendaftaran': int(icp.get_param('pesantren_pendaftaran.kuota_pendaftaran', default=0)),
             'tgl_mulai_pendaftaran': tgl_mulai_pendaftaran,
             'tgl_akhir_pendaftaran': tgl_akhir_pendaftaran,
             'tgl_mulai_seleksi': tgl_mulai_seleksi,
@@ -676,6 +672,7 @@ class ResConfigSettings(models.TransientModel):
             'tgl_pengumuman_hasil_seleksi': tgl_pengumuman_hasil_seleksi,
             'is_halaman_pengumuman': icp.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False),
             'bank': icp.get_param('pesantren_pendaftaran.bank', default='451'),
+            'no_rekening': icp.get_param('pesantren_pendaftaran.no_rekening', default='7181863913'),
         })
         return res
 
