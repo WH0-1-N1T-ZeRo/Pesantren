@@ -52,7 +52,7 @@ import base64
 
 
 class PesantrenBeranda(http.Controller):
-    @http.route('/beranda', type='http', auth='public')
+    @http.route('/', type='http', auth='public')
     def index(self, **kwargs):
 
         # Ambil perusahaan yang aktif (current company)
@@ -298,7 +298,7 @@ class PesantrenBeranda(http.Controller):
             <nav class="navbar navbar-expand-lg bg-body-grenyellow shadow sticky-top">
             <div class="container d-flex">
                 <a class="navbar-brand d-flex text-white fw-bold" href="#">
-                <img src="pesantren_pendaftaran/static/src/1731466812700.png" alt="Icon Daarul Qur’an Istiqomah" class="me-2 d-md-block d-none" width="40" height="40">
+                <img src="https://i.ibb.co.com/1MFsvMq/1731466812700.png" alt="Icon Daarul Qur’an Istiqomah" class="me-2 d-md-block d-none" width="40" height="40">
                 <span class="d-md-block d-none h3">
                     PSB Daarul Qur’an Istiqomah
                 </span> 
@@ -322,7 +322,7 @@ class PesantrenBeranda(http.Controller):
             <div class="bg-body-grenyellow rounded-90">
                 <div class="container py-3 d-md-flex d-block text-light justify-content-center align-items-center">
                 <div class="me-5 w-set-auto d-flex justify-content-center">
-                    <img src="pesantren_pendaftaran/static/src/1731466812700.png" alt="" width="65%">
+                    <img src="https://i.ibb.co.com/1MFsvMq/1731466812700.png" alt="" width="65%">
                 </div>
                 <div class="ms-md-3 m-0 text-center text-md-start">
                     <h1 class="fw-bold">Pendaftaran Santri Baru</h1>
@@ -443,7 +443,7 @@ class PesantrenBeranda(http.Controller):
                 </div>
                 <!-- Image Section -->
                 <div class="col-md-6">
-                    <img src="https://psb.nuruljadid.net/img/PAGE2.44b0e259.png" class="img-fluid rounded-4"
+                    <img src="pesantren_pendaftaran/static/src/img/PAGE2.44b0e259.png" class="img-fluid rounded-4"
                     alt="Syarat Pendaftaran">
                 </div>
                 </div>
@@ -541,7 +541,7 @@ class PesantrenBeranda(http.Controller):
             <div class="container my-5">
                 <div class="row align-items-center">
                 <div class="col-md-6">
-                    <img src="https://psb.nuruljadid.net/img/PAGE3.e3b6d704.png" alt="Image" class="rounded-custom img-fluid" />
+                    <img src="pesantren_pendaftaran/static/src/img/PAGE3.e3b6d704.png" alt="Image" class="rounded-custom img-fluid" />
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <h3 class="fw-bold"><span class="text-primary ">Informasi</span> Pelayanan Pendaftaran</h3>
@@ -1059,7 +1059,7 @@ class PesantrenPendaftaran(http.Controller):
             	<div class="ms-5">
             		<ul style="list-style-type: none; display: flex; text-transform: uppercase; font-size: 13px;" class="fw-semibold">
             			<li><a href="/psb" class="me-4" style="text-decoration: none; color: white;">Home</a></li>
-            			<li><a href="/beranda" class="me-4" style="text-decoration: none; color: white;" target="_blank">Info Pondok</a></li>
+            			<li><a href="/" class="me-4" style="text-decoration: none; color: white;" target="_blank">Info Pondok</a></li>
             			<li><a href="https://drive.google.com/drive/mobile/folders/1EYat5411joyoOmH_DkJ3g2DeJKgyyuBQ?usp=share_link&fbclid=IwY2xjawGflGlleHRuA2FlbQIxMQABHTusVv9hD3VRDSLW9-671QhOL86e3KMv30smsAYW0DHkkWf7zwPlcBlbeA_aem_XXofAY-ay0syx043L5BLvw" class="me-4" style="text-decoration: none; color: white;" target="_blank">Brosur</a></li>
             			<li><a href="" class="me-4" style="text-decoration: none; color: white;">Panduan</a></li>
             		</ul>
@@ -1965,7 +1965,7 @@ class PesantrenPsbBantuan(http.Controller):
                 <div class="ms-5">
                     <ul style="list-style-type: none; display: flex; text-transform: uppercase; font-size: 13px;" class="fw-semibold">
                         <li><a href="/psb" class="me-4" style="text-decoration: none; color: white;">Home</a></li>
-                        <li><a href="/beranda" class="me-4" style="text-decoration: none; color: white;" target="_blank">Info Pondok</a></li>
+                        <li><a href="/" class="me-4" style="text-decoration: none; color: white;" target="_blank">Info Pondok</a></li>
                         <li><a href="https://drive.google.com/drive/mobile/folders/1EYat5411joyoOmH_DkJ3g2DeJKgyyuBQ?usp=share_link&fbclid=IwY2xjawGflGlleHRuA2FlbQIxMQABHTusVv9hD3VRDSLW9-671QhOL86e3KMv30smsAYW0DHkkWf7zwPlcBlbeA_aem_XXofAY-ay0syx043L5BLvw" class="me-4" style="text-decoration: none; color: white;" target="_blank">Brosur</a></li>
                         <li><a href="" class="me-4" style="text-decoration: none; color: white;">Panduan</a></li>
                     </ul>
@@ -2851,7 +2851,7 @@ class PortalOrangTua(http.Controller):
                 <div class="ms-5">
                     <ul style="list-style-type: none; display: flex; text-transform: uppercase; font-size: 13px;" class="fw-semibold">
                         <li><a href="/psb" class="me-4" style="text-decoration: none; color: white;">Home</a></li>
-                        <li><a href="/beranda" class="me-4" style="text-decoration: none; color: white;" target="_blank">Info Pondok</a></li>
+                        <li><a href="/" class="me-4" style="text-decoration: none; color: white;" target="_blank">Info Pondok</a></li>
                         <li><a href="https://drive.google.com/drive/mobile/folders/1EYat5411joyoOmH_DkJ3g2DeJKgyyuBQ?usp=share_link&fbclid=IwY2xjawGflGlleHRuA2FlbQIxMQABHTusVv9hD3VRDSLW9-671QhOL86e3KMv30smsAYW0DHkkWf7zwPlcBlbeA_aem_XXofAY-ay0syx043L5BLvw" class="me-4" style="text-decoration: none; color: white;" target="_blank">Brosur</a></li>
                         <li><a href="" class="me-4" style="text-decoration: none; color: white;">Panduan</a></li>
                     </ul>
