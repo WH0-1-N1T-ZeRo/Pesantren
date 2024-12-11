@@ -298,7 +298,7 @@ class PesantrenBeranda(http.Controller):
             <nav class="navbar navbar-expand-lg bg-body-grenyellow shadow sticky-top">
             <div class="container d-flex">
                 <a class="navbar-brand d-flex text-white fw-bold" href="#">
-                <img src="https://i.ibb.co.com/1MFsvMq/1731466812700.png" alt="Icon Daarul Qur’an Istiqomah" class="me-2 d-md-block d-none" width="40" height="40">
+                <img src="pesantren_pendaftaran/static/src/1731466812700.png" alt="Icon Daarul Qur’an Istiqomah" class="me-2 d-md-block d-none" width="40" height="40">
                 <span class="d-md-block d-none h3">
                     PSB Daarul Qur’an Istiqomah
                 </span> 
@@ -322,7 +322,7 @@ class PesantrenBeranda(http.Controller):
             <div class="bg-body-grenyellow rounded-90">
                 <div class="container py-3 d-md-flex d-block text-light justify-content-center align-items-center">
                 <div class="me-5 w-set-auto d-flex justify-content-center">
-                    <img src="https://i.ibb.co.com/1MFsvMq/1731466812700.png" alt="" width="65%">
+                    <img src="pesantren_pendaftaran/static/src/1731466812700.png" alt="" width="65%">
                 </div>
                 <div class="ms-md-3 m-0 text-center text-md-start">
                     <h1 class="fw-bold">Pendaftaran Santri Baru</h1>
