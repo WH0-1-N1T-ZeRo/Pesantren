@@ -2784,7 +2784,7 @@ class PortalOrangTua(http.Controller):
                                 </div>
                                 """ for data in records])}
                                 <div class="mt-3 mb-3">
-                                    <h6><strong>Total Bayar : Rp {str(f"{sum(int(data.biaya) if data.state == 'draft' else 0 for data in record):,}").replace(',', '.')}</strong></h6>
+                                    <h6><strong>Total Bayar : Rp {str(f"{sum(int(data.biaya) if data.status_pembayaran == 'belumbayar' else 0 for data in records):,}").replace(',', '.')}</strong></h6>
                                 </div>
                             </div>
                             <div class="col-md-6">

@@ -135,11 +135,11 @@
                                         </div>
                                     </li>
                                 </t>
-                                <li class="nav-item me-3">
+                                <!-- <li class="nav-item me-3">
                                     <a class="nav-link text-white portalOrangTua" href="#"
                                         style="color: white;">
                                         <i class="fa-solid fa-user me-2"></i>Portal Orang Tua </a>
-                                </li>
+                                </li> -->
                             </ul>
                         </div>
                     </div>
@@ -183,16 +183,16 @@
                                     </div>
                                 </li>
                             </t>
-                            <li class="nav-item me-3">
+                            <!-- <li class="nav-item me-3">
                                 <a class="nav-link text-white portalOrangTua" href="#">
                                     <i class="fa-solid fa-user me-2"></i>Portal Orang Tua </a>
-                            </li>
+                            </li> -->
                         </ul>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-center">
-                    <div style="width: 800px; padding-top: 30px;" class="bg-white rounded mt-5 mb-3">
+                    <div style="width: 800px; margin-top:70px; padding-top: 30px;" class="bg-white rounded mb-3">
                         <h4 class="text-center mb-2">Alhamdulillah pendaftaran sudah berhasil</h4>
                         <p class="text-center mb-4">Pastikan selalu memantau email login untuk info
                             tentang PSB dibagian menu kotak masuk (Inbox) atau Spam.</p>

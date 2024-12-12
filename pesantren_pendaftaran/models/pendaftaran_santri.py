@@ -63,7 +63,7 @@ class DataPendaftaran(models.Model):
     provinsi_id         = fields.Many2one(comodel_name="cdn.ref_propinsi",  string="Provinsi",  help="")
     kota_id             = fields.Many2one(comodel_name="cdn.ref_kota",  string="Kota",  help="")
     kecamatan_id        = fields.Many2one(comodel_name="cdn.ref_kecamatan",  string="Kecamatan",  help="")
-    nisn                = fields.Char(string="NISN", required=True)
+    nisn                = fields.Char(string="NISN", required=False)
     nis                 = fields.Char(string="NIS", store=True)
     anak_ke             = fields.Integer( string="Anak ke",  help="")
     jml_saudara_kandung = fields.Integer( string="Jml Saudara Kandung",  help="")
