@@ -3,76 +3,75 @@
         id="pendaftaran_menu_root" 
         name="Pendaftaran Santri Baru" 
         web_icon="pesantren_pendaftaran,static/description/icon.png"/>
-
     <menuitem 
         id="pendaftaran_menu" 
         name="Pendaftaran" 
         parent="pendaftaran_menu_root" 
         action="action_pendaftaran" 
         sequence="10"/>
-
     <!-- <menuitem 
         id="menu_wizard_search_siswa"
         name="Virtual Account" 
         parent="pendaftaran_menu_root" 
         action="action_wizard_virtual_account" 
         sequence="20"/>    -->
-
     <menuitem 
         id="pendaftaran_pengaturan" 
         name="Pengaturan" 
         parent="pendaftaran_menu_root" 
         sequence="50"/>
-
-        <menuitem 
+    <menuitem 
+            id="pengaturan_setting" 
+            name="Setting PSB"
+            parent="pendaftaran_pengaturan"
+            action="res_config_settings_action" 
+            sequence="1"/>
+    <menuitem 
             id="pengaturan_umum_menu" 
             name="Pengaturan Umum"
             parent="pendaftaran_pengaturan" 
             sequence="1"/>
-            <menuitem 
+    <menuitem 
                 id="menu_jenjang" 
                 name="Jenjang Pendidikan" 
                 parent="pengaturan_umum_menu" 
                 action="action_ubig_pendidikan" 
                 sequence="1"/>
-
-        <menuitem 
+    <menuitem 
             id="keuangan_menu" 
             name="Keuangan"
             parent="pendaftaran_pengaturan" 
             sequence="2"/>
-            <menuitem 
+    <menuitem 
                 id="menu_komponen_biaya" 
                 name="Komponen Biaya" 
                 parent="keuangan_menu" 
                 action="action_ubig_komponen_biaya" 
                 sequence="1"/>
-            <menuitem 
+    <menuitem 
                 id="menu_daftar_ulang" 
                 name="Biaya Jenjang Pendidikan" 
                 parent="keuangan_menu" 
                 action="action_ubig_biaya_daftarulang" 
                 sequence="2"/>
-            <menuitem 
+    <menuitem 
                 id="menu_bank" 
                 name="Bank" 
                 parent="keuangan_menu" 
                 action="action_bank" 
                 sequence="3"/>
-                
-
-            <menuitem 
+    <menuitem 
             id="referensi_data_menu" 
             name="Penilaian Seleksi"
             parent="pendaftaran_pengaturan" 
             sequence="3"/>
-                <menuitem 
+    <menuitem 
                     id="menu_soal" 
                     name="Soal Seleksi" 
                     parent="referensi_data_menu" 
                     action="action_soal_seleksi" 
                     sequence="1"/>
-                <menuitem 
+    <menuitem 
                     id="menu_penilaian" 
                     name="Penilaian Seleksi" 
                     parent="referensi_data_menu" 

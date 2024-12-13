@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!--    Extending the chatter to add the camera icon-->
+    <t name="chatter_camera" t-inherit="mail.Chatter"
+       t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[@class='o-mail-Followers d-flex me-1']" position="after">
+            <button id="camera_button" class="btn btn-link text-action" type="button" t-on-click="onClickCamera"  style="border:none;background-color:white;">
+                <i class="fa fa-camera-retro"/>
+            </button>
+            <center>
+                <div id="myModal" class="modal" style="justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8); z-index: 9999;">
+                    <div class="modal-content" style="position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: black; overflow: hidden;">
+                        <video id="videoCam" t-ref="video" style="width: 100%; height: auto; object-fit: cover;"></video>
+                        <div style="position: absolute; bottom: 20px; width: 100%; display: flex; justify-content: center; gap: 10px; z-index: 10;">
+                            <button id="click_photo" t-on-click="ImageCapture" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);">
+                    Capture
+                </button>
+                            <button id="stop-camera-button" t-ref="stop-camera-button" style="padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);">
+                    Cancel
+                </button>
+                        </div>
+                        <span hidden="hidden">
+                            <canvas id="canvas" width="150" height="100" t-ref="canvas" style="display: none;"></canvas>
+                        </span>
+                    </div>
+                </div>
+            </center>
+        </xpath>
+    </t>
+</templates>

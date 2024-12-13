@@ -5,7 +5,7 @@
         <div class="card-header">
             <h3 class="card-title">Capaian Belajar Tahsin Santri</h3>
         </div>
-        <div class="card-body p-0" style="height: 400px;">
+        <div class="card-body p-0" style="height: 50vh;">
             <div class="h-100">
                 <t t-if="state.isLoading">
                     <div class="d-flex align-items-center justify-content-center h-100">
@@ -25,18 +25,17 @@
                                     <th>Buku Tahsin</th>
                                     <th>Jilid</th>
                                     <th>Halaman</th>
-                                    <th>Tanggal</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <t t-foreach="state.tahsinData" t-as="tahsin" t-key="tahsin.number">
-                                    <tr>
+                                    <tr class="cursor-pointer hover:bg-gray-100" 
+                                        t-on-click="() => tahsin.onClick()">
                                         <td><t t-esc="tahsin.number" /></td>
                                         <td><t t-esc="tahsin.student_name" /></td>
                                         <td><t t-esc="tahsin.book" /></td>
                                         <td><t t-esc="tahsin.volume" /></td>
                                         <td><t t-esc="tahsin.page" /></td>
-                                        <td><t t-esc="moment(tahsin.date).format('DD/MM/YYYY')" /></td>
                                     </tr>
                                 </t>
                             </tbody>
@@ -56,9 +55,9 @@
     <t t-name="owl.GuruquranTahfidzCardList" owl="1">
         <div class="card dashboard-card">
             <div class="card-header">
-                <h3 class="card-title">5 Hafalan Terbanyak</h3>
+                <h3 class="card-title">10 Hafalan Terbanyak</h3>
             </div>
-            <div class="card-body p-0" style="height: 400px;">
+            <div class="card-body p-0" style="height: 50vh;">
                 <div class="h-100">
                     <t t-if="state.isLoading">
                         <div class="d-flex align-items-center justify-content-center h-100">
@@ -81,7 +80,8 @@
                                 </thead>
                                 <tbody>
                                     <t t-foreach="state.topTahfidz" t-as="tahfidz" t-key="tahfidz_index">
-                                        <tr>
+                                        <tr class="cursor-pointer hover:bg-gray-100" 
+                                        t-on-click="() => tahfidz.onClick()">
                                             <td><t t-esc="tahfidz.number" /></td>
                                             <td><t t-esc="tahfidz.name" /></td>
                                             <td><t t-esc="tahfidz.kelas" /></td>

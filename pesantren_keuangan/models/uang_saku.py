@@ -21,7 +21,7 @@ class UangSaku(models.Model):
     amount_out      = fields.Float(string='Nominal Keluar')
 
     validasi_id     = fields.Many2one(comodel_name='res.users', string='Validasi', readonly=True)
-    validasi_time   = fields.Datetime(string='Tgl Validasi', readonly=True)
+    validasi_time   = fields.Datetime(string='Tgl Validasi', readonly=False)
     keterangan      = fields.Text(string='Keterangan', states={'confirm': [('readonly', True)]})
 
     state           = fields.Selection(string='State', selection=[
@@ -36,6 +36,7 @@ class UangSaku(models.Model):
         readonly=True,
         store=True
     )
+    musyrif_id = fields.Many2one('hr.employee', string='Musyrif', related='siswa.musyrif_id', readonly=True)
 
     # override
     @api.model

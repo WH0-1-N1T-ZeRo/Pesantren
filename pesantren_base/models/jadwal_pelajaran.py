@@ -24,7 +24,7 @@ class JadwalPelajaran(models.Model):
     tahunajaran_id      = fields.Many2one('cdn.ref_tahunajaran', string='Tahun Ajaran', required=True,
         default=lambda self: self.env.user.company_id.tahun_ajaran_aktif.id)
     kelas_id            = fields.Many2one('cdn.ruang_kelas', string='Kelas', required=True)
-    jenjang             = fields.Selection(selection=[('sd', 'SD/MI'), ('smp', 'SMP/MTS'), ('sma', 'SMA/MA')], string='Jenjang', related='kelas_id.jenjang', readonly=True)
+    jenjang             = fields.Selection(selection=[('paud','PAUD'),('tk','TK/RA'),('sd', 'SD/MI'), ('smp', 'SMP/MTS'), ('sma', 'SMA/MA')], string='Jenjang', related='kelas_id.jenjang', readonly=True)
     walikelas_id        = fields.Many2one('hr.employee', string='Wali Kelas', readonly=True, related='kelas_id.walikelas_id')
     semester            = fields.Selection(selection=[('1', 'Semester 1'), ('2', 'Semester 2')], string='Semester', required=True)
     jadwal_ids          = fields.One2many('cdn.jadwal_pelajaran_lines', inverse_name='jadwalpelajaran_id', string='Jadwal Pelajaran'
@@ -60,7 +60,7 @@ class JadwalPelajaranLine(models.Model):
         ('7', 'Minggu')], string='Hari', required=True)
     jadwalpelajaran_id  = fields.Many2one('cdn.jadwal_pelajaran', string='Jadwal Pelajaran', ondelete='cascade')
     kelas_id            = fields.Many2one('cdn.ruang_kelas', string='Kelas', related='jadwalpelajaran_id.kelas_id', readonly=True, store=True)
-    jenjang             = fields.Selection(selection=[('sd', 'SD/MI'), ('smp', 'SMP/MTS'), ('sma', 'SMA/MA')], string='Jenjang', related='jadwalpelajaran_id.jenjang', readonly=True)
+    jenjang             = fields.Selection(selection=[('paud','PAUD'),('tk','TK/RA'),('sd', 'SD/MI'), ('smp', 'SMP/MTS'), ('sma', 'SMA/MA')], string='Jenjang', related='jadwalpelajaran_id.jenjang', readonly=True)
     jampelajaran_id     = fields.Many2one('cdn.ref_jam_pelajaran', string='Jam Pelajaran', required=True)
     start_time          = fields.Float(string='Jam Mulai', related='jampelajaran_id.start_time', readonly=True , widget="float_time")
     end_time            = fields.Float(string='Jam Selesai', related='jampelajaran_id.end_time', readonly=True , widget="float_time")

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <!-- Inherit PartnerLine untuk menambahkan data di kolom Uang Saku -->
+        <t t-name="pos_wallet_odoo.NavbarExtensions" t-inherit="point_of_sale.Navbar" t-inherit-mode="extension">
+        <!-- Contoh: Menambahkan elemen baru di bagian atas Navbar -->
+            <xpath expr="//div[@class='p-2 pos-burger-menu-items']" position="replace">
+                <div class="p-2 pos-burger-menu-items">
+                    <DropdownItem onSelected="() => this.pos.onTicketButtonClick()"> Orders <span
+                            t-if="orderCount gt 0"
+                            class="badge text-bg-info rounded-pill py-1 ms-2 float-end"
+                            t-esc="orderCount" />
+                    </DropdownItem>
+                    <DropdownItem t-if="showCashMoveButton" onSelected="() => this.pos.cashMove()">
+                        Cash In/Out
+                    </DropdownItem>
+                    <DropdownItem t-if="!hasGroupPOSUser"
+                        onSelected="() => this.manageStock()">
+                        Kelola Stok
+                    </DropdownItem>
+                    <DropdownItem 
+                        onSelected="() => this.pos.editProduct()">
+                        Create Product
+                    </DropdownItem>
+                    <DropdownItem t-if="hardwareProxy.printer" onSelected="() => this.showSaleDetails()">
+                        Print Report
+                    </DropdownItem>
+                    <div class="d-none" id="dropdown-item">
+                        <DropdownItem onSelected="() => pos.closePos()">
+                            Backend
+                        </DropdownItem>
+                    </div>
+                    <DropdownItem onSelected="() => pos.closePos()" t-if="hasGroupPOSUser"> Back </DropdownItem>
+                    <DropdownItem onSelected="() => this.pos.closeSession()">
+                        Close Register
+                    </DropdownItem>
+                </div>
+            </xpath>
+            <xpath expr="//div[@class='pos-centerheader d-flex justify-content-center overflow-hidden']" position="replace">
+                <div t-if="!ui.isSmall"  class="pos-centerheader d-flex justify-content-center overflow-hidden">
+                    <img class="pos-logo pos-logo mw-100" height="42" t-on-click="() => debug.toggleWidget()" src="/pesantren_base/static/description/logo.png" alt="Logo" />
+                </div>
+            </xpath>
+        </t>
+    </templates>
+<!-- Tambahkan JavaScript -->

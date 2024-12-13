@@ -1,0 +1,10 @@
+<!-- <?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <templates id="assets_backend">
+        <t t-name="helpdesk assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/pos_wallet_odoo/static/src/js/beforeunload.js" />
+            </xpath>
+        </t>
+    </templates>
+</odoo> -->

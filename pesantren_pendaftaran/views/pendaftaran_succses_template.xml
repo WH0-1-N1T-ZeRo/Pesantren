@@ -6,6 +6,8 @@
                 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
                 integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
                 crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css"
+                rel="stylesheet" />
             <style>
 
                 .container-main {
@@ -94,7 +96,7 @@
                     <div class="container-fluid">
                         <a class="navbar-brand ms-5 text-white fw-semibold" style="color: white;"
                             href="/psb">
-                            <img src="https://i.ibb.co.com/f9j819p/1731466812700.png" width="50"
+                            <img src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" width="50"
                                 alt="Logo Pesantren" /> Daarul Qur'an Istiqomah </a>
                         <button class="navbar-toggler ms-auto" type="button"
                             data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
@@ -104,32 +106,39 @@
                         <div class="collapse navbar-collapse" style="color: white;" id="navbarNav">
                             <ul class="navbar-nav ms-auto">
                                 <li class="nav-item me-3">
-                                    <a class="nav-link stext-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
+                                    <a class="nav-link stext-white" style="color: white !important;"
+                                        href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                                 </li>
                                 <li class="nav-item me-3">
                                     <a class="nav-link text-white" style="color: white !important;"
                                         href="/pendaftaran"><i class="fa-solid fa-note-sticky me-2"></i>
                                         Pendaftaran</a>
                                 </li>
-                                <li class="nav-item me-3">
-                                    <a class="nav-link text-white" style="color: white !important;"
-                                        href="/web/login"><i
-                                            class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                <li class="nav-item dropdown">
+                                    <a href="#" class="dropdown-link nav-link"
+                                        style="color: white !important;">
+                                        <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                    <div class="dropdown-content">
+                                        <a href="/login">Login PSB</a>
+                                        <a href="/web/login">Login Orang Tua</a>
+                                    </div>
                                 </li>
                                 <li class="nav-item me-3">
                                     <a class="nav-link text-white" style="color: white !important;"
                                         href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
                                 </li>
-                                <li class="nav-item dropdown">
-                                    <a href="#" class="dropdown-link nav-link"
-                                        style="color: white !important;">
-                                        <i class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
-                                    <div class="dropdown-content">
-                                        <a href="/pengumuman/sd-mi">SD / MI</a>
-                                        <a href="/pengumuman/smp-mts">SMP / MTS</a>
-                                        <a href="/pengumuman/sma-ma">SMA / MA</a>
-                                    </div>
-                                </li>
+                                <t t-if="is_halaman_pengumuman">
+                                    <li class="nav-item dropdown">
+                                        <a href="#" class="dropdown-link nav-link"
+                                            style="color: white !important;"><i
+                                                class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
+                                        <div class="dropdown-content">
+                                            <a href="/pengumuman/sd-mi">SD / MI</a>
+                                            <a href="/pengumuman/smp-mts">SMP / MTS</a>
+                                            <a href="/pengumuman/sma-ma">SMA / MA</a>
+                                        </div>
+                                    </li>
+                                </t>
                             </ul>
                         </div>
                     </div>
@@ -141,42 +150,56 @@
                         data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     <a class="navbar-brand mt-1 text-white fw-semibold" href="/psb"
                         style="display: flex; flex-direction: column; align-items: center; color: white;">
-                        <img src="https://i.ibb.co.com/f9j819p/1731466812700.png" width="50"
+                        <img src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" width="50"
                             alt="Logo Pesantren" /> Daarul Qur'an Istiqomah </a>
                     <div class="offcanvas-body">
                         <ul class="navbar-nav ms-auto">
                             <li class="nav-item me-3">
-                                <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
+                                <a class="nav-link text-white" style="color: white !important;"
+                                    href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" href="/pendaftaran"><i
                                         class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
                             </li>
-                            <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/web/login"><i
-                                        class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="dropdown-link nav-link"
+                                    style="color: white !important;">
+                                    <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                <div class="dropdown-content">
+                                    <a href="/login">Login PSB</a>
+                                    <a href="/web/login">Login Orang Tua</a>
+                                </div>
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" href="/bantuan"><i
                                         class="fa-solid fa-lock me-2"></i>Bantuan</a>
                             </li>
-                            <li class="nav-item dropdown">
-                                <a href="#" class="dropdown-link nav-link"
-                                    style="color: white !important;">
-                                    <i class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
-                                <div class="dropdown-content">
-                                    <a href="/pengumuman/sd-mi">SD / MI</a>
-                                    <a href="/pengumuman/smp-mts">SMP / MTS</a>
-                                    <a href="/pengumuman/sma-ma">SMA / MA</a>
-                                </div>
-                            </li>
+                            <t t-if="is_halaman_pengumuman">
+                                <li class="nav-item dropdown">
+                                    <a href="#" class="dropdown-link nav-link"
+                                        style="color: white !important;"><i
+                                            class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
+                                    <div class="dropdown-content">
+                                        <a href="/pengumuman/sd-mi">SD / MI</a>
+                                        <a href="/pengumuman/smp-mts">SMP / MTS</a>
+                                        <a href="/pengumuman/sma-ma">SMA / MA</a>
+                                    </div>
+                                </li>
+                            </t>
+                            <!-- <li class="nav-item me-3">
+                                <a class="nav-link text-white portalOrangTua" href="#">
+                                    <i class="fa-solid fa-user me-2"></i>Portal Orang Tua </a>
+                            </li> -->
                         </ul>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-center">
                     <div style="width: 800px; padding-top: 30px;" class="bg-white rounded mt-5 mb-3">
-                        <h4 class="text-center mb-4">Alhamdulillah pendaftaran sudah berhasil</h4>
+                        <h4 class="text-center mb-2">Alhamdulillah pendaftaran sudah berhasil</h4>
+                        <p class="text-center mb-4">Pastikan selalu memantau email login untuk info
+                            tentang PSB dibagian menu kotak masuk (Inbox) atau Spam.</p>
                         <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
                             <div>
                                 <div class="mb-4">
@@ -204,7 +227,7 @@
                                         <span>TTL : <span class="text-capitalize">
                                                 <t t-esc="pendaftaran.kota_lahir" />
                                             </span>
-                                            , <t t-esc="pendaftaran.tanggal_lahir" /></span>
+                                            , <t t-esc="pendaftaran.get_formatted_tanggal_lahir()" /></span>
                                         <span>Alamat : <t t-esc="pendaftaran.alamat" /></span>
                                         <span>Email : <t t-esc="pendaftaran.email" /></span>
                                         <span>NIK : <t t-esc="pendaftaran.nik" /></span>
@@ -214,7 +237,7 @@
                                     <div class="d-flex align-items-center">
                                         <i class="fa-solid fa-code me-2 text-info"
                                             style="font-size: 20px;"></i>
-                                        <span class="fs-5">Program Studi dipilih</span>
+                                        <span class="fs-5">Jenjang Pendidikan yang dipilih</span>
                                     </div>
                                     <br />
                                     <div>
@@ -229,20 +252,23 @@
                                     <div class="d-flex align-items-center mb-3">
                                         <i class="fa-solid fa-briefcase me-2 text-warning"
                                             style="font-size: 20px;"></i>
-                                        <span class="fs-5">Nomor Rekening Virtual Account</span>
+                                        <span class="fs-5">Nomor Rekening Bank</span>
                                     </div>
                                     <div
                                         style="display: flex; flex-direction: column; margin-left: 30px;">
-                                        <span>Bank BNI</span>
-                                        <span>Nomor Rekening: <br /> 80674467656547</span>
+                                        <span>Bank BSI</span>
+                                        <span>Nomor Rekening: <br /> <span t-esc="no_rekening" /></span>
                                         <span>Sebesar : Rp. <t
                                                 t-esc="'{:,}'.format(pendaftaran.biaya).replace(',', '.')" /></span>
                                     </div>
                                 </div>
-                                <a t-attf-href="/pendaftaran/cetak?id=#{pendaftaran.id}"
+                                <a t-attf-href="/pendaftaran/cetak?token=#{pendaftaran.token}"
                                     class="text-uppercase mb-5 d-inline-block"
                                     style="background-color: #A812AE; padding: 10px; border-radius: 20px; color: white; text-decoration: none; font-size: 13px; margin-left: 30px;"
                                     target="_blank">Cetak Form Pembayaran</a>
+                                <!-- <p>Simpan kode akses ini <br /> <span class="fw-bold"
+                                        t-esc="pendaftaran.kode_akses" /> <br /> untuk digunakan di
+                                    halaman portal orang tua.</p> -->
                             </div>
                         </div>
                     </div>
@@ -279,6 +305,29 @@
                     </div>
                 </footer>
             </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="modalPendaftaranTutup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Pendaftaran ditutup!</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Mohon maaf, pendaftaran telah ditutup.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+                </div>
+            </div>
+            </div>
+
+
+
+            <script
+                src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js"></script>
             <script>
                 // Cari elemen body dengan class spesifik
                 const bodyElement =

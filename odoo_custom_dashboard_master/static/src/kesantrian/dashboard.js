@@ -11,12 +11,12 @@ export class OwlKesantrianDashboard extends Component {
             selectedDateRange: null,
             tempDateRange: { start: '', end: '' },
             showDatePicker: false,
-            selectedPeriod: 'thisWeek', 
+            selectedPeriod: 'thisMonth', 
             isLoading: false
         });
         
         // Initialize with thisWeek period
-        this.setPeriod('thisWeek');
+        this.setPeriod('thisMonth');
     }
 
     toggleDatePicker() {

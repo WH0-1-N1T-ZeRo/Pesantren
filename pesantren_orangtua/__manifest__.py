@@ -74,6 +74,7 @@
         'views/pengumuman.xml',
         'views/siswa.xml',
         'views/orangtua.xml',
+        'views/temp.xml',
         # wizard
         
        
@@ -81,7 +82,11 @@
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
+    ],'assets': {
+    'web.assets_backend': [
+        'pesantren_orangtua/static/src/js/delayed_notification.js',
     ],
+},
     "installable": True,
 	"auto_install": False,
 	"application": True,  

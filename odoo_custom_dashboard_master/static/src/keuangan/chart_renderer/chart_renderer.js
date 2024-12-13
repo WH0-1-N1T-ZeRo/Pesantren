@@ -230,27 +230,26 @@ export class KeuanganChartRenderer extends Component {
 
     async fetchTagihanData(startDate = null, endDate = null) {
         try {
+            // Existing invoice domain
             const domain = [
                 ['move_id.move_type', 'in', ['out_invoice', 'out_refund', 'in_invoice', 'in_refund']],
                 ['display_type', 'in', ['product']],
                 ['product_id', '!=', false]
             ];
 
+            // Add date filters if provided
             if (startDate) {
-                const start = new Date(startDate);
-                start.setUTCHours(0, 0, 0, 0);
-                domain.push(['date', '>=', start.toISOString().split('.')[0] + 'Z']);
+                domain.push(['date', '>=', startDate]);
             }
             if (endDate) {
-                const end = new Date(endDate);
-                end.setUTCHours(23, 59, 59, 999);
-                domain.push(['date', '<=', end.toISOString().split('.')[0] + 'Z']);
+                domain.push(['date', '<=', endDate]);
             }
 
+            // Fetch both debit and credit data
             const result = await this.orm.searchRead(
                 'account.move.line',
                 domain,
-                ['date', 'product_id', 'move_id', 'parent_state', 'name', 'quantity'],
+                ['date', 'product_id', 'move_id', 'parent_state', 'name', 'quantity', 'credit'],
                 { order: 'date asc' }
             );
 
@@ -258,13 +257,17 @@ export class KeuanganChartRenderer extends Component {
                 this.state.chartData = { series: [], labels: [] };
                 return;
             }
-            this.processTagihanData(result);
+
+            // Process data including credit
+            const processedData = this.processTagihanData(result);
+            this.state.chartData = processedData;
+            this.renderChart();
         } catch (error) {
             console.error('Error fetching tagihan data:', error);
             this.state.chartData = { series: [], labels: [] };
+            this.renderChart();
         }
     }
-
 
     async fetchUangSakuMasukData(startDate = null, endDate = null) {
         try {
@@ -344,7 +347,6 @@ export class KeuanganChartRenderer extends Component {
                 return;
             }
     
-            // Store the current view range in state
             this.state.currentViewRange = {
                 startDate,
                 endDate,
@@ -369,7 +371,6 @@ export class KeuanganChartRenderer extends Component {
         const currentStartDate = new Date(this.state.currentViewRange.startDate);
         const currentEndDate = new Date(this.state.currentViewRange.endDate);
         
-        // Check if current range matches default week range
         return !(
             currentStartDate.toISOString().split('T')[0] === weekAgo.toISOString().split('T')[0] &&
             currentEndDate.toISOString().split('T')[0] === today.toISOString().split('T')[0]
@@ -378,50 +379,57 @@ export class KeuanganChartRenderer extends Component {
 
     processTagihanData(data) {
         if (!Array.isArray(data) || data.length === 0) {
-            this.state.chartData = { series: [], labels: [] };
-            return;
+            return { series: [], labels: [] };
         }
-
-        // Separate data into lunas and belum lunas
+    
         const lunasData = new Map();
         const belumLunasData = new Map();
-
-        // Process each record
+        const creditData = new Map();
+    
         data.forEach(record => {
-            const productName = record.product_id[1];
+            const productName = record.product_id && record.product_id[1] ? record.product_id[1] : 'Unknown Product';
             const quantity = record.quantity || 1;
-
+            const credit = record.credit || 0;
+    
             if (record.parent_state === 'posted') {
                 lunasData.set(productName, (lunasData.get(productName) || 0) + quantity);
             } else {
                 belumLunasData.set(productName, (belumLunasData.get(productName) || 0) + quantity);
             }
-        });
+            
 
-        // Combine and sort products by total quantity
-        const allProducts = new Set([...lunasData.keys(), ...belumLunasData.keys()]);
+            creditData.set(productName, (creditData.get(productName) || 0) + credit);
+        });
+    
+        // Combine and sort products based on total volume
+        const allProducts = new Set([...lunasData.keys(), ...belumLunasData.keys(), ...creditData.keys()]);
         const sortedProducts = Array.from(allProducts)
             .map(product => ({
                 name: product,
-                total: (lunasData.get(product) || 0) + (belumLunasData.get(product) || 0)
+                total: (lunasData.get(product) || 0) + 
+                       (belumLunasData.get(product) || 0)
             }))
             .sort((a, b) => b.total - a.total)
             .slice(0, 10)
             .map(item => item.name);
-
-        // Prepare chart data
-        this.state.chartData = {
+    
+        return {
             labels: sortedProducts,
             series: [
                 {
                     name: 'Lunas',
                     data: sortedProducts.map(product => lunasData.get(product) || 0),
-                    clickable: true
+                    type: 'bar'
                 },
                 {
                     name: 'Belum Lunas',
                     data: sortedProducts.map(product => belumLunasData.get(product) || 0),
-                    clickable: true
+                    type: 'bar'
+                },
+                {
+                    name: 'Credit',
+                    data: sortedProducts.map(product => creditData.get(product) || 0),
+                    type: 'line'
                 }
             ]
         };
@@ -432,14 +440,15 @@ export class KeuanganChartRenderer extends Component {
             this.state.chartData = { series: [], labels: [] };
             return;
         }
-
+    
         const dateData = this.processDateData(data, field);
         const sortedDates = Object.keys(dateData).sort((a, b) => new Date(a) - new Date(b));
-
+    
         this.state.chartData = {
             labels: sortedDates,
             series: [{
                 name: label,
+                type: 'area',
                 data: sortedDates.map(date => dateData[date] || 0)
             }]
         };
@@ -448,9 +457,8 @@ export class KeuanganChartRenderer extends Component {
     getChartConfig() {
         const baseConfig = {
             chart: {
-                type: this.props.type === 'bar' ? 'bar' : 'area',
                 height: 450,
-                stacked: true, // Enable stacking for better visualization
+                type: this.props.type === 'bar' ? 'bar' : 'area',
                 toolbar: {
                     show: false,
                     tools: {
@@ -471,159 +479,177 @@ export class KeuanganChartRenderer extends Component {
                         speed: 350
                     }
                 },
-                events: {
-                    dataPointSelection: (event, chartContext, config) => {
-                        this.onChartClick(event, chartContext, config);
-                    },
-                    click: (event, chartContext, config) => {
-                        // Handle area chart clicks
-                        if (config.dataPointIndex !== undefined && config.seriesIndex !== undefined) {
-                            this.onChartClick(event, chartContext, {
-                                dataPointIndex: config.dataPointIndex,
-                                seriesIndex: config.seriesIndex
-                            });
-                        }
-                    }
-                }
+                stacked: true
             },
             plotOptions: {
                 bar: {
                     horizontal: false,
-                    columnWidth: '70%',
+                    columnWidth: '50%',
                     endingShape: 'rounded',
-                    borderRadius: 4,
-                    dataLabels: {
-                        position: 'top'
-                    }
-                },
-                area: {
-                    // Add specific configuration for area chart
-                    clickable: true,
-                    dataLabels: {
-                        enabled: false
-                    }
+                    borderRadius: 4
                 }
             },
-            colors: ['#00E396', '#FF4560'],
+            stroke: {
+                show: true,
+                width: this.props.type === 'bar' ? [0, 0, 3] : [3],
+                curve: 'smooth'
+            },
             dataLabels: {
-                enabled: true,
-                formatter: function(val) {
+                enabled: true,  // Menyalakan data labels untuk bar dan area
+                formatter: function (val) {
                     return val.toLocaleString('id-ID');
                 },
                 style: {
-                    fontSize: '12px',
-                    colors: ['#333']
+                    colors: this.props.type === 'bar' ? ['#FFFFFF'] : ['#000000']  // Putih untuk bar, hitam untuk area/line
                 },
-                offsetY: -20
+                dropShadow: {
+                    enabled: true,
+                    top: 1,
+                    left: 1,
+                    blur: 1,
+                    opacity: 0.3
+                }
+            },
+            colors: this.props.type === 'bar'
+                ? ['#00E396', '#FF4560', '#2E93fA']
+                : ['#00E396'], 
+            xaxis: {
+                categories: this.state.chartData.labels.map(label => 
+                    label.length > 10 ? label.substring(0, 10) + '...' : label
+                ),
+                labels: {
+                    rotate: -45,
+                    style: {
+                        fontSize: '12px'
+                    }
+                }
+            },
+            yaxis: this.props.type === 'bar' ? [
+                {
+                    title: {
+                        text: '',
+                        style: {
+                            fontSize: '14px',
+                            fontWeight: 600
+                        }
+                    },
+                    labels: {
+                        formatter: function (value) {
+                            return Math.round(value).toLocaleString('id-ID');
+                        }
+                    }
+                },
+                {
+                    title: {
+                        text: '',
+                        style: {
+                            fontSize: '14px',
+                            fontWeight: 600
+                        }
+                    },
+                    labels: {
+                        formatter: function (value) {
+                            return Math.round(value).toLocaleString('id-ID');
+                        }
+                    }
+                },
+                {
+                    opposite: true,
+                    title: {
+                        text: '',
+                        style: {
+                            fontSize: '14px',
+                            fontWeight: 600
+                        }
+                    },
+                    labels: {
+                        formatter: function (value) {
+                            return value.toLocaleString('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
+                                maximumFractionDigits: 0 // Hapus desimal
+                            });
+                        }
+                    }
+                }
+            ] : {
+                title: {
+                    text: '',
+                    style: {
+                        fontSize: '14px',
+                        fontWeight: 600
+                    }
+                },
+                labels: {
+                    formatter: function (value) {
+                        return value.toLocaleString('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                            maximumFractionDigits: 0 // Hapus desimal
+                        });
+                    }
+                }
             },
             title: {
                 text: this.props.title,
                 align: 'center',
                 style: {
-                    fontSize: '18px',
-                    fontWeight: '600',
-                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '16px',
+                    fontWeight: 'bold'
                 }
-            },
-            xaxis: {
-                categories: this.state.chartData.labels,
-                labels: {
-                    rotate: -45,
-                    style: {
-                        fontSize: '12px',
-                        fontFamily: 'Inter, sans-serif'
-                    }
-                },
-                axisBorder: {
-                    show: true
-                },
-                axisTicks: {
-                    show: true
-                }
-            },
-            yaxis: {
-                labels: {
-                    formatter: function(value) {
-                        if (value === undefined || value === null) return '0';
-                        return value.toLocaleString('id-ID');
-                    },
-                    style: {
-                        fontSize: '12px'
-                    }
-                },
-                min: 0,
-                tickAmount: 5,
-                forceNiceScale: true
-            },
-            markers: {
-                size: 6,
-                strokeWidth: 2,
-                strokeColor: "#fff",
-                strokeOpacity: 1,
-                hover: {
-                    size: 8
-                },
-                onClick: (e) => {
-                    if (e.dataPointIndex !== undefined && e.seriesIndex !== undefined) {
-                        this.onChartClick(e, null, {
-                            dataPointIndex: e.dataPointIndex,
-                            seriesIndex: e.seriesIndex
-                        });
-                    }
-                }
-            },
-            points: {
-                show: true,
-                radius: 10, // Larger click radius
             },
             legend: {
                 position: 'top',
-                horizontalAlign: 'center',
-                offsetY: 0,
-                itemMargin: {
-                    horizontal: 10,
-                    vertical: 5
+                horizontalAlign: 'center'
+            },
+            fill: {
+                opacity: this.props.type === 'bar' ? 1 : 0.7,
+                type: this.props.type === 'bar' ? 'solid' : 'gradient',
+                gradient: this.props.type === 'bar' ? undefined : {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.7,
+                    opacityTo: 0.9,
+                    stops: [0, 90, 100]
                 }
             },
             tooltip: {
                 shared: true,
                 intersect: false,
-                y: {
-                    formatter: function(value) {
-                        return value.toLocaleString('id-ID');
+                y: this.props.type === 'bar' ? [
+                    {
+                        formatter: function (value) {
+                            return Math.round(value).toLocaleString('id-ID');
+                        }
+                    },
+                    {
+                        formatter: function (value) {
+                            return Math.round(value).toLocaleString('id-ID');
+                        }
+                    },
+                    {
+                        formatter: function (value) {
+                            return value.toLocaleString('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
+                                maximumFractionDigits: 0 // Hapus desimal
+                            });
+                        }
                     }
-                }
-            },
-            states: {
-                hover: {
-                    filter: {
-                        type: 'lighten',
-                        value: 0.15,
+                ] : {
+                    formatter: function (value) {
+                        return value.toLocaleString('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                            maximumFractionDigits: 0 // Hapus desimal
+                        });
                     }
-                },
-                active: {
-                    allowMultipleDataPointsSelection: false,
-                    filter: {
-                        type: 'darken',
-                        value: 0.35,
-                    }
-                }
-            },
-            noData: {
-                text: 'Tidak ada data',
-                align: 'center',
-                verticalAlign: 'middle',
-                style: {
-                    color: '#1f2937',
-                    fontSize: '16px',
-                    fontFamily: 'Inter'
                 }
             }
         };
-
+    
         return baseConfig;
     }
-
+    
     renderChart() {
         if (!this.chartRef.el) return;
     
@@ -639,21 +665,24 @@ export class KeuanganChartRenderer extends Component {
             series: this.state.chartData.series.map(series => ({
                 ...series,
                 data: series.data.map(value => value || 0)
-            }))
+            })),
+            chart: {
+                ...this.getChartConfig().chart,
+                events: {
+                    dataPointSelection: (event, chartContext, config) => {
+                        this.onChartClick(event, chartContext, config);
+                    },
+                    click: (event, chartContext, config) => {
+                        if (config.dataPointIndex !== undefined && config.seriesIndex !== undefined) {
+                            this.onChartClick(event, chartContext, {
+                                dataPointIndex: config.dataPointIndex,
+                                seriesIndex: config.seriesIndex
+                            });
+                        }
+                    }
+                }
+            }
         };
-        if (this.props.type !== 'bar') {
-            const originalMouseMove = config.chart.events.mouseMove;
-            config.chart.events.mouseMove = (event, chartContext, config) => {
-                if (originalMouseMove) {
-                    originalMouseMove(event, chartContext, config);
-                }
-                
-                const el = event.target;
-                if (el.classList.contains('apexcharts-marker')) {
-                    el.style.cursor = 'pointer';
-                }
-            };
-        }
     
         try {
             this.chartInstance = new ApexCharts(this.chartRef.el, config);
@@ -667,10 +696,8 @@ export class KeuanganChartRenderer extends Component {
         const dataPointIndex = config.dataPointIndex;
         const seriesIndex = config.seriesIndex;
     
-        // Guard clause untuk mengecek index yang valid
         if (dataPointIndex === -1 || seriesIndex === -1) return;
-    
-        // Pastikan data chart tersedia
+
         if (!this.state?.chartData?.labels || !this.state?.chartData?.series) {
             console.error('Chart data is not properly initialized');
             return;

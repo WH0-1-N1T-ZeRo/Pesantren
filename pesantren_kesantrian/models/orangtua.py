@@ -23,11 +23,16 @@ class OrangTua(models.Model):
                 self.env.ref('pesantren_kesantrian.group_kesantrian_orang_tua').id,
                 # Assign grup sekolah user
                 self.env.ref('pesantren_base.group_sekolah_user').id,
+                # Assign grup sekolah user
+                self.env.ref('pesantren_kesantrian.group_kesantrian_user').id,
+                # Assign grup guru user
+                self.env.ref('pesantren_guru.group_guru_user').id,
                 # Assign grup keuangan user
                 self.env.ref('pesantren_keuangan.group_keuangan_user').id
             ])]
         })
-
+        
+        res.user_id = user.id
         return res
 
     def unlink(self):
@@ -37,7 +42,27 @@ class OrangTua(models.Model):
                 partner = users.partner_id
                 users.unlink()
                 partner.unlink()
-        return super(OrangTua,self).unlink()
-    
+        return super(OrangTua, self).unlink()
+
+    def update_user_groups(self):
+        """Update groups for the related user."""
+        for orangtua in self:
+            user = self.env['res.users'].search([('login', '=', orangtua.email)], limit=1)
+            if not user:
+                raise ValueError(_("No user associated with this OrangTua record."))
+
+            # Remove existing groups
+            user.groups_id = [(5, 0, 0)]  # Clear all groups
+
+            # Add new groups
+            user.groups_id = [(6, 0, [
+                self.env.ref('base.group_user').id,
+                self.env.ref('pesantren_kesantrian.group_kesantrian_orang_tua').id,
+                self.env.ref('pesantren_base.group_sekolah_user').id,
+                self.env.ref('pesantren_kesantrian.group_kesantrian_user').id,
+                self.env.ref('pesantren_guru.group_guru_user').id,
+                self.env.ref('pesantren_keuangan.group_keuangan_user').id
+            ])]
+
 
 

@@ -8,10 +8,15 @@
             <field name="type">list</field>
             <field name="priority" eval="8" />
             <field name="arch" type="xml">
-                <list string="Data Pendaftaran">
+                <list string="Data Pendaftaran" default_order="total_nilai desc">
+                    <header>
+                        <button name="hapus_pendaftaran_kadaluarsa" type="object"
+                            string="Bersihkan Data" class="oe_highlight" icon="fa-database" />
+                    </header>
                     <field name="nomor_pendaftaran" />
                     <field name="name" />
                     <field name="jenjang_id" />
+                    <field name="tanggal_daftar" />
                     <field name="total_nilai" />
                     <field name="state" widget="badge"
                         decoration-success="state in ['diterima']"
@@ -61,7 +66,7 @@
                                     readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
                             </h3>
                         </div>
-                        
+
                         <group string="User">
                             <group>
                                 <field name="name"
@@ -70,8 +75,11 @@
                                     required="False" />
                             </group>
                             <group>
+                                <field name="email"
+                                    readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
                                 <field name="nis"
-                                    invisible="state in 'draft','terdaftar','ditolak','batal'" />
+                                    invisible="state in 'draft','terdaftar','seleksi','ditolak','batal'" />
+                                <field name="token" invisible="1" />
                             </group>
                         </group>
                         <group string="Data Pilihan Pendidikan">
@@ -86,7 +94,7 @@
                                     readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
                             </group>
                         </group>
-                        <group string="Virtual Account" invisible="state in 'draft'">
+                        <group string="Virtual Account">
                             <group>
                                 <field name="partner_id"
                                     readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'"
@@ -96,8 +104,8 @@
                                     invisible="state in 'draft'" />
                             </group>
                             <group>
-                                <field name="virtual_account" readonly="state in 'diterima'"
-                                    invisible="state in 'draft,terdaftar,seleksi,ditolak,batal'" />
+                                <field name="virtual_account" readonly="1" />
+                                <field name="status_va" readonly="1" />
                                 <field name="va_saku" readonly="state in 'diterima'"
                                     invisible="state in 'draft,terdaftar,seleksi,ditolak,batal'" />
                                 <field name="bank" invisible="1" />
@@ -232,7 +240,7 @@
                                 </group>
                             </page>
                             <page string="Dokumen Pendaftaran">
-                                <group> 
+                                <group>
                                     <group string="Dokumen Anak" class="o_group">
                                         <field name="akta_kelahiran"
                                             filename="akta_kelahiran_filename" />
@@ -255,27 +263,38 @@
                                         <field name="surat_kesehatan"
                                             filename="surat_kesehatan_filename" />
                                     </group>
-                                </group>  
+                                </group>
                             </page>
-                            <page string="Nilai Seleksi" invisible="state in 'draft,terdaftar,batal'" >
+                            <page string="Nilai Seleksi"
+                                invisible="state in 'draft,terdaftar,batal'">
                                 <group string="Detail Penilaian">
                                     <field name="soal_ids" string="">
                                         <list editable="bottom">
-                                            <field name="name" options="{'no_create_edit':True, 'no_create':True, 'no_open': True}"/>
-                                            <field name="daftar_soal"/>
-                                            <field name="nilai"/>
+                                            <field name="name"
+                                                options="{'no_create_edit':True, 'no_create':True, 'no_open': True}" />
+                                            <field name="daftar_soal" />
+                                            <field name="nilai" />
                                         </list>
                                     </field>
-                                    <field name="total_nilai" readonly="1"/>
+                                    <field name="total_nilai" readonly="1" />
                                 </group>
                             </page>
                             <page string="Akun">
-                                <group string="Akun Login OrangTua" class="o_group">
+                                <group string="Akun Login" class="o_group">
                                     <field name="email"
                                         readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
                                     <field name="password" password="True"
                                         readonly="state in 'terdaftar,seleksi,diterima,ditolak,batal'" />
-                                </group> 
+                                </group>
+                            </page>
+                            <page string="Pembayaran">
+                                <group string="Dokumen Pembayaran" class="o_group">
+                                    <field name="bukti_pembayaran"
+                                        filename="bukti_pembayaran_filename" />
+                                </group>
+                                <group>
+                                    <field name="status_pembayaran" />
+                                </group>
                             </page>
                         </notebook>
                     </sheet>
@@ -324,6 +343,66 @@
             </field>
         </record>
 
-        
+        <!-- Search -->
+        <record id="ubig_pendaftaran_view_search" model="ir.ui.view">
+            <field name="name">ubig.pendaftaran.view.search</field>
+            <field name="model">ubig.pendaftaran</field>
+            <field name="arch" type="xml">
+                <search string="Pendaftaran Santri">
+                    <!-- Filter untuk menampilkan data berdasarkan jenjang -->
+                    <filter string="By Jenjang" name="filter_by_jenjang"
+                        domain="[('jenjang_id', '!=', False)]" />
+
+                    <!-- Filter untuk total_nilai tertinggi -->
+                    <filter string="Nilai Tertinggi"
+                        name="filter_by_total_nilai"
+                        domain="[]"
+                        context="{'search_default_order': 'total_nilai desc'}" />
+
+                    <!-- Field pencarian -->
+                    <field name="name" select="True" />
+                    <field name="nomor_pendaftaran" select="True" />
+                    <field name="tanggal_daftar" select="True" />
+                    <field name="nisn" select="True" />
+                    <field name="virtual_account" select="True" />
+                    <field name="va_saku" select="True" />
+                    <field name="provinsi_id" select="True" />
+                    <field name="kota_id" select="True" />
+                    <field name="kecamatan_id" select="True" />
+                    <field name="kewarganegaraan" select="True" />
+                    <field name="kota_lahir" select="True" />
+                    <field name="gender" select="True" />
+                    <field name="nama_ayah" select="True" />
+                    <field name="nama_ibu" select="True" />
+                    <field name="wali_nama" select="True" />
+                    <field name="asal_sekolah" select="True" />
+                    <field name="npsn" select="True" />
+                    <field name="email" select="True" />
+                    <field name="nik" select="True" />
+                    <field name="jenjang_id" select="True" />
+
+                    <!-- Group By berdasarkan jenjang -->
+                    <group string="Group By">
+                        <filter name="group_by_jenjang" string="Jenjang"
+                            context="{'group_by': 'jenjang_id'}" />
+                        <filter name="group_by_provinsi" string="Provinsi"
+                            context="{'group_by': 'provinsi_id'}" />
+                        <filter name="group_by_kota" string="Kota" context="{'group_by': 'kota_id'}" />
+                        <filter name="group_by_kecamatan" string="Kecamatan"
+                            context="{'group_by': 'kecamatan_id'}" />
+                        <filter name="group_by_asal_sekolah" string="Asal Sekolah"
+                            context="{'group_by': 'asal_sekolah'}" />
+                        <filter name="group_by_gender" string="Gender"
+                            context="{'group_by': 'gender'}" />
+                        <filter name="group_by_kewarganegaraan" string="Kewarganegaraan"
+                            context="{'group_by': 'kewarganegaraan'}" />
+                        <filter name="group_by_tanggal_daftar" string="Tanggal Daftar"
+                            context="{'group_by': 'tanggal_daftar'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
     </data>
 </odoo>

@@ -7,7 +7,7 @@
         <record id="cdn_orangtua_inherit_form_view" model="ir.ui.view">
             <field name="name">cdn.orangtua.inherit.view.form</field>
             <field name="model">cdn.orangtua</field>
-            <field name="inherit_id" ref="pesantren_base.view_cdn_orangtua_form"/>
+            <field name="inherit_id" ref="pesantren_base.view_cdn_orangtua_form" />
             <field name="arch" type="xml">
                 <field name="name" position="attributes">
                     <attribute name="required">1</attribute>
@@ -18,6 +18,11 @@
                 <field name="hubungan" position="attributes">
                     <attribute name="required">1</attribute>
                 </field>
+                <xpath expr="//header" position="inside">
+                    <button name="update_user_groups" string="Perbaiki Akses" type="object"
+                        class="oe_highlight" groups="pesantren_base.group_sekolah_manager"/>
+                </xpath>
+
             </field>
         </record>
 
@@ -28,26 +33,27 @@
             <field name="res_model">cdn.orangtua</field>
             <field name="view_mode">list,form</field>
             <!-- use the views -->
-            <field name="view_id" ref="pesantren_base.view_cdn_orangtua_tree"/>
+            <field name="view_id" ref="pesantren_base.view_cdn_orangtua_tree" />
         </record>
         <record id="action_tree_view_orangtua" model="ir.actions.act_window.view">
-            <field name="sequence" eval="2"/>
+            <field name="sequence" eval="2" />
             <field name="view_mode">list</field>
-            <field name="view_id" ref="pesantren_base.view_cdn_orangtua_tree"/>
-            <field name="act_window_id" ref="orangtua_action"/>
+            <field name="view_id" ref="pesantren_base.view_cdn_orangtua_tree" />
+            <field name="act_window_id" ref="orangtua_action" />
         </record>
-        
+
         <record id="action_form_view_orangtua" model="ir.actions.act_window.view">
-            <field name="sequence" eval="3"/>
+            <field name="sequence" eval="3" />
             <field name="view_mode">form</field>
-            <field name="view_id" ref="cdn_orangtua_inherit_form_view"/>
-            <field name="act_window_id" ref="orangtua_action"/>
+            <field name="view_id" ref="cdn_orangtua_inherit_form_view" />
+            <field name="act_window_id" ref="orangtua_action" />
         </record>
 
         <!-- This Menu Item must have a parent and an action -->
-        <menuitem id="orangtua_menu_act" name="Orang Tua" parent="data_kesantrian_menu_categ" action="orangtua_action" sequence="40"/>
-    
+        <menuitem id="orangtua_menu_act" name="Orang Tua" parent="data_kesantrian_menu_categ"
+            action="orangtua_action" sequence="40" />
+
 
     </data>
-    
+
 </odoo>

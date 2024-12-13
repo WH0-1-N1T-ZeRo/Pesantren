@@ -10,7 +10,7 @@
                 <xpath expr="//form" position="inside">
                     <app data-string="Pesantren Management" string="Pendaftaran Santri Baru" name="pesantren_pendaftaran" web_icon="pesantren_pendaftaran,static/description/icon.png">
                         <block title="Pengaturan Pendaftaran Santri Baru" name="pesantren_management">
-                            <setting string="Kuota Pendaftaran"
+                            <!-- <setting string="Kuota Pendaftaran"
                                      help="Atur Kuota Pendaftaran Santri Baru"
                                      id="pesantren_type_setting">
                                 <field name="kuota_pendaftaran"/>
@@ -22,7 +22,7 @@
                                         halaman ini dan kembali ke sini untuk menyiapkan fitur.
                                     </div>
                                 </div>
-                            </setting>
+                            </setting> -->
 
                             <group string="Tanggal Pendaftaran" name="group_tanggal_pendaftaran">
                                 <field name="tgl_mulai_pendaftaran" widget="date" string="Tanggal Mulai Pendaftaran"/>
@@ -35,12 +35,33 @@
                                 <field name="tgl_pengumuman_hasil_seleksi" widget="datetime" string="Tanggal Pengumuman Hasil Seleksi"/>
                             </group>
 
+                            <group string="Halaman Pendaftaran" name="group_halaman_pendaftaran">
+                                <field name="is_halaman_pendaftaran"/>
+                            </group>
+
+                            <group string="Halaman Pengumuman" name="group_halaman_pengumuman">
+                                <field name="is_halaman_pengumuman"/>
+                            </group>
+
+                            <group string="Pengaturan Bank" name="group_bank">
+                                <field name="bank"/>
+                            </group>
+
+                            <group string="Rekening Pembayaran" name="group_rekening">
+                                <field name="no_rekening"/>
+                            </group>
+
+                            <div class="text-warning mt16">
+                                <strong>Simpan</strong>
+                                halaman ini dan kembali ke sini untuk menyiapkan fitur.
+                            </div>
+
                         </block>
                     </app>
                 </xpath>
             </field>
-         </record>
-         
+        </record>
+        
 
          <record id="res_config_settings_action" model="ir.actions.act_window">
             <field name="name">Configuration</field>

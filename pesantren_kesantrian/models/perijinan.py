@@ -131,4 +131,3 @@ class Perijinan(models.Model):
     def create(self, vals):
         vals['name'] = self.env['ir.sequence'].next_by_code('cdn.perijinan')
         return super(Perijinan, self).create(vals)
-

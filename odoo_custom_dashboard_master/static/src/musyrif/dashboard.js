@@ -10,12 +10,12 @@ export class OwlMusyrifDashboard extends Component {    setup() {
         selectedDateRange: null,
         tempDateRange: { start: '', end: '' },
         showDatePicker: false,
-        selectedPeriod: 'all', 
+        selectedPeriod: 'thisMonth', 
         isLoading: false
     });
     
     // Initialize with thisWeek period
-    this.setPeriod('all');
+    this.setPeriod('thisMonth');
 }
 
 toggleDatePicker() {
