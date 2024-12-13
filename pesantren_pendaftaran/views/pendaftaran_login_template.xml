@@ -181,13 +181,13 @@
                 </li>
                 <t t-if="is_halaman_pendaftaran">
                   <li class="nav-item me-3">
-                    <a class="nav-link text-white" href="/pendaftaran">
+                    <a class="nav-link text-white" style="color: white !important;" href="/pendaftaran">
                       <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran </a>
                   </li>
                 </t>
                 <t t-if="not is_halaman_pendaftaran">
                   <li class="nav-item me-3">
-                    <a class="nav-link text-white" href="#" data-bs-toggle="modal"
+                    <a class="nav-link text-white" style="color: white !important;" href="#" data-bs-toggle="modal"
                       data-bs-target="#modalPendaftaranTutup">
                       <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran </a>
                   </li>
@@ -238,13 +238,13 @@
               </li>
               <t t-if="is_halaman_pendaftaran">
                 <li class="nav-item me-3">
-                  <a class="nav-link text-white" href="/pendaftaran">
+                  <a class="nav-link text-white" style="color: white !important;" href="/pendaftaran">
                     <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran </a>
                 </li>
               </t>
               <t t-if="not is_halaman_pendaftaran">
                 <li class="nav-item me-3">
-                  <a class="nav-link text-white" href="#" data-bs-toggle="modal"
+                  <a class="nav-link text-white" style="color: white !important;" href="#" data-bs-toggle="modal"
                     data-bs-target="#modalPendaftaranTutup">
                     <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran </a>
                 </li>
