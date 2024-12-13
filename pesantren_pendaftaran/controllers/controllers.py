@@ -1969,7 +1969,7 @@ class PesantrenPsbBantuan(http.Controller):
                         <i class="fa-solid fa-fingerprint text-white"></i>
                     </div>
                     <div class="timeline-content bg-white rounded p-3">
-                        <span class="badge text-bg-info text-white text-uppercase">Video Profil Ponpes Daarul Qur'an Istiqomah</span>
+                        <span class="badge text-bg-info text-white text-uppercase">Video Profil Ponpes <br> Daarul Qur'an Istiqomah</span>
                         <div class="ratio ratio-16x9 my-4">
                         <iframe width="437" height="315" src="https://www.youtube.com/embed/OiPEDy0Sv1U" title="" frameborder="0" allowfullscreen></iframe>
                         </div>
