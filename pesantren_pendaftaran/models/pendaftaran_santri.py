@@ -63,7 +63,7 @@ class DataPendaftaran(models.Model):
     provinsi_id         = fields.Many2one(comodel_name="cdn.ref_propinsi",  string="Provinsi",  help="")
     kota_id             = fields.Many2one(comodel_name="cdn.ref_kota",  string="Kota",  help="")
     kecamatan_id        = fields.Many2one(comodel_name="cdn.ref_kecamatan",  string="Kecamatan",  help="")
-    nisn                = fields.Char(string="NISN", required=False)
+    nisn                = fields.Char(string="NISN")
     nis                 = fields.Char(string="NIS", store=True)
     anak_ke             = fields.Integer( string="Anak ke",  help="")
     jml_saudara_kandung = fields.Integer( string="Jml Saudara Kandung",  help="")
@@ -385,7 +385,7 @@ class DataPendaftaran(models.Model):
                                 <div style="padding: 20px; color: #555555;">
                                     <p style="margin: 0 0 10px;">Assalamualaikum Wr. Wb,</p>
                                     <p style="margin: 0 0 20px;">
-                                        Bapak/Ibu <strong>{record.wali_nama}</strong>,<br>
+                                        Bapak/Ibu <strong>{record.wali_nama or record.nama_ayah or record.nama_ibu}</strong>,<br>
                                         Akun Orang Tua telah dibuat di sistem pesantren kami. Berikut adalah informasi login Anda:
                                     </p>
                                     <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
@@ -542,6 +542,18 @@ class DataPendaftaran(models.Model):
             return format_date(self.env, self.tanggal_daftar, date_format='dd MMMM yyyy')
         return 'Tanggal tidak tersedia'
 
+    def get_formatted_tanggal_lahir(self):
+        if self.tanggal_lahir:
+            # Langsung gunakan strftime untuk format DD-MM-YYYY
+            return self.tanggal_lahir.strftime('%d-%m-%Y')
+        return 'Tanggal tidak tersedia'
+    
+    def get_formatted_tanggal_daftar(self):
+        if self.tanggal_daftar:
+            # Langsung gunakan strftime untuk format DD-MM-YYYY
+            return self.tanggal_daftar.strftime('%d-%m-%Y')
+        return 'Tanggal tidak tersedia'
+
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
@@ -575,6 +587,13 @@ class ResConfigSettings(models.TransientModel):
         string="Tanggal Pengumuman Hasil Seleksi",
         config_parameter='pesantren_pendaftaran.tgl_pengumuman_hasil_seleksi',
         help="Atur tgl pengumuman hasil seleksi",
+    )
+
+    is_halaman_pendaftaran = fields.Boolean(
+        string="Tampilkan Halaman Pendaftaran",
+        config_parameter='pesantren_pendaftaran.is_halaman_pendaftaran',
+        default=True,
+        help="Tampilkan halaman pendaftaran",
     )
 
     is_halaman_pengumuman = fields.Boolean(
@@ -618,6 +637,11 @@ class ResConfigSettings(models.TransientModel):
         self.env['ir.config_parameter'].set_param(
             'pesantren_pendaftaran.tgl_pengumuman_hasil_seleksi',
             self.tgl_pengumuman_hasil_seleksi.strftime('%Y-%m-%d %H:%M:%S') if self.tgl_pengumuman_hasil_seleksi else False
+        )
+
+        self.env['ir.config_parameter'].set_param(
+            'pesantren_pendaftaran.is_halaman_pendaftaran',
+            self.is_halaman_pendaftaran
         )
 
         self.env['ir.config_parameter'].set_param(
@@ -670,7 +694,8 @@ class ResConfigSettings(models.TransientModel):
             'tgl_mulai_seleksi': tgl_mulai_seleksi,
             'tgl_akhir_seleksi': tgl_akhir_seleksi,
             'tgl_pengumuman_hasil_seleksi': tgl_pengumuman_hasil_seleksi,
-            'is_halaman_pengumuman': icp.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False),
+            'is_halaman_pendaftaran': icp.get_param('pesantren_pendaftaran.is_halaman_pendaftaran'),
+            'is_halaman_pengumuman': icp.get_param('pesantren_pendaftaran.is_halaman_pengumuman'),
             'bank': icp.get_param('pesantren_pendaftaran.bank', default='451'),
             'no_rekening': icp.get_param('pesantren_pendaftaran.no_rekening', default='7181863913'),
         })

@@ -752,7 +752,8 @@ class PesantrenPendaftaran(http.Controller):
         tgl_mulai_seleksi = config_obj.get_param('pesantren_pendaftaran.tgl_mulai_seleksi')
         tgl_akhir_seleksi = config_obj.get_param('pesantren_pendaftaran.tgl_akhir_seleksi')
         tgl_pengumuman_hasil_seleksi = config_obj.get_param('pesantren_pendaftaran.tgl_pengumuman_hasil_seleksi')
-        is_halaman_pengumuman = config_obj.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False)
+        is_halaman_pendaftaran = config_obj.get_param('pesantren_pendaftaran.is_halaman_pendaftaran')
+        is_halaman_pengumuman = config_obj.get_param('pesantren_pendaftaran.is_halaman_pengumuman')
 
         # Set nilai default dinamis jika parameter kosong
         if not tgl_mulai_pendaftaran:
@@ -932,11 +933,18 @@ class PesantrenPendaftaran(http.Controller):
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                             </li>
-                            <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/pendaftaran"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
-                            </li>
-                            <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                            {f'<li class="nav-item me-3">'
+                            f'<a class="nav-link text-white" href="/pendaftaran" {"data-bs-toggle='modal' data-bs-target='#modalPendaftaranTutup'" if not is_halaman_pendaftaran else ""}>'
+                            f'<i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>'
+                            f'</li>'}
+                            <li class="nav-item dropdown">
+                                <a href="#" class="dropdown-link nav-link"
+                                    style="color: white !important;">
+                                    <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                <div class="dropdown-content">
+                                    <a href="/login">Login PSB</a>
+                                    <a href="/web/login">Login Orang Tua</a>
+                                </div>
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
@@ -965,11 +973,18 @@ class PesantrenPendaftaran(http.Controller):
                         <li class="nav-item me-3">
                             <a class="nav-link text-white" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                         </li>
-                        <li class="nav-item me-3">
-                            <a class="nav-link text-white" href="/pendaftaran"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
-                        </li>
-                        <li class="nav-item me-3">
-                            <a class="nav-link text-white" href="/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                        {f'<li class="nav-item me-3">'
+                        f'<a class="nav-link text-white" href="/pendaftaran" {"data-bs-toggle='modal' data-bs-target='#modalPendaftaranTutup'" if not is_halaman_pendaftaran else ""}>'
+                        f'<i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>'
+                        f'</li>'}
+                        <li class="nav-item dropdown">
+                            <a href="#" class="dropdown-link nav-link"
+                                style="color: white !important;">
+                                <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                            <div class="dropdown-content">
+                                <a href="/login">Login PSB</a>
+                                <a href="/web/login">Login Orang Tua</a>
+                            </div>
                         </li>
                         <li class="nav-item me-3">
                             <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
@@ -1157,8 +1172,10 @@ class PesantrenPendaftaran(http.Controller):
                     <div class="row mb-3">
                         <div class="col-md-8">
                             <div>
-                                <span class="fw-semibold">2. Pelaksanaan Test Seleksi</span>
-                                <p class="text-secondary">Gel 1: {tgl_mulai_seleksi_formatted} - {tgl_akhir_seleksi_formatted} <br> Gel 2: {tgl_mulai_seleksi_formatted} - {tgl_akhir_seleksi_formatted} 
+                                <span class="fw-semibold">2. Pelaksanaan Test Masuk</span>
+                                <p class="text-secondary">Gel 1: {tgl_mulai_seleksi_formatted} - {tgl_akhir_seleksi_formatted} <br> Gel 2: {tgl_mulai_seleksi_formatted} - {tgl_akhir_seleksi_formatted} <br> (Test seleksi dilaksanakan secara ONLINE dengan
+                                    kuota
+                                    sebanyak 100 peserta per hari).</p>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -1226,7 +1243,8 @@ class PesantrenPendaftaran(http.Controller):
             </div>
             </div>
 
-            <!-- Modal -->
+
+                        <!-- Modal -->
             <div class="modal fade" id="modalPendaftaranTutup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -1235,7 +1253,7 @@ class PesantrenPendaftaran(http.Controller):
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Mohon maaf, pendaftaran telah ditutup karena kuota telah terpenuhi.</p>
+                    <p>Mohon maaf, pendaftaran telah ditutup.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -1243,7 +1261,6 @@ class PesantrenPendaftaran(http.Controller):
                 </div>
             </div>
             </div>
-
 
 
 
@@ -1263,11 +1280,9 @@ class UbigPendaftaranController(http.Controller):
     @http.route('/pendaftaran', type='http', auth='public')
     def pendaftaran_form(self, **kwargs):
 
-        Pendaftaran = request.env['ubig.pendaftaran']
-
         # Mengambil nilai kuota pendaftaran dari ir.config_parameter
         config_param = request.env['ir.config_parameter'].sudo()
-        is_halaman_pengumuman = config_param.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default='False') == 'True'
+        is_halaman_pengumuman = config_param.get_param('pesantren_pendaftaran.is_halaman_pengumuman')
 
         pendidikan_list = request.env['ubig.pendidikan'].sudo().search([])
         return request.render('pesantren_pendaftaran.pendaftaran_form_template', {
@@ -1296,7 +1311,7 @@ class UbigPendaftaranController(http.Controller):
         kecamatan_id           = request.params.get('kecamatan_id')
         golongan_darah         = request.params.get('golongan_darah') if request.params.get('golongan_darah') else ''
         kewarganegaraan        = request.params.get('kewarganegaraan')
-        nisn                   = post.get('nisn')
+        nisn                   = post.get('nisn') if post.get('nisn') else ''
         anak_ke                = post.get('anak_ke') if post.get('anak_ke') else ''
         jml_saudara_kandung    = post.get('jml_saudara_kandung') if post.get('jml_saudara_kandung') else ''
         cita_cita              = post.get('cita_cita') if post.get('cita_cita') else ''
@@ -1328,21 +1343,37 @@ class UbigPendaftaranController(http.Controller):
         pendidikan_ibu         = request.params.get('pendidikan_ibu')
         
         # Data Wali
-        wali_nama              = post.get('wali_nama')
-        wali_tgl_lahir_str     = request.params.get('wali_tgl_lahir')
+        wali_nama              = post.get('wali_nama') if post.get('wali_nama') else ''
+
+        # Mendapatkan nilai tanggal lahir dari parameter
+        wali_tgl_lahir_str = request.params.get('wali_tgl_lahir')
+
+        # Mengecek apakah parameter tidak kosong atau tidak None
+        if wali_tgl_lahir_str:
+            try:
+                # Mengonversi format tanggal dd/mm/yyyy menjadi date
+                wali_tgl_lahir = datetime.datetime.strptime(wali_tgl_lahir_str, '%d/%m/%Y').date()
+            except ValueError:
+                # Jika format tanggal tidak valid
+                wali_tgl_lahir = None  # Atau bisa beri nilai default seperti datetime.date(1900, 1, 1) atau lainnya
+        else:
+            # Jika tidak ada input tanggal
+            wali_tgl_lahir = None  # Atau beri nilai default jika diperlukan
+
+        # wali_tgl_lahir_str     = request.params.get('wali_tgl_lahir')
         # Mengonversi format tanggal dd/mm/yyyy menjadi date
-        wali_tgl_lahir         = datetime.datetime.strptime(wali_tgl_lahir_str, '%d/%m/%Y').date()
-        wali_telp              = post.get('wali_telp')
-        wali_email             = post.get('wali_email')
-        wali_password          = post.get('password')
-        wali_hubungan          = request.params.get('wali_hubungan')
+        # wali_tgl_lahir         = datetime.datetime.strptime(wali_tgl_lahir_str, '%d/%m/%Y').date()
+        wali_telp              = post.get('wali_telp') if post.get('wali_telp') else ''
+        wali_email             = post.get('wali_email') if post.get('wali_email') else ''
+        # wali_password          = post.get('password') if post.get('password') else ''
+        wali_hubungan          = request.params.get('wali_hubungan') if request.params.get('wali_hubungan') else ''
 
         # Data Pendidikan
-        asal_sekolah           = post.get('asal_sekolah')
-        alamat_asal_sek        = post.get('alamat_asal_sek')
-        telp_asal_sek          = post.get('telp_asal_sek')
-        status_sekolah_asal    = request.params.get('status_sekolah_asal')
-        npsn                   = post.get('npsn')
+        asal_sekolah           = post.get('asal_sekolah') if post.get('asal_sekolah') else ''
+        alamat_asal_sek        = post.get('alamat_asal_sek') if post.get('alamat_asal_sek') else ''
+        telp_asal_sek          = post.get('telp_asal_sek') if post.get('telp_asal_sek') else ''
+        status_sekolah_asal    = request.params.get('status_sekolah_asal') if request.params.get('status_sekolah_asal') else ''
+        npsn                   = post.get('npsn') if post.get('npsn') else ''
 
         # Ambil file dari request
         uploaded_files = request.httprequest.files
@@ -1440,7 +1471,7 @@ class UbigPendaftaranController(http.Controller):
             'wali_tgl_lahir'         : wali_tgl_lahir,
             'wali_telp'              : wali_telp,
             'wali_email'             : wali_email,
-            'wali_password'          : wali_password,
+            # 'wali_password'          : wali_password,
             'wali_hubungan'          : wali_hubungan,
 
             # Data Pendidikan
@@ -1474,7 +1505,7 @@ class UbigPendaftaranController(http.Controller):
 
         # Mengambil nilai kuota pendaftaran dari ir.config_parameter
         config_param = request.env['ir.config_parameter'].sudo()
-        is_halaman_pengumuman = config_param.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False) == 'True'
+        is_halaman_pengumuman = config_param.get_param('pesantren_pendaftaran.is_halaman_pengumuman')
         no_rekening = config_param.get_param('pesantren_pendaftaran.no_rekening', default='7181863913')
         # Menangkap Token pendaftaran dari URL
         token = request.params.get('token')
@@ -1494,6 +1525,7 @@ class UbigPendaftaranController(http.Controller):
 
             # Sembunyikan bagian tengah kecuali dua karakter awal dan dua karakter akhir
             masked_password = password[:2] + '*' * (len(password) - 4) + password[-2:]
+            biaya_formatted = f"Rp. {pendaftaran.biaya:,.0f}".replace(",", ".")
 
             email_values = {
                 'subject': "Informasi Login Sistem Pesantren Daarul Qur'an Istiqomah",
@@ -1533,7 +1565,7 @@ class UbigPendaftaranController(http.Controller):
                                         </tr>
                                         <tr>
                                             <td style="padding: 8px; font-weight: bold; color: #333333;">TTL :</td>
-                                            <td style="padding: 8px; color: #555555;">{pendaftaran.kota_lahir}, {pendaftaran.tanggal_lahir}</td>
+                                            <td style="padding: 8px; color: #555555;">{pendaftaran.kota_lahir}, {pendaftaran.get_formatted_tanggal_lahir()}</td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 8px; font-weight: bold; color: #333333;">Alamat :</td>
@@ -1565,7 +1597,7 @@ class UbigPendaftaranController(http.Controller):
                                         </tr>
                                         <tr>
                                             <td style="padding: 8px; font-weight: bold; color: #333333;">Sejumlah :</td>
-                                            <td style="padding: 8px; color: #555555;">Rp. {str('{:,.2f}'.format(pendaftaran.biaya)).replace(',', '.').replace('.', ',', 1)}</td>
+                                            <td style="padding: 8px; color: #555555;">{biaya_formatted}</td>
                                         </tr>
                                     </table>
 
@@ -1640,7 +1672,8 @@ class PesantrenPsbBantuan(http.Controller):
         # Ambil nilai dari field konfigurasi
         config_obj = http.request.env['ir.config_parameter'].sudo()
 
-        is_halaman_pengumuman = config_obj.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False)
+        is_halaman_pengumuman = config_obj.get_param('pesantren_pendaftaran.is_halaman_pengumuman')
+        is_halaman_pendaftaran = config_obj.get_param('pesantren_pendaftaran.is_halaman_pendaftaran')
 
         html_response = f"""
                 <html lang="en">
@@ -1822,11 +1855,18 @@ class PesantrenPsbBantuan(http.Controller):
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                             </li>
-                            <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/pendaftaran"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
-                            </li>
-                            <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                            {f'<li class="nav-item me-3">'
+                            f'<a class="nav-link text-white" href="/pendaftaran" {"data-bs-toggle='modal' data-bs-target='#modalPendaftaranTutup'" if not is_halaman_pendaftaran else ""}>'
+                            f'<i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>'
+                            f'</li>'}
+                            <li class="nav-item dropdown">
+                                <a href="#" class="dropdown-link nav-link"
+                                    style="color: white !important;">
+                                    <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                <div class="dropdown-content">
+                                    <a href="/login">Login PSB</a>
+                                    <a href="/web/login">Login Orang Tua</a>
+                                </div>
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
@@ -1855,11 +1895,18 @@ class PesantrenPsbBantuan(http.Controller):
                         <li class="nav-item me-3">
                             <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                         </li>
-                        <li class="nav-item me-3">
-                            <a class="nav-link text-white" href="/pendaftaran"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
-                        </li>
-                        <li class="nav-item me-3">
-                            <a class="nav-link text-white" href="/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                        {f'<li class="nav-item me-3">'
+                        f'<a class="nav-link text-white" href="/pendaftaran" {"data-bs-toggle='modal' data-bs-target='#modalPendaftaranTutup'" if not is_halaman_pendaftaran else ""}>'
+                        f'<i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>'
+                        f'</li>'}
+                        <li class="nav-item dropdown">
+                            <a href="#" class="dropdown-link nav-link"
+                                style="color: white !important;">
+                                <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                            <div class="dropdown-content">
+                                <a href="/login">Login PSB</a>
+                                <a href="/web/login">Login Orang Tua</a>
+                            </div>
                         </li>
                         <li class="nav-item me-3">
                             <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
@@ -1872,11 +1919,6 @@ class PesantrenPsbBantuan(http.Controller):
                         f'<a href="/pengumuman/sma-ma">SMA / MA</a>'
                         f'</div>'
                         f'</li>' if is_halaman_pengumuman else ''}
-                        <li class="nav-item me-3">
-                            <a class="nav-link text-white portalOrangTua" href="#">
-                                <i class="fa-solid fa-user me-2"></i>Portal Orang Tua
-                            </a>
-                        </li>
                         </ul>
                     </ul>
                 </div>
@@ -1914,7 +1956,6 @@ class PesantrenPsbBantuan(http.Controller):
                         <li>Login di <a href="/login" class="text-decoration-none" style="color: purple;">https://aplikasi.dqi.ac.id/login</a></li>
                         <li>Upload berkas yang dipersyaratkan dan bukti pembayaran.</li>
                         <li>Tunggu verifikasi maksimal 3 hari.</li>
-                        <li>Login kembali dan pilih tanggal tes.</li>
                         <li>Ikuti tes seleksi Offline.</li>
                         <li>Lihat hasil tes di <a href="/" class="text-decoration-none" style="color: purple;">https://aplikasi.dqi.ac.id/psb</a></li>
                         <li>Setelah pembayaran daftar ulang, tunggu pengumuman serah terima santri baru.</li>
@@ -1951,9 +1992,9 @@ class PesantrenPsbBantuan(http.Controller):
                     <a href="#" class="text-decoration-none" style="color: purple;">0853-9051-1124</a><br>
                     </div>
                     <h5>Media Sosial Kami</h5>
-                    <span class="text-uppercase" style="color: purple;">Instagram : @daqubanat_</span>
-                    <span class="text-uppercase" style="color: purple;">Facebook  : @Daarul Quran Istiqomah</span>
-                    <span class="text-uppercase" style="color: purple;">Youtube   : @dqimedia</span>
+                    <span class="text-uppercase" style="color: purple;">Instagram : @daqubanat_</span><br>
+                    <span class="text-uppercase" style="color: purple;">Facebook  : @Daarul Quran Istiqomah</span><br>
+                    <span class="text-uppercase" style="color: purple;">Youtube   : @dqimedia</span><br>
                 </div>
                 </div>
             </div>
@@ -1992,6 +2033,24 @@ class PesantrenPsbBantuan(http.Controller):
             </div>
             </div>
 
+            <!-- Modal -->
+            <div class="modal fade" id="modalPendaftaranTutup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Pendaftaran ditutup!</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Mohon maaf, pendaftaran telah ditutup.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+                </div>
+            </div>
+            </div>
+
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
             <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
             <script src=" https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js "></script>
@@ -2007,7 +2066,8 @@ class PendaftaranSeleksiSdMi(http.Controller):
 
         # Mengambil nilai kuota pendaftaran dari ir.config_parameter
         config_param = request.env['ir.config_parameter'].sudo()
-        is_halaman_pengumuman = config_param.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False)
+        is_halaman_pendaftaran = config_param.get_param('pesantren_pendaftaran.is_halaman_pendaftaran')
+        is_halaman_pengumuman = config_param.get_param('pesantren_pendaftaran.is_halaman_pengumuman')
 
         if is_halaman_pengumuman:
             # Render form pendaftaran HTML
@@ -2015,6 +2075,7 @@ class PendaftaranSeleksiSdMi(http.Controller):
             
             return request.render('pesantren_pendaftaran.pendaftaran_seleksi_sdmi_template', {
                 'santri': calon_santri,
+                'is_halaman_pendaftaran': is_halaman_pendaftaran,
             })
         else:
             return request.redirect('/psb')
@@ -2026,13 +2087,15 @@ class PendaftaranSeleksiSmpMts(http.Controller):
 
         # Mengambil nilai kuota pendaftaran dari ir.config_parameter
         config_param = request.env['ir.config_parameter'].sudo()
-        is_halaman_pengumuman = config_param.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False)
+        is_halaman_pendaftaran = config_param.get_param('pesantren_pendaftaran.is_halaman_pendaftaran')
+        is_halaman_pengumuman = config_param.get_param('pesantren_pendaftaran.is_halaman_pengumuman')
 
         if is_halaman_pengumuman:
             # Render form pendaftaran HTML
             calon_santri = request.env['ubig.pendaftaran'].sudo().search([('state', 'in', ['diterima', 'ditolak']), ('jenjang_id.jenjang', '=', 'smpmts')])
             return request.render('pesantren_pendaftaran.pendaftaran_seleksi_smpmts_template', {
                 'santri': calon_santri,
+                'is_halaman_pendaftaran': is_halaman_pendaftaran,
             })
         else:
             return request.redirect('/psb')
@@ -2043,13 +2106,15 @@ class PendaftaranSeleksiSmaMa(http.Controller):
 
         # Mengambil nilai kuota pendaftaran dari ir.config_parameter
         config_param = request.env['ir.config_parameter'].sudo()
-        is_halaman_pengumuman = config_param.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False)
+        is_halaman_pendaftaran = config_param.get_param('pesantren_pendaftaran.is_halaman_pendaftaran')
+        is_halaman_pengumuman = config_param.get_param('pesantren_pendaftaran.is_halaman_pengumuman')
 
         if is_halaman_pengumuman:
             # Render form pendaftaran HTML
             calon_santri = request.env['ubig.pendaftaran'].sudo().search([('state', 'in', ['diterima', 'ditolak']), ('jenjang_id.jenjang', '=', 'smama')])
             return request.render('pesantren_pendaftaran.pendaftaran_seleksi_smama_template', {
                 'santri': calon_santri,
+                'is_halaman_pendaftaran': is_halaman_pendaftaran,
             })
         else:
             return request.redirect('/psb')
@@ -2393,11 +2458,15 @@ class PortalOrangTua(http.Controller):
         records = request.env['ubig.pendaftaran'].sudo().search([('email', '=', email)])
 
         first_record = records[0]
+
+        # Prioritaskan nama
+        display_name = first_record['wali_nama'] or first_record['nama_ayah'] or first_record['nama_ibu']
         
         # Ambil nilai dari field konfigurasi
         config_obj = http.request.env['ir.config_parameter'].sudo()
 
-        is_halaman_pengumuman = config_obj.get_param('pesantren_pendaftaran.is_halaman_pengumuman', default=False)
+        is_halaman_pengumuman = config_obj.get_param('pesantren_pendaftaran.is_halaman_pengumuman')
+        is_halaman_pendaftaran = config_obj.get_param('pesantren_pendaftaran.is_halaman_pendaftaran')
         no_rekening = config_obj.get_param('pesantren_pendaftaran.no_rekening', default='7181863913')
 
         # Daftar status yang akan ditampilkan
@@ -2674,11 +2743,18 @@ class PortalOrangTua(http.Controller):
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                             </li>
-                            <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/pendaftaran"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
-                            </li>
-                            <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                            {f'<li class="nav-item me-3">'
+                            f'<a class="nav-link text-white" href="/pendaftaran" {"data-bs-toggle='modal' data-bs-target='#modalPendaftaranTutup'" if not is_halaman_pendaftaran else ""}>'
+                            f'<i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>'
+                            f'</li>'}
+                            <li class="nav-item dropdown">
+                                <a href="#" class="dropdown-link nav-link"
+                                    style="color: white !important;">
+                                    <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                <div class="dropdown-content">
+                                    <a href="/login">Login PSB</a>
+                                    <a href="/web/login">Login Orang Tua</a>
+                                </div>
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
@@ -2710,11 +2786,18 @@ class PortalOrangTua(http.Controller):
                         <li class="nav-item me-3">
                             <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                         </li>
-                        <li class="nav-item me-3">
-                            <a class="nav-link text-white" href="/pendaftaran"><i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
-                        </li>
-                        <li class="nav-item me-3">
-                            <a class="nav-link text-white" href="/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                        {f'<li class="nav-item me-3">'
+                        f'<a class="nav-link text-white" href="/pendaftaran" {"data-bs-toggle='modal' data-bs-target='#modalPendaftaranTutup'" if not is_halaman_pendaftaran else ""}>'
+                        f'<i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>'
+                        f'</li>'}
+                        <li class="nav-item dropdown">
+                            <a href="#" class="dropdown-link nav-link"
+                                style="color: white !important;">
+                                <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                            <div class="dropdown-content">
+                                <a href="/login">Login PSB</a>
+                                <a href="/web/login">Login Orang Tua</a>
+                            </div>
                         </li>
                         <li class="nav-item me-3">
                             <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>Bantuan</a>
@@ -2736,7 +2819,7 @@ class PortalOrangTua(http.Controller):
             </div>
 
             <div class="container my-5">
-                <h2 class="text-center mb-4 text-white">Selamat Datang Bapak/Ibu, <span class="text-capitalize">{first_record.wali_nama}</span></h2>
+                <h2 class="text-center mb-4 text-white">Selamat Datang Bapak/Ibu, <span class="text-capitalize">{display_name}</span></h2>
 
                 <!-- Progres PSB Anak -->
                 <div class="card mb-4">
@@ -2869,7 +2952,7 @@ class PortalOrangTua(http.Controller):
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Mohon maaf, pendaftaran telah ditutup karena kuota telah terpenuhi.</p>
+                    <p>Mohon maaf, pendaftaran telah ditutup.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -2896,7 +2979,22 @@ class PortalOrangTua(http.Controller):
 class PesantrenLogin(http.Controller):
     @http.route('/login', type='http', auth='public')
     def index(self, **kwargs):
-        return request.render('pesantren_pendaftaran.pendaftaran_login_template')
+        # Ambil data dari sesi
+        user_id = request.session.get('user_id')
+        # Ambil nilai dari field konfigurasi
+        config_obj = http.request.env['ir.config_parameter'].sudo()
+
+        is_halaman_pendaftaran = config_obj.get_param('pesantren_pendaftaran.is_halaman_pendaftaran')
+        is_halaman_pengumuman = config_obj.get_param('pesantren_pendaftaran.is_halaman_pengumuman')
+
+        if user_id:
+            return request.redirect('/portal_orang_tua')
+        
+        return request.render('pesantren_pendaftaran.pendaftaran_login_template', {
+            'is_halaman_pengumuman': is_halaman_pengumuman,
+            'is_halaman_pendaftaran': is_halaman_pendaftaran,
+
+        })
     
     @http.route('/login/submit', type='http', auth='public', methods=['POST'], csrf=True)
     def login(self, **post):
@@ -2965,6 +3063,5 @@ class UploadBuktiPembayaran(http.Controller):
                 # Update field dengan file yang diunggah
                 record.sudo().write({
                     'bukti_pembayaran': bukti_pembayaran_b64,
-                    'status_pembayaran': 'sudahbayar',  # Update status pembayaran
                 })
                 return request.redirect('/portal_orang_tua')

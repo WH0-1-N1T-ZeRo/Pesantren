@@ -111,14 +111,28 @@
                                 <li class="nav-item me-3">
                                     <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                                 </li>
-                                <li class="nav-item me-3">
-                                    <a class="nav-link text-white" href="/pendaftaran">
-                                        <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
-                                </li>
-                                <li class="nav-item me-3">
-                                    <a class="nav-link" style="color: white !important;"
-                                        href="/login">
+                                <t t-if="is_halaman_pendaftaran">
+                                    <li class="nav-item me-3">
+                                        <a class="nav-link text-white" href="/pendaftaran">
+                                            <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran
+                                        </a>
+                                    </li>
+                                </t>
+                                <t t-if="not is_halaman_pendaftaran">
+                                    <li class="nav-item me-3">
+                                        <a class="nav-link text-white" href="#" data-bs-toggle="modal" data-bs-target="#modalPendaftaranTutup">
+                                            <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran
+                                        </a>
+                                    </li>
+                                </t>
+                                <li class="nav-item dropdown">
+                                    <a href="#" class="dropdown-link nav-link"
+                                        style="color: white !important;">
                                         <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                    <div class="dropdown-content">
+                                        <a href="/login">Login PSB</a>
+                                        <a href="/web/login">Login Orang Tua</a>
+                                    </div>
                                 </li>
                                 <li class="nav-item me-3">
                                     <a class="nav-link text-white" href="/bantuan">
@@ -152,14 +166,28 @@
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                             </li>
-                            <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/pendaftaran">
-                                    <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
-                            </li>
-                            <li class="nav-item me-3">
-                                <a class="nav-link" style="color: white !important;"
-                                    href="/login">
+                            <t t-if="is_halaman_pendaftaran">
+                                <li class="nav-item me-3">
+                                    <a class="nav-link text-white" href="/pendaftaran">
+                                        <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran
+                                    </a>
+                                </li>
+                            </t>
+                            <t t-if="not is_halaman_pendaftaran">
+                                <li class="nav-item me-3">
+                                    <a class="nav-link text-white" href="#" data-bs-toggle="modal" data-bs-target="#modalPendaftaranTutup">
+                                        <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran
+                                    </a>
+                                </li>
+                            </t>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="dropdown-link nav-link"
+                                    style="color: white !important;">
                                     <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                <div class="dropdown-content">
+                                    <a href="/login">Login PSB</a>
+                                    <a href="/web/login">Login Orang Tua</a>
+                                </div>
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" href="/bantuan">
@@ -252,6 +280,24 @@
                         <p class="text-center mt-1">© 2024 TIM IT PPIB</p>
                     </div>
                 </footer>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="modalPendaftaranTutup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Pendaftaran ditutup!</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Mohon maaf, pendaftaran telah ditutup.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+                </div>
+            </div>
             </div>
 
             <script
@@ -404,16 +450,32 @@
                                 <li class="nav-item me-3">
                                     <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                                 </li>
-                                <li class="nav-item me-3">
-                                    <a class="nav-link text-white" href="/pendaftaran">
-                                        <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
-                                </li>
+                                <t t-if="is_halaman_pendaftaran">
+                                    <li class="nav-item me-3">
+                                        <a class="nav-link text-white" href="/pendaftaran">
+                                            <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran
+                                        </a>
+                                    </li>
+                                </t>
+                                <t t-if="not is_halaman_pendaftaran">
+                                    <li class="nav-item me-3">
+                                        <a class="nav-link text-white" href="#" data-bs-toggle="modal" data-bs-target="#modalPendaftaranTutup">
+                                            <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran
+                                        </a>
+                                    </li>
+                                </t>
                                 <li class="nav-item me-3">
                                     <a class="nav-link text-white" href="/bantuan">
                                         <i class="fa-solid fa-lock me-2"></i>Bantuan</a>
                                 </li>
-                                <li class="nav-item me-3">
-                                    <a class="nav-link" style="color: white !important;" href="/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                <li class="nav-item dropdown">
+                                    <a href="#" class="dropdown-link nav-link"
+                                        style="color: white !important;">
+                                        <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                    <div class="dropdown-content">
+                                        <a href="/login">Login PSB</a>
+                                        <a href="/web/login">Login Orang Tua</a>
+                                    </div>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a href="#" class="dropdown-link nav-link"
@@ -443,12 +505,28 @@
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                             </li>
-                            <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/pendaftaran">
-                                    <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
-                            </li>
-                            <li class="nav-item me-3">
-                                <a class="nav-link" style="color: white !important;" href="/login"><i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                            <t t-if="is_halaman_pendaftaran">
+                                <li class="nav-item me-3">
+                                    <a class="nav-link text-white" href="/pendaftaran">
+                                        <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran
+                                    </a>
+                                </li>
+                            </t>
+                            <t t-if="not is_halaman_pendaftaran">
+                                <li class="nav-item me-3">
+                                    <a class="nav-link text-white" href="#" data-bs-toggle="modal" data-bs-target="#modalPendaftaranTutup">
+                                        <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran
+                                    </a>
+                                </li>
+                            </t>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="dropdown-link nav-link"
+                                    style="color: white !important;">
+                                    <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                <div class="dropdown-content">
+                                    <a href="/login">Login PSB</a>
+                                    <a href="/web/login">Login Orang Tua</a>
+                                </div>
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" href="/bantuan">
@@ -541,6 +619,24 @@
                         <p class="text-center mt-1">© 2024 TIM IT PPIB</p>
                     </div>
                 </footer>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="modalPendaftaranTutup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Pendaftaran ditutup!</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Mohon maaf, pendaftaran telah ditutup.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+                </div>
+            </div>
             </div>
 
             <script
@@ -692,13 +788,28 @@
                                 <li class="nav-item me-3">
                                     <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                                 </li>
-                                <li class="nav-item me-3">
-                                    <a class="nav-link text-white" href="/pendaftaran">
-                                        <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
-                                </li>
-                                <li class="nav-item me-3">
-                                    <a class="nav-link text-white" href="/login">
+                                <t t-if="is_halaman_pendaftaran">
+                                    <li class="nav-item me-3">
+                                        <a class="nav-link text-white" href="/pendaftaran">
+                                            <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran
+                                        </a>
+                                    </li>
+                                </t>
+                                <t t-if="not is_halaman_pendaftaran">
+                                    <li class="nav-item me-3">
+                                        <a class="nav-link text-white" href="#" data-bs-toggle="modal" data-bs-target="#modalPendaftaranTutup">
+                                            <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran
+                                        </a>
+                                    </li>
+                                </t>
+                                <li class="nav-item dropdown">
+                                    <a href="#" class="dropdown-link nav-link"
+                                        style="color: white !important;">
                                         <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                    <div class="dropdown-content">
+                                        <a href="/login">Login PSB</a>
+                                        <a href="/web/login">Login Orang Tua</a>
+                                    </div>
                                 </li>
                                 <li class="nav-item me-3">
                                     <a class="nav-link text-white" href="/bantuan">
@@ -732,13 +843,28 @@
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" style="color: white !important;" href="/psb"><i class="fa-solid fa-house me-2"></i>Beranda</a>
                             </li>
-                            <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/pendaftaran">
-                                    <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
-                            </li>
-                            <li class="nav-item me-3">
-                                <a class="nav-link text-white" href="/login">
+                            <t t-if="is_halaman_pendaftaran">
+                                <li class="nav-item me-3">
+                                    <a class="nav-link text-white" href="/pendaftaran">
+                                        <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran
+                                    </a>
+                                </li>
+                            </t>
+                            <t t-if="not is_halaman_pendaftaran">
+                                <li class="nav-item me-3">
+                                    <a class="nav-link text-white" href="#" data-bs-toggle="modal" data-bs-target="#modalPendaftaranTutup">
+                                        <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran
+                                    </a>
+                                </li>
+                            </t>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="dropdown-link nav-link"
+                                    style="color: white !important;">
                                     <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                                <div class="dropdown-content">
+                                    <a href="/login">Login PSB</a>
+                                    <a href="/web/login">Login Orang Tua</a>
+                                </div>
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link text-white" href="/bantuan">
@@ -831,6 +957,24 @@
                         <p class="text-center mt-1">© 2024 TIM IT PPIB</p>
                     </div>
                 </footer>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="modalPendaftaranTutup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Pendaftaran ditutup!</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Mohon maaf, pendaftaran telah ditutup.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                </div>
+                </div>
+            </div>
             </div>
 
             <script

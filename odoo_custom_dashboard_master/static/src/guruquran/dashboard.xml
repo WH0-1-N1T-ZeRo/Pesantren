@@ -8,7 +8,7 @@
                     <div class="p-4">
                         <div class="d-flex flex-wrap align-items-center justify-content-between">
                             <h2 class="text-primary fw-bold">Dashboard Guru Qur'an</h2>
-                            <div class="d-md-flex align-items-center justify-content-center">
+                            <div class="d-md-flex align-items-center">
                                 <!-- Dropdown Periode -->
                                 <div class="dropdown me-3">
                                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">

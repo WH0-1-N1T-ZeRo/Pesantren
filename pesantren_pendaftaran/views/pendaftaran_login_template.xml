@@ -1,172 +1,173 @@
 <odoo>
 
-    <template id="pendaftaran_login_template" name="Login">
-        <t t-call="web.html_container">
-            <t t-set="title">Login - Daarul Quran Istiqomah</t>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
-            <style>
-                .main-container {
-                background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
+  <template id="pendaftaran_login_template" name="Login">
+    <t t-call="web.html_container">
+      <t t-set="title">Login - Daarul Quran Istiqomah</t>
+      <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+      <style>
+        .main-container {
+        background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
+        .offcanvas.offcanvas-end {
+        width: 250px; /* Lebar kustom untuk offcanvas */
+        }
 
-                .offcanvas.offcanvas-end {
-                width: 250px; /* Lebar kustom untuk offcanvas */
-                }
+        .offcanvas .nav-link {
+        color: #ffffff; /* teks warna putih */
+        }
 
-                .offcanvas .nav-link {
-                color: #ffffff; /* teks warna putih */
-                }
+        .offcanvas .btn-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        filter: invert(1);
+        }
 
-                .offcanvas .btn-close {
-                position: absolute;
-                top: 10px;
-                right: 10px;
-                filter: invert(1);
-                }
+        .step {
+        padding: 10px 30px;
+        border-radius: 5px;
+        }
 
-                .step {
-                padding: 10px 30px;
-                border-radius: 5px;
-                }
+        .step.active {
+        box-shadow: 0 3px 20px rgba(0,0,0,0.5);
+        background-color: #FD0870;
+        color: white;
+        }
 
-                .step.active {
-                box-shadow: 0 3px 20px rgba(0,0,0,0.5);
-                background-color: #FD0870;
-                color: white;
-                }
+        .disabled {
+        cursor: not-allowed !important;
+        }
 
-                .disabled {
-                cursor: not-allowed !important;
-                }
+        .background {
+        background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
+        }
 
-                .background {
-                background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
-                }
+        a.effect {
+        transition: .1s !important;
+        }
 
-                a.effect {
-                transition: .1s !important;
-                }
+        a.effect:hover {
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2) !important;
+        }
 
-                a.effect:hover {
-                box-shadow: 0 3px 10px rgba(0,0,0,0.2) !important;
-                }
+        /* Desain Dropdown */
+        .dropdown {
+        position: relative;
+        }
 
-                /* Desain Dropdown */
-                .dropdown {
-                position: relative;
-                }
+        .dropdown-link {
+        cursor: pointer;
+        }
 
-                .dropdown-link {
-                cursor: pointer;
-                }
+        .dropdown-content {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: #ffffff;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        min-width: 150px;
+        z-index: 1;
+        overflow: hidden;
+        }
 
-                .dropdown-content {
-                display: none;
-                position: absolute;
-                top: 100%;
-                right: 0;
-                background-color: #ffffff;
-                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-                border-radius: 5px;
-                min-width: 150px;
-                z-index: 1;
-                overflow: hidden;
-                }
+        .dropdown-content a {
+        color: #333;
+        padding: 10px 15px;
+        display: block;
+        text-decoration: none;
+        transition: background-color 0.2s;
+        }
 
-                .dropdown-content a {
-                color: #333;
-                padding: 10px 15px;
-                display: block;
-                text-decoration: none;
-                transition: background-color 0.2s;
-                }
+        .dropdown-content a:hover {
+        background-color: #f1f1f1;
+        }
 
-                .dropdown-content a:hover {
-                background-color: #f1f1f1;
-                }
+        /* Menampilkan dropdown saat hover */
+        .dropdown:hover .dropdown-content {
+        display: block;
+        animation: fadeIn 0.3s;
+        }
 
-                /* Menampilkan dropdown saat hover */
-                .dropdown:hover .dropdown-content {
-                display: block;
-                animation: fadeIn 0.3s;
-                }
+        /* Animasi fade-in */
+        @keyframes fadeIn {
+        from {
+        opacity: 0;
+        transform: translateY(-10px);
+        }
+        to {
+        opacity: 1;
+        transform: translateY(0);
+        }
+        }
 
-                /* Animasi fade-in */
-                @keyframes fadeIn {
-                from {
-                opacity: 0;
-                transform: translateY(-10px);
-                }
-                to {
-                opacity: 1;
-                transform: translateY(0);
-                }
-                }
+        #tanggal_lahir, #tanggal_lahir_ayah, #tanggal_lahir_ibu, #wali_tgl_lahir {
+        caret-color: transparent !important;
+        cursor: default !important;
+        }
 
-                #tanggal_lahir, #tanggal_lahir_ayah, #tanggal_lahir_ibu, #wali_tgl_lahir {
-                caret-color: transparent !important;
-                cursor: default !important;
-                }
+        /* Pastikan invalid-feedback tidak memengaruhi tata letak */
+        .khusus .invalid-feedback {
+        position: absolute; /* Agar tetap di dalam container */
+        bottom: -20px; /* Sesuaikan jarak ke bawah */
+        left: 0;
+        font-size: 0.875rem; /* Ukuran teks */
+        }
 
-                /* Pastikan invalid-feedback tidak memengaruhi tata letak */
-                .khusus .invalid-feedback {
-                position: absolute; /* Agar tetap di dalam container */
-                bottom: -20px; /* Sesuaikan jarak ke bawah */
-                left: 0;
-                font-size: 0.875rem; /* Ukuran teks */
-                }
+        .khusus {
+        position: relative; /* Container memiliki konteks posisi */
+        padding-bottom: 15px;
 
-                .khusus {
-                position: relative; /* Container memiliki konteks posisi */
-                padding-bottom: 15px;
-                
-                }
+        }
 
-                .step-indicator {
-                background-color: #EAE7E7;
-                padding: 0px 10px; /* Mengurangi padding */
-                display: flex;
-                justify-content: space-between;
-                flex-wrap: nowrap; /* Mencegah step turun ke baris baru */
-                gap: 10px; /* Menambahkan jarak antar elemen step */
-                }
+        .step-indicator {
+        background-color: #EAE7E7;
+        padding: 0px 10px; /* Mengurangi padding */
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: nowrap; /* Mencegah step turun ke baris baru */
+        gap: 10px; /* Menambahkan jarak antar elemen step */
+        }
 
-                .step {
-                padding: 6px 15px;  /* Padding kecil */
-                border-radius: 5px;
-                font-size: 13px;  /* Ukuran font lebih kecil */
-                white-space: nowrap; /* Mencegah teks terpotong */
-                text-align: center; /* Menyelaraskan teks agar tetap di tengah */
-                text-transform: uppercase;
-                }
+        .step {
+        padding: 6px 15px; /* Padding kecil */
+        border-radius: 5px;
+        font-size: 13px; /* Ukuran font lebih kecil */
+        white-space: nowrap; /* Mencegah teks terpotong */
+        text-align: center; /* Menyelaraskan teks agar tetap di tengah */
+        text-transform: uppercase;
+        }
 
-                .step.active {
-                box-shadow: 0 3px 20px rgba(0,0,0,0.5);
-                background-color: #FD0870;
-                color: white;
-                }
+        .step.active {
+        box-shadow: 0 3px 20px rgba(0,0,0,0.5);
+        background-color: #FD0870;
+        color: white;
+        }
 
-                /* Responsif untuk layar yang lebih kecil */
-                @media (max-width: 768px) {
-                .step {
-                    font-size: 10px;  /* Ukuran font lebih kecil di layar sedang */
-                    padding: 4px 12px; /* Mengurangi padding */
-                    text-transform: capitalize;
-                }
-                }
+        /* Responsif untuk layar yang lebih kecil */
+        @media (max-width: 768px) {
+        .step {
+        font-size: 10px; /* Ukuran font lebih kecil di layar sedang */
+        padding: 4px 12px; /* Mengurangi padding */
+        text-transform: capitalize;
+        }
+        }
 
-                @media (max-width: 576px) {
-                .step {
-                    font-size: 8px;  /* Ukuran font lebih kecil di layar kecil */
-                    padding: 4px 10px;  /* Mengurangi padding lebih lanjut */
-                }
-                }
+        @media (max-width: 576px) {
+        .step {
+        font-size: 8px; /* Ukuran font lebih kecil di layar kecil */
+        padding: 4px 10px; /* Mengurangi padding lebih lanjut */
+        }
+        }
 
-            </style>
-            <div class="main-container">
+      </style>
+      <div class="main-container">
         <nav class="navbar navbar-expand-lg" style="height: 65px;">
           <div class="container-fluid">
             <a class="navbar-brand ms-5 fw-semibold" href="/psb" style="color: white !important;">
-              <img src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" width="50"
+              <img src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png"
+                width="50"
                 alt="Logo Pesantren" /> Daarul Qur'an Istiqomah </a>
             <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="offcanvas"
               data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
@@ -178,13 +179,27 @@
                   <a class="nav-link text-white" style="color: white !important;" href="/psb"><i
                       class="fa-solid fa-house me-2"></i>Beranda</a>
                 </li>
-                <li class="nav-item me-3">
-                  <a class="nav-link" style="color: white !important;" href="/pendaftaran"><i
-                      class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
-                </li>
-                <li class="nav-item me-3">
-                  <a class="nav-link" style="color: white !important;" href="/login"><i
-                      class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                <t t-if="is_halaman_pendaftaran">
+                  <li class="nav-item me-3">
+                    <a class="nav-link text-white" href="/pendaftaran">
+                      <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran </a>
+                  </li>
+                </t>
+                <t t-if="not is_halaman_pendaftaran">
+                  <li class="nav-item me-3">
+                    <a class="nav-link text-white" href="#" data-bs-toggle="modal"
+                      data-bs-target="#modalPendaftaranTutup">
+                      <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran </a>
+                  </li>
+                </t>
+                <li class="nav-item dropdown">
+                  <a href="#" class="dropdown-link nav-link"
+                    style="color: white !important;">
+                    <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                  <div class="dropdown-content">
+                    <a href="/login">Login PSB</a>
+                    <a href="/web/login">Login Orang Tua</a>
+                  </div>
                 </li>
                 <li class="nav-item me-3">
                   <a class="nav-link" style="color: white !important;" href="/bantuan"><i
@@ -212,7 +227,8 @@
             aria-label="Close"></button>
           <a class="navbar-brand mt-1 fw-semibold" href="/psb"
             style="display: flex; flex-direction: column; align-items: center; color: white !important;">
-            <img src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" width="50"
+            <img src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png"
+              width="50"
               alt="Logo Pesantren" /> Daarul Qur'an Istiqomah </a>
           <div class="offcanvas-body">
             <ul class="navbar-nav ms-auto">
@@ -220,13 +236,27 @@
                 <a class="nav-link text-white" style="color: white !important;" href="/psb"><i
                     class="fa-solid fa-house me-2"></i>Beranda</a>
               </li>
-              <li class="nav-item me-3">
-                <a class="nav-link text-white" href="/pendaftaran"><i class="fa-solid fa-note-sticky me-2"></i>
-                  Pendaftaran</a>
-              </li>
-              <li class="nav-item me-3">
-                <a class="nav-link" style="color: white !important;" href="/login"><i
-                    class="fa-solid fa-fingerprint me-2"></i>Login</a>
+              <t t-if="is_halaman_pendaftaran">
+                <li class="nav-item me-3">
+                  <a class="nav-link text-white" href="/pendaftaran">
+                    <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran </a>
+                </li>
+              </t>
+              <t t-if="not is_halaman_pendaftaran">
+                <li class="nav-item me-3">
+                  <a class="nav-link text-white" href="#" data-bs-toggle="modal"
+                    data-bs-target="#modalPendaftaranTutup">
+                    <i class="fa-solid fa-note-sticky me-2"></i>Pendaftaran </a>
+                </li>
+              </t>
+              <li class="nav-item dropdown">
+                <a href="#" class="dropdown-link nav-link"
+                  style="color: white !important;">
+                  <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                <div class="dropdown-content">
+                  <a href="/login">Login PSB</a>
+                  <a href="/web/login">Login Orang Tua</a>
+                </div>
               </li>
               <li class="nav-item me-3">
                 <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>
@@ -248,65 +278,77 @@
         </div>
 
         <div class="py-3">
-  <div class="container">
-    <div class="row justify-content-md-center">
-      <div class="col-12 col-md-11 col-lg-8 col-xl-7 col-xxl-6">
-        <div class="bg-white p-4 rounded shadow-lg">
-          <div class="row">
-            <div class="col-12">
-              <div class="text-center mb-5">
-                <h1 class="fw-semibold fs-4 mb-2">Login</h1>
-                <a href="#!">
-                  <img src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" alt="Dqi" width="100" />
-                </a>
-              </div>
-            </div>
-          </div>
-          <form action="/login/submit" method="post" class="needs-validation" novalidate="true">
-            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
-            <div class="row gy-3 gy-md-4 overflow-hidden">
-              <div class="col-12">
-                <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-                <div class="input-group">
-                  <span class="input-group-text">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
-                      <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z" />
-                    </svg>
-                  </span>
-                  <input type="email" class="form-control" name="email" id="email" autocomplete="off" required="true" />
-                  <div class="invalid-feedback">
-                    Harap memasukkan email anda.
+          <div class="container">
+            <div class="row justify-content-md-center">
+              <div class="col-12 col-md-11 col-lg-8 col-xl-7 col-xxl-6">
+                <div class="bg-white p-4 rounded shadow-lg">
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="text-center mb-5">
+                        <h1 class="fw-semibold fs-4 mb-2">Login</h1>
+                        <a href="#!">
+                          <img
+                            src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png"
+                            alt="Dqi" width="100" />
+                        </a>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div class="col-12">
-                <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
-                <div class="input-group position-relative">
-                  <span class="input-group-text">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-key" viewBox="0 0 16 16">
-                      <path d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8zm4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5z" />
-                      <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                    </svg>
-                  </span>
-                  <input type="password" class="form-control" name="password" id="password" autocomplete="off" required="true" />
-                  <div class="invalid-feedback">
-                    Harap memasukkan password anda.
-                  </div>
-                  <i
-                    class="fa-solid fa-eye-slash fs-5 position-absolute"
-                    style="right: 5px; top: 7px; cursor: pointer; color: #333; z-index: 10;"
-                    onclick="togglePasswordVisibility()"
-                ></i>
-                </div>
-              </div>
-              <div class="col-12">
-                <div class="d-grid">
-                  <button style="background-color: black; color: white; border: none; padding: 5px; border-radius: 5px;" type="submit">Login</button>
-                </div>
-              </div>
-            </div>
-          </form>
-          <!-- <div class="row">
+                  <form action="/login/submit" method="post" class="needs-validation"
+                    novalidate="true">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+                    <div class="row gy-3 gy-md-4 overflow-hidden">
+                      <div class="col-12">
+                        <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                          <span class="input-group-text">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                              fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
+                              <path
+                                d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z" />
+                            </svg>
+                          </span>
+                          <input type="email" class="form-control" name="email" id="email"
+                            autocomplete="off" required="true" />
+                          <div class="invalid-feedback">
+                            Harap memasukkan email anda.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <label for="password" class="form-label">Password <span class="text-danger">
+                          *</span></label>
+                        <div class="input-group position-relative">
+                          <span class="input-group-text">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                              fill="currentColor" class="bi bi-key" viewBox="0 0 16 16">
+                              <path
+                                d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8zm4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5z" />
+                              <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                            </svg>
+                          </span>
+                          <input type="password" class="form-control" name="password" id="password"
+                            autocomplete="off" required="true" />
+                          <div class="invalid-feedback">
+                            Harap memasukkan password anda.
+                          </div>
+                          <i
+                            class="fa-solid fa-eye-slash fs-5 position-absolute"
+                            style="right: 5px; top: 7px; cursor: pointer; color: #333; z-index: 10;"
+                            onclick="togglePasswordVisibility()"
+                          ></i>
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <div class="d-grid">
+                          <button
+                            style="background-color: black; color: white; border: none; padding: 5px; border-radius: 5px;"
+                            type="submit">Login</button>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                  <!-- <div class="row">
             <div class="col-12">
               <hr class="mt-5 mb-4 border-secondary-subtle">
               <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-center">
@@ -315,11 +357,11 @@
               </div>
             </div>
           </div> -->
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
 
         <footer class="p-2"
           style="display: flex; justify-content: space-between; flex-wrap: wrap; color: white !important;">
@@ -350,8 +392,27 @@
         </footer>
       </div>
 
-        <script>
-      (() => {
+      <!-- Modal -->
+      <div class="modal fade" id="modalPendaftaranTutup" tabindex="-1"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Pendaftaran ditutup!</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Mohon maaf, pendaftaran telah ditutup.</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        (() => {
         'use strict'
 
         // Fetch all the forms we want to apply custom Bootstrap validation styles to
@@ -359,18 +420,18 @@
 
         // Loop over them and prevent submission
         Array.from(forms).forEach(form => {
-          form.addEventListener('submit', event => {
-            if (!form.checkValidity()) {
-              event.preventDefault()
-              event.stopPropagation()
-            }
+        form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+        }
 
-            form.classList.add('was-validated')
-          }, false)
+        form.classList.add('was-validated')
+        }, false)
         })
-      })()
+        })()
 
-      // Cari elemen body dengan class spesifik
+        // Cari elemen body dengan class spesifik
         const bodyElement = document.querySelector('body.o_body_html.container.overflow-x-hidden');
         // Jika elemen ditemukan, hapus class "container"
         if (bodyElement) {
@@ -383,19 +444,19 @@
         const passwordInput = document.getElementById('password');
         // Ambil elemen ikon mata
         const eyeIcon = passwordInput.nextElementSibling.nextElementSibling;
-      
+
         // Periksa tipe input, lalu ubah visibilitas dan ikon
         if (passwordInput.type === 'password') {
-          passwordInput.type = 'text'; // Ubah ke teks untuk menampilkan password
-          eyeIcon.classList.replace('fa-eye-slash', 'fa-eye'); // Ubah ikon menjadi mata tertutup
+        passwordInput.type = 'text'; // Ubah ke teks untuk menampilkan password
+        eyeIcon.classList.replace('fa-eye-slash', 'fa-eye'); // Ubah ikon menjadi mata tertutup
         } else {
-          passwordInput.type = 'password'; // Ubah ke password untuk menyembunyikan password
-          eyeIcon.classList.replace('fa-eye', 'fa-eye-slash'); // Ubah ikon menjadi mata terbuka
+        passwordInput.type = 'password'; // Ubah ke password untuk menyembunyikan password
+        eyeIcon.classList.replace('fa-eye', 'fa-eye-slash'); // Ubah ikon menjadi mata terbuka
         }
-      }
-    </script>
+        }
+      </script>
 
-        </t>
-    </template>
+    </t>
+  </template>
 
 </odoo>

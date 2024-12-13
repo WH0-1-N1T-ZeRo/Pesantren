@@ -8,7 +8,7 @@
                     <div class="p-4">
                         <div class="d-flex flex-wrap align-items-center justify-content-between">
                             <h2 class="text-primary fw-bold">Dashboard Keuangan</h2>
-                            <div class="d-md-flex align-items-center justify-content-center">
+                            <div class="d-md-flex align-items-center">
                                 <!-- Dropdown Periode -->
                                 <div class="dropdown me-3">
                                     <button class="btn btn-outline-secondary dropdown-toggle" 
@@ -163,7 +163,7 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 m-0 p-2">
                     <div class="shadow-sm border p-4 bg-white h-100">
                         <KeuanganChartRenderer type="'bar'" 
-                                             title="'Tagihan Siswa'" />
+                                             title="'Tagihan Siswa'"/>
                     </div>
                 </div>
             </div>

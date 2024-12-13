@@ -217,7 +217,7 @@
 
         processDateData(data, field) {
             return data.reduce((acc, record) => {
-                const date = this.parseDate(record.validasi_time);
+                const date = this.parseDate(record.create_date);
                 const dateStr = date.toLocaleDateString('id-ID', {
                     year: 'numeric',
                     month: '2-digit',
@@ -298,31 +298,28 @@
 
         async fetchUangSakuMasukData(startDate = null, endDate = null) {
             try {
-                let domain = [['amount_in', '>', 0]];
-        
-                // If no dates provided, set default to current week
-                if (!startDate || !endDate) {
-                    const now = new Date();
-                    const firstDayOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
-                    startDate = firstDayOfWeek.toISOString().split('T')[0];
-                    endDate = new Date().toISOString().split('T')[0];
+                if (!startDate && !endDate) {
+                    endDate = new Date();
+                    startDate = new Date();
+                    startDate.setDate(startDate.getDate() - 6); // Get last 7 days including today
+                    
+                    // Convert to YYYY-MM-DD format for API
+                    startDate = startDate.toISOString().split('T')[0];
+                    endDate = endDate.toISOString().split('T')[0];
                 }
         
-                // Convert dates to ISO string format
-                startDate = new Date(startDate).toISOString().split('T')[0];
-                endDate = new Date(endDate).toISOString().split('T')[0];
-                
-                // Add date filtering
-                domain.push(
-                    ['validasi_time', '>=', startDate],
-                    ['validasi_time', '<=', endDate]
-                );
+                const domain = [
+                    ['amount_in', '>', 0],
+                    ['create_date', '>=', startDate],
+                    ['create_date', '<=', endDate],
+                    ["orangtua_id","ilike",session.partner_display_name]
+                ];
         
                 const result = await this.orm.searchRead(
                     'cdn.uang_saku',
                     domain,
-                    ['validasi_time', 'amount_in', 'state'],
-                    { order: 'validasi_time asc' }
+                    ['create_date', 'amount_in', 'state', 'siswa_id','orangtua_id'],
+                    { order: 'create_date asc' }
                 );
         
                 if (!result || result.length === 0) {
@@ -347,31 +344,30 @@
         
         async fetchUangSakuKeluarData(startDate = null, endDate = null) {
             try {
-                let domain = [['amount_out', '>', 0]];
-        
-                // If no dates provided, set default to current week
-                if (!startDate || !endDate) {
-                    const now = new Date();
-                    const firstDayOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
-                    startDate = firstDayOfWeek.toISOString().split('T')[0];
-                    endDate = new Date().toISOString().split('T')[0];
+                // If no dates provided, set default range to last 7 days
+                if (!startDate && !endDate) {
+                    endDate = new Date();
+                    startDate = new Date();
+                    startDate.setDate(startDate.getDate() - 6); // Get last 7 days including today
+                    
+                    // Convert to YYYY-MM-DD format for API
+                    startDate = startDate.toISOString().split('T')[0];
+                    endDate = endDate.toISOString().split('T')[0];
                 }
         
-                // Convert dates to ISO string format
-                startDate = new Date(startDate).toISOString().split('T')[0];
-                endDate = new Date(endDate).toISOString().split('T')[0];
-                
-                // Add date filtering
-                domain.push(
-                    ['validasi_time', '>=', startDate],
-                    ['validasi_time', '<=', endDate]
-                );
+                const domain = [
+                    ['amount_out', '>', 0],
+                    ['create_date', '>=', startDate],
+                    ['create_date', '<=', endDate],
+                    ["orangtua_id","ilike",session.partner_display_name]
+                ];
         
                 const result = await this.orm.searchRead(
                     'cdn.uang_saku',
                     domain,
-                    ['validasi_time', 'amount_out', 'state'],
-                    { order: 'validasi_time asc' }
+                    ['create_date', 'amount_out', 'state', 'siswa_id','orangtua_id'],
+                    { order: 'create_date asc' }
+
                 );
         
                 if (!result || result.length === 0) {
@@ -392,7 +388,7 @@
                 this.state.chartData = { series: [], labels: [] };
                 this.state.currentViewRange = null;
             }
-        }   
+        }
         
         // Helper methods for managing date ranges
         isCustomDateRange() {
@@ -755,8 +751,8 @@
                     const formattedEndDate = endDate.toISOString().split('.')[0] + 'Z';
 
                     const domain = [
-                        ['validasi_time', '>=', formattedStartDate],
-                        ['validasi_time', '<=', formattedEndDate],
+                        ['create_date', '>=', formattedStartDate],
+                        ['create_date', '<=', formattedEndDate],
                         ["orangtua_id","ilike",session.partner_display_name]
                     ];
 
