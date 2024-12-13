@@ -1,78 +1,1660 @@
 <odoo>
-    <template id="pendaftaran_cetak_form_pembayaran_template" name="Cetak Form Pembayaran">
-        <t t-call="web.html_container">
-            <t t-set="title">Pembayaran - Daarul Qur'an Istiqomah</t>
-            <div class="d-flex justify-content-center">
-                <div style="width: 800px;">
-                    <div>
-                    <div class="text-center">
-                        <h4 class="fw-bold">Pondok Pesantren Daarul Qur'an Istiqomah</h4>
-                        <span>Kabupaten Tanah Laut, Kalimantan Selatan</span>
+
+  <template id="pendaftaran_form_template" name="Pendaftaran Form">
+    <t t-call="web.html_container">
+      <t t-set="title">Pendaftaran - Daarul Qur'an Istiqomah</t>
+      <link rel="icon" type="image/x-icon" href="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" />
+      <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+      <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css" />
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css"
+        rel="stylesheet" />
+      <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css" rel="stylesheet"/>
+      <style>
+
+        .main-container {
+        background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
+        }
+
+        .offcanvas.offcanvas-end {
+        width: 250px; /* Lebar kustom untuk offcanvas */
+        }
+
+        .offcanvas .nav-link {
+        color: #ffffff; /* teks warna putih */
+        }
+
+        .offcanvas .btn-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        filter: invert(1);
+        }
+
+        .step {
+        padding: 10px 30px;
+        border-radius: 5px;
+        }
+
+        .step.active {
+        box-shadow: 0 3px 20px rgba(0,0,0,0.5);
+        background-color: #FD0870;
+        color: white;
+        }
+
+        .disabled {
+        cursor: not-allowed !important;
+        }
+
+        .background {
+        background: linear-gradient(to bottom left, #065c5c 18%, #f5e505 100%) !important;
+        }
+
+        a.effect {
+        transition: .1s !important;
+        }
+
+        a.effect:hover {
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2) !important;
+        }
+
+        /* Desain Dropdown */
+        .dropdown {
+        position: relative;
+        }
+
+        .dropdown-link {
+        cursor: pointer;
+        }
+
+        .dropdown-content {
+        display: none;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: #ffffff;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        min-width: 150px;
+        z-index: 1;
+        overflow: hidden;
+        }
+
+        .dropdown-content a {
+        color: #333;
+        padding: 10px 15px;
+        display: block;
+        text-decoration: none;
+        transition: background-color 0.2s;
+        }
+
+        .dropdown-content a:hover {
+        background-color: #f1f1f1;
+        }
+
+        /* Menampilkan dropdown saat hover */
+        .dropdown:hover .dropdown-content {
+        display: block;
+        animation: fadeIn 0.3s;
+        }
+
+        /* Animasi fade-in */
+        @keyframes fadeIn {
+        from {
+        opacity: 0;
+        transform: translateY(-10px);
+        }
+        to {
+        opacity: 1;
+        transform: translateY(0);
+        }
+        }
+
+        #tanggal_lahir, #tanggal_lahir_ayah, #tanggal_lahir_ibu, #wali_tgl_lahir {
+        caret-color: transparent !important;
+        cursor: default !important;
+        }
+
+        /* Pastikan invalid-feedback tidak memengaruhi tata letak */
+        .khusus .invalid-feedback {
+          position: absolute; /* Agar tetap di dalam container */
+          bottom: -20px; /* Sesuaikan jarak ke bawah */
+          left: 0;
+          font-size: 0.875rem; /* Ukuran teks */
+        }
+
+        .khusus {
+          position: relative; /* Container memiliki konteks posisi */
+          padding-bottom: 15px;
+          
+        }
+
+        .step-indicator {
+   overflow-auto        background-color: #EAE7E7;
+          padding: 0px 10px; /* Mengurangi padding */
+          display: flex;
+          justify-content: space-between;
+          flex-wrap: nowrap; /* Mencegah step turun ke baris baru */
+          gap: 10px; /* Menambahkan jarak antar elemen step */
+        }
+
+        .step {
+          padding: 6px 15px;  /* Padding kecil */
+          border-radius: 5px;
+          font-size: 13px;  /* Ukuran font lebih kecil */
+          white-space: nowrap; /* Mencegah teks terpotong */
+          text-align: center; /* Menyelaraskan teks agar tetap di tengah */
+          text-transform: uppercase;
+        }
+
+        .step.active {
+          box-shadow: 0 3px 20px rgba(0,0,0,0.5);
+          background-color: #FD0870;
+          color: white;
+        }
+
+        /* Responsif untuk layar yang lebih kecil */
+        @media (max-width: 768px) {
+          .step {
+            font-size: 10px;  /* Ukuran font lebih kecil di layar sedang */
+            padding: 4px 12px; /* Mengurangi padding */
+            text-transform: capitalize;
+          }
+        }
+
+        @media (max-width: 576px) {
+          .step {
+            font-size: 8px;  /* Ukuran font lebih kecil di layar kecil */
+            padding: 4px 10px;  /* Mengurangi padding lebih lanjut */
+          }
+          /* Pastikan invalid-feedback tidak memengaruhi tata letak */
+          .khusus .invalid-feedback {
+            position: absolute; /* Agar tetap di dalam container */
+            bottom: -45px; /* Sesuaikan jarak ke bawah */
+            left: 0;
+            font-size: 0.875rem; /* Ukuran teks */
+          }
+        }
+
+      </style>
+      <div class="main-container">
+        <nav class="navbar navbar-expand-lg" style="height: 65px;">
+          <div class="container-fluid">
+            <a class="navbar-brand ms-5 fw-semibold" href="/psb" style="color: white !important;">
+              <img src="https://i.ibb.co.com/SmWmBTW/SAVE-20220114-075750-removebg-preview-4.png" width="50"
+                alt="Logo Pesantren" /> Daarul Qur'an Istiqomah </a>
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav ms-auto">
+                <li class="nav-item me-3">
+                  <a class="nav-link text-white" style="color: white !important;" href="/psb"><i
+                      class="fa-solid fa-house me-2"></i>Beranda</a>
+                </li>
+                <li class="nav-item me-3">
+                  <a class="nav-link" style="color: white !important;" href="/pendaftaran"><i
+                      class="fa-solid fa-note-sticky me-2"></i>Pendaftaran</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="dropdown-link nav-link"
+                        style="color: white !important;">
+                        <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                    <div class="dropdown-content">
+                        <a href="/login">Login PSB</a>
+                        <a href="/web/login">Login Orang Tua</a>
                     </div>
+                </li>
+                <li class="nav-item me-3">
+                  <a class="nav-link" style="color: white !important;" href="/bantuan"><i
+                      class="fa-solid fa-lock me-2"></i>Bantuan</a>
+                </li>
+                <t t-if="is_halaman_pengumuman">
+                  <li class="nav-item dropdown">
+                    <a href="#" class="dropdown-link nav-link" style="color: white !important;"><i
+                        class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
+                    <div class="dropdown-content">
+                      <a href="/pengumuman/sd-mi">SD / MI</a>
+                      <a href="/pengumuman/smp-mts">SMP / MTS</a>
+                      <a href="/pengumuman/sma-ma">SMA / MA</a>
                     </div>
-                    <hr style="border-bottom: 2px solid #000;" class="mb-4"/>
-                    <div>
-                    <h4 class="fw-bold text-center mb-4"><u>Alhamdulillah Pendaftaran Santri Baru Telah Berhasil</u></h4>
-                    <div>
-                        <span>Data yang telah disimpan adalah : </span>
-                        <table class="mt-4 mb-4" cellpadding="10" cellspacing="0" width="100%">
-                        <tbody>
-                            <tr>
-                                <td>No Pendaftaran</td>
-                                <td>:</td>
-                                <td><t t-esc="pendaftaran.nomor_pendaftaran"/> <span class="ms-4">(tgl daftar : <t t-esc="pendaftaran.get_formatted_tanggal_daftar()"/>)</span></td>
-                            </tr>
-                            <tr style="background-color: #E6E4E4;">
-                                <td>Prodi Dipilih</td>
-                                <td>:</td>
-                                <td><span class="text-capitalize"><t t-esc="pendaftaran.jenjang_id.name"/></span></td>
-                            </tr>
-                            <tr>
-                                <td>Nama / JK</td>
-                                <td>:</td>
-                                <td><t t-esc="pendaftaran.partner_id.name"/> ( <span class="text-uppercase"><t t-esc="pendaftaran.gender"/></span> )</td>
-                            </tr>
-                            <tr style="background-color: #E6E4E4;">
-                                <td>Tempat &amp; Tanggal Lahir</td>
-                                <td>:</td>
-                                <td><t t-esc="pendaftaran.kota_lahir"/>, <t t-esc="pendaftaran.get_formatted_tanggal_lahir()"/></td>
-                            </tr>
-                            <tr>
-                                <td>NIK</td>
-                                <td>:</td>
-                                <td><t t-esc="pendaftaran.nik"/></td>
-                            </tr>
-                            <tr style="background-color: #E6E4E4;">
-                                <td>Golongan darah</td>
-                                <td>:</td>
-                                <td><span class="text-uppercase"><t t-esc="pendaftaran.golongan_darah"/></span></td>
-                            </tr>
-                            <tr>
-                                <td>Email</td>
-                                <td>:</td>
-                                <td><t t-esc="pendaftaran.email"/></td>
-                            </tr>
-                        </tbody>
-                        </table>
-                        <div>
-                        <h5 class="fw-bold">Langkah Selanjutnya lakukan pembayaran melalui : <br/> Nomor Rekening Bank BSI <br/> Nomor : <span t-esc="no_rekening" /></h5>
-                        </div>
-                        <br/>
-                        <div>
-                        <div>
-                            <span>Kalimantan Selatan, <t t-esc="pendaftaran.get_formatted_tanggal()" /> <br/> Panitia PSB,</span> <br/> <br/> <br/>
-                            <span>(...................................)</span>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
-                </div>
+                  </li>
+                </t>
+              </ul>
             </div>
+          </div>
+        </nav>
 
-            <script>
-                window.print();
-            </script>
+        <div class="offcanvas offcanvas-end background" tabindex="-1" id="offcanvasNavbar"
+          aria-labelledby="offcanvasNavbarLabel">
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+            aria-label="Close"></button>
+          <a class="navbar-brand mt-1 fw-semibold" href="/psb"
+            style="display: flex; flex-direction: column; align-items: center; color: white !important;">
+            <img src="https://i.ibb.co.com/f9j819p/1731466812700.png" width="50"
+              alt="Logo Pesantren" /> Daarul Qur'an Istiqomah </a>
+          <div class="offcanvas-body">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item me-3">
+                <a class="nav-link text-white" style="color: white !important;" href="/psb"><i
+                    class="fa-solid fa-house me-2"></i>Beranda</a>
+              </li>
+              <li class="nav-item me-3">
+                <a class="nav-link text-white" href="/pendaftaran"><i class="fa-solid fa-note-sticky me-2"></i>
+                  Pendaftaran</a>
+              </li>
+              <li class="nav-item dropdown">
+                  <a href="#" class="dropdown-link nav-link"
+                      style="color: white !important;">
+                      <i class="fa-solid fa-fingerprint me-2"></i>Login</a>
+                  <div class="dropdown-content">
+                      <a href="/login">Login PSB</a>
+                      <a href="/web/login">Login Orang Tua</a>
+                  </div>
+              </li>
+              <li class="nav-item me-3">
+                <a class="nav-link text-white" href="/bantuan"><i class="fa-solid fa-lock me-2"></i>
+                  Bantuan</a>
+              </li>
+              <t t-if="is_halaman_pengumuman">
+                <li class="nav-item dropdown">
+                  <a href="#" class="dropdown-link nav-link" style="color: white !important;"><i
+                      class="fa-solid fa-bullhorn me-2"></i>Pengumuman</a>
+                  <div class="dropdown-content">
+                    <a href="/pengumuman/sd-mi">SD / MI</a>
+                    <a href="/pengumuman/smp-mts">SMP / MTS</a>
+                    <a href="/pengumuman/sma-ma">SMA / MA</a>
+                  </div>
+                </li>
+              </t>
+            </ul>
+          </div>
+        </div>
 
-        </t>
-    </template>
+        <form class="needs-validation" action="/pendaftaran/submit" method="post"
+          enctype="multipart/form-data" novalidate="true">
+          <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+
+          <div class="container" id="containerDataUsername">
+            <div style="max-width: 100%;" class="bg-white rounded mt-5 p-3">
+              <div class="step-indicator mb-3 overflow-auto">
+                <span class="fw-semibold step active">
+                  Data Login</span>
+                <span class="fw-semibold step">Data
+                  Siswa</span>
+                <span class="fw-semibold step">Data Orang
+                  Tua</span>
+                <span class="fw-semibold step">Data Sekolah
+                  Asal</span>
+                <span class="fw-semibold step">Data Berkas</span>
+              </div>
+              <h4 class="fw-semibold fs-3 mb-4">Data Login</h4>
+              <div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="mb-3">
+                      <label for="email" class="form-label">Email<span class="text-danger">*</span></label>
+                      <input type="email" name="email" class="form-control" id="email"
+                        placeholder="Email" required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan email.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-12">
+                    <div class="mb-3 khusus">
+                      <label for="password" class="form-label">Kata Sandi<span class="text-danger">*</span></label>
+                      <div class="d-flex align-items-center position-relative">
+                        <input
+                          type="password"
+                          name="password"
+                          class="form-control pe-5"
+                          id="password"
+                          placeholder="Kata Sandi"
+                          required="true"
+                          autocomplete="off"
+                        />
+                        <div class="invalid-feedback">
+                          Kata Sandi harus minimal 8 karakter, mengandung huruf besar, huruf kecil, dan angka.
+                        </div>
+                        <i
+                          class="fa-solid fa-eye-slash fs-5 position-absolute"
+                          style="right: 35px; cursor: pointer; color: #333;"
+                          onclick="togglePasswordVisibility()"
+                        ></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="mb-3 khusus">
+                      <label for="password2" class="form-label">Konfirmasi Kata Sandi<span class="text-danger">*</span></label>
+                      <div class="d-flex align-items-center position-relative">
+                        <input
+                          type="password"
+                          name="password2"
+                          class="form-control pe-5"
+                          id="password2"
+                          placeholder="Konfirmasi Kata Sandi"
+                          required="true"
+                          autocomplete="off"
+                        />
+                        <div class="invalid-feedback">
+                          Konfirmasi kata sandi harus sesuai.
+                        </div>
+                        <i
+                          class="fa-solid fa-eye-slash fs-5 position-absolute"
+                          style="right: 35px; cursor: pointer; color: #333;"
+                          onclick="togglePassword2Visibility()"
+                        ></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-3 d-flex justify-content-end">
+                  <button type="button"
+                    style="background-color: #4CAF50 !important; text-decoration: none; color: white; padding: 10px 20px; text-align: center; display: inline-block; font-size: 16px; border-radius: 5px; cursor: pointer;"
+                    class="btn btn-success btn-next" data-next="containerDataDiri">Selanjutnya</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+         
+
+
+
+          
+          <div class="container" id="containerDataDiri" style="display: none;">
+            <div style="max-width: 100%;" class="bg-white rounded mt-5 p-3">
+              <div class="step-indicator mb-3 overflow-auto">
+                <span class="fw-semibold step">
+                  Data Login</span>
+                <span class="fw-semibold step active">Data
+                  Siswa</span>
+                <span class="fw-semibold step">Data Orang
+                  Tua</span>
+                <span class="fw-semibold step">Data Sekolah
+                  Asal</span>
+                <span class="fw-semibold step">Data Berkas</span>
+              </div>
+              <div class="mb-4 d-flex justify-content-between align-items-center">
+                <h4 class="fw-semibold fs-3">Data Siswa</h4>
+                <p style="font-style: italic;">Data yang ada tanda <span class="text-danger">*</span> wajib diisi.</p>
+              </div>
+              <div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="nama" class="form-label">Nama Lengkap<span class="text-danger">*</span></label>
+                      <input type="text" name="nama" class="form-control" id="nama"
+                        placeholder="Nama Lengkap" required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan nama lengkap.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="nik" class="form-label">NIK<span class="text-danger">*</span></label>
+                      <input type="text" name="nik" class="form-control" id="nik" placeholder="NIK"
+                        required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        NIK harus 16 digit
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="email" class="form-label">Email<span class="text-danger">*</span></label>
+                      <input type="email" name="email" class="form-control" id="email" placeholder="Email"
+                        required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan email.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="jenjang_id" class="form-label">Jenjang Pendidikan<span
+                          class="text-danger">*</span></label>
+                      <select class="form-select" required="true" name="jenjang_id" id="jenjang_id" onchange="filterJenjang()">
+                        <option selected="true" disabled="true" hidden="true" value="">Pilih Jenjang</option>
+                        <t t-foreach="pendidikan_list" t-as="jenjang">
+                          <option t-att-value="jenjang.id">
+                            <t t-esc="jenjang.name" />
+                          </option>
+                        </t>
+                      </select>
+                      <div class="invalid-feedback">
+                        Pilih Jenjang.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="gender" class="form-label">Jenis Kelamin<span class="text-danger">
+                        *</span></label>
+                      <select class="form-select" required="true" name="gender" id="gender">
+                        <option selected="true" disabled="true" hidden="true" value="">Pilih Jenis
+                          Kelamin</option>
+                        <option value="L">Laki - Laki</option>
+                        <option value="P">Perempuan</option>
+                      </select>
+                      <div class="invalid-feedback">
+                        Pilih Jenis Kelamin
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="tanggal_lahir" class="form-label">Tgl Lahir<span
+                          class="text-danger">*</span></label>
+                      <input type="text" name="tanggal_lahir" id="tanggal_lahir"
+                        placeholder="dd / mm / yyyy" required="true" autocomplete="off"
+                        class="form-control" style="cursor: disabled !important;" />
+                      <div class="invalid-feedback">
+                        Pilih Tgl Lahir.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="nisn" class="form-label">NISN<span class="text-danger" id="noticeNisn">*</span></label>
+                      <input type="text" name="nisn" class="form-control" id="nisn"
+                        placeholder="NISN" required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan NISN.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="kota_lahir" class="form-label">Tempat Lahir<span
+                          class="text-danger">*</span></label>
+                      <input type="text" name="kota_lahir" class="form-control" id="kota_lahir"
+                        placeholder="Tempat Lahir" required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan Tempat Lahir.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="provinsi_id" class="form-label">Provinsi<span class="text-danger">
+                        *</span></label> <br />
+                      <select class="select2" required="true" name="provinsi_id"
+                        id="provinsi_id" style="width: 100%;">
+                        <option selected="true" disabled="true" hidden="true" value="">Pilih
+                          Provinsi</option>
+                        <!-- <t t-foreach="request.env['cdn.ref_propinsi'].sudo().search([])"
+                          t-as="propinsi">
+                          <option t-att-value="propinsi.id" t-esc="propinsi.name" />
+                        </t> -->
+                      </select>
+                      <div class="invalid-feedback">
+                        Pilih Provinsi.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="kota_id" class="form-label">Kabupaten/Kota<span
+                          class="text-danger">*</span></label> <br />
+                      <select class="select2" required="true" name="kota_id" id="kota_id" style="width: 100%;">
+                        <option selected="true" disabled="true" hidden="true" value="">Pilih
+                          Kabupaten/Kota</option>
+                        <!-- <t t-foreach="request.env['cdn.ref_kota'].sudo().search([])" t-as="kota">
+                          <option t-att-data-propinsi="kota.propinsi_id.id" t-att-value="kota.id"
+                            t-esc="kota.name" />
+                        </t> -->
+                      </select>
+                      <div class="invalid-feedback">
+                        Pilih Kabupaten/Kota.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="kecamatan_id" class="form-label">Kecamatan<span
+                          class="text-danger">*</span></label> <br />
+                      <select class="select2" required="true" name="kecamatan_id"
+                        id="kecamatan_id" style="width: 100%;">
+                        <option selected="true" disabled="true" hidden="true" value="">Pilih
+                          Kecamatan</option>
+                        <!-- <t t-foreach="request.env['cdn.ref_kecamatan'].sudo().search([])"
+                          t-as="kecamatan">
+                          <option t-att-data-kota="kecamatan.kota_id.id" t-att-value="kecamatan.id"
+                            t-esc="kecamatan.name" />
+                        </t> -->
+                      </select>
+                      <div class="invalid-feedback">
+                        Pilih Kecamatan.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="anak_ke" class="form-label">Anak Ke</label>
+                      <input type="number" name="anak_ke" class="form-control" id="anak_ke"
+                        placeholder="Anak Ke" autocomplete="off" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="jml_saudara_kandung" class="form-label">Jumlah Saudara</label>
+                      <input type="number" name="jml_saudara_kandung" class="form-control"
+                        id="jml_saudara_kandung" placeholder="Jumlah Saudara"
+                        autocomplete="off" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="cita_cita" class="form-label">Cita Cita</label>
+                      <input type="text" name="cita_cita" class="form-control" id="cita_cita"
+                        placeholder="Cita Cita" autocomplete="off" />
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="golongan_darah" class="form-label">Golongan Darah</label>
+                      <select name="golongan_darah" id="golongan_darah"
+                        class="form-select">
+                        <option value="" selected="true" disabled="true" hidden="true">Pilih
+                          Golongan Darah</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="AB">AB</option>
+                        <option value="O">O</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="kewarganegaraan" class="form-label">Kewarganegaraan</label>
+                      <select required="true" name="kewarganegaraan" id="kewarganegaraan"
+                        class="form-select">
+                        <option value="wni" selected="true">WNI</option>
+                        <option value="wna">WNA</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="mb-3">
+                      <label for="alamat" class="form-label">Alamat<span class="text-danger">*</span></label>
+                      <textarea class="form-control" name="alamat" id="alamat" rows="3"
+                        placeholder="Alamat" required="true" autocomplete="off"></textarea>
+                      <div class="invalid-feedback">
+                        Masukkan Alamat.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-3 d-flex justify-content-between">
+                  <button type="button"
+                    style="background-color: #4CAF50 !important; text-decoration: none; color: white; padding: 10px 20px; text-align: center; display: inline-block; font-size: 16px; border-radius: 5px; cursor: pointer;"
+                    class="btn btn-secondary btn-prev" data-prev="containerDataUsername">Kembali</button>
+                  <button type="button"
+                    style="background-color: #4CAF50 !important; text-decoration: none; color: white; padding: 10px 20px; text-align: center; display: inline-block; font-size: 16px; border-radius: 5px; cursor: pointer;"
+                    class="btn btn-success btn-next" data-next="containerDataOrangTua">Selanjutnya</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="container" id="containerDataOrangTua" style="display: none;">
+            <div style="max-width: 100%;" class="bg-white rounded mt-5 p-3">
+              <div class="step-indicator mb-3 overflow-auto">
+                <span class="fw-semibold step">
+                  Data Login</span>
+                <span class="fw-semibold step">Data Siswa</span>
+                <span class="fw-semibold step active">Data
+                  Orang Tua</span>
+                <span class="fw-semibold step">Data Sekolah
+                  Asal</span>
+                <span class="fw-semibold step">Data Berkas</span>
+              </div>
+              <div class="mb-4 d-flex justify-content-between align-items-center">
+                <h4 class="fw-semibold fs-3">Data Orang Tua</h4>
+                <p style="font-style: italic;">Harap isi data dengan teliti dan benar.</p>
+              </div>
+              <div class="mb-3">
+                <h5 class="fw-semibold mb-3">Data Ayah</h5>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label for="nama_ayah" class="form-label">Nama Ayah<span class="text-danger">*</span></label>
+                      <input type="text" name="nama_ayah" class="form-control" id="nama_ayah"
+                        placeholder="Nama Ayah" required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan Nama Ayah.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label for="ktp_ayah" class="form-label">Ktp Ayah<span class="text-danger">*</span></label>
+                      <input type="text" name="ktp_ayah" class="form-control" id="ktp_ayah"
+                        placeholder="Ktp Ayah" required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        KTP Ayah harus 16 digit.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label for="tanggal_lahir_ayah" class="form-label">Tgl Lahir<span
+                          class="text-danger">*</span></label>
+                      <input type="text" name="tanggal_lahir_ayah" id="tanggal_lahir_ayah"
+                        placeholder="dd / mm / yyyy" required="true" autocomplete="off"
+                        class="form-control" />
+                      <div class="invalid-feedback">
+                        Pilih Tgl Lahir.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label for="telepon_ayah" class="form-label">Telepon Ayah<span
+                          class="text-danger">*</span></label>
+                      <input type="text" name="telepon_ayah" class="form-control" id="telepon_ayah"
+                        placeholder="Telepon Ayah" required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan Telp Ayah.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label for="pekerjaan_ayah" class="form-label">Pekerjaan Ayah<span
+                          class="text-danger">*</span></label>
+                      <select class="form-select" required="true" name="pekerjaan_ayah"
+                        id="pekerjaan_ayah">
+                        <option selected="true" disabled="true" hidden="true" value="">Pilih
+                          Pekerjaan</option>
+                        <t t-foreach="request.env['cdn.ref_pekerjaan'].sudo().search([])"
+                          t-as="pekerjaan">
+                          <option t-att-value="pekerjaan.id" t-esc="pekerjaan.name" />
+                        </t>
+                      </select>
+                      <div class="invalid-feedback">
+                        Pilih Pekerjaan Ayah.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label for="penghasilan_ayah" class="form-label">Penghasilan Ayah<span
+                          class="text-danger">*</span></label>
+                      <select class="form-select" required="true" name="penghasilan_ayah"
+                        id="penghasilan_ayah">
+                        <option selected="true" disabled="true" hidden="true" value="">Pilih</option>
+                        <option value="1juta"> &lt; Rp. 1.000.000</option>
+                        <option value="5juta">Rp. 1.000.000 s/d Rp. 5.000.000</option>
+                        <option value="10juta">Rp. 6.000.000 s/d Rp. 10.000.000</option>
+                        <option value="11juta"> &gt; Rp. 10.000.000</option>
+                      </select>
+                      <div class="invalid-feedback">
+                        Pilih Penghasilan Ayah.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="pendidikan_ayah" class="form-label">Pendidikan Ayah<span
+                          class="text-danger">*</span></label>
+                      <select class="form-select" required="true" name="pendidikan_ayah"
+                        id="pendidikan_ayah">
+                        <option selected="true" disabled="true" hidden="true" value="">Pilih
+                          Pendidikan</option>
+                        <t t-foreach="request.env['cdn.ref_pendidikan'].sudo().search([])"
+                          t-as="pendidikan">
+                          <option t-att-value="pendidikan.id" t-esc="pendidikan.name" />
+                        </t>
+                      </select>
+                      <div class="invalid-feedback">
+                        Pilih Pendidikan Ayah.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="kewarganegaraan_ayah" class="form-label">Kewarganegaraan Ayah<span
+                          class="text-danger">*</span></label>
+                      <select class="form-select" required="true" name="kewarganegaraan_ayah"
+                        id="kewarganegaraan_ayah">
+                        <option selected="true" value="wni">WNI</option>
+                        <option value="wna">WNA</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <h5 class="fw-semibold mb-3">Data Ibu</h5>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label for="nama_ibu" class="form-label">Nama Ibu<span class="text-danger">*</span></label>
+                      <input type="text" name="nama_ibu" class="form-control" id="nama_ibu"
+                        placeholder="Nama Ibu" required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan Nama Ibu.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label for="ktp_ibu" class="form-label">Ktp Ibu<span class="text-danger">*</span></label>
+                      <input type="text" name="ktp_ibu" class="form-control" id="ktp_ibu"
+                        placeholder="Ktp Ibu" required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        KTP Ibu harus 16 digit.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label for="tanggal_lahir_ibu" class="form-label">Tgl Lahir<span
+                          class="text-danger">*</span></label>
+                      <input type="text" name="tanggal_lahir_ibu" id="tanggal_lahir_ibu"
+                        placeholder="dd / mm / yyyy" required="true" autocomplete="off"
+                        class="form-control" />
+                      <div class="invalid-feedback">
+                        Pilih Tgl Lahir.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label for="telepon_ibu" class="form-label">Telepon Ibu<span
+                          class="text-danger">*</span></label>
+                      <input type="text" name="telepon_ibu" class="form-control" id="telepon_ibu"
+                        placeholder="Telepon Ibu" required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan Telp Ibu.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label for="pekerjaan_ibu" class="form-label">Pekerjaan Ibu<span
+                          class="text-danger">*</span></label>
+                      <select class="form-select" required="true" name="pekerjaan_ibu"
+                        id="pekerjaan_ibu">
+                        <option selected="true" disabled="true" hidden="true" value="">Pilih
+                          Pekerjaan</option>
+                        <t t-foreach="request.env['cdn.ref_pekerjaan'].sudo().search([])"
+                          t-as="pekerjaan">
+                          <option t-att-value="pekerjaan.id" t-esc="pekerjaan.name" />
+                        </t>
+                      </select>
+                      <div class="invalid-feedback">
+                        Pilih Pekerjaan Ibu.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label for="penghasilan_ibu" class="form-label">Penghasilan Ibu<span
+                          class="text-danger">*</span></label>
+                      <select class="form-select" required="true" name="penghasilan_ibu"
+                        id="penghasilan_ibu">
+                        <option selected="true" disabled="true" hidden="true" value="">Pilih</option>
+                        <option value="1juta"> &lt; Rp. 1.000.000</option>
+                        <option value="5juta">Rp. 1.000.000 s/d Rp. 5.000.000</option>
+                        <option value="10juta">Rp. 6.000.000 s/d Rp. 10.000.000</option>
+                        <option value="11juta"> &gt; Rp. 10.000.000</option>
+                      </select>
+                      <div class="invalid-feedback">
+                        Pilih Penghasilan Ibu.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="pendidikan_ibu" class="form-label">Pendidikan Ibu<span
+                          class="text-danger">*</span></label>
+                      <select class="form-select" required="true" name="pendidikan_ibu"
+                        id="pendidikan_ibu">
+                        <option selected="true" disabled="true" hidden="true" value="">Pilih
+                          Pendidikan</option>
+                        <t t-foreach="request.env['cdn.ref_pendidikan'].sudo().search([])"
+                          t-as="pendidikan">
+                          <option t-att-value="pendidikan.id" t-esc="pendidikan.name" />
+                        </t>
+                      </select>
+                      <div class="invalid-feedback">
+                        Pilih Pendidikan Ibu.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="kewarganegaraan_ibu" class="form-label">Kewarganegaraan Ibu<span
+                          class="text-danger">*</span></label>
+                      <select class="form-select" required="true" name="kewarganegaraan_ibu"
+                        id="kewarganegaraan_ibu">
+                        <option selected="true" value="wni">WNI</option>
+                        <option value="wna">WNA</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-3">
+                <h5 class="fw-semibold mb-1">Data Wali</h5>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="wali_nama" class="form-label">Nama Wali</label>
+                      <input type="text" name="wali_nama" class="form-control" id="wali_nama"
+                        placeholder="Nama Wali" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan nama wali.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="wali_email" class="form-label">Email Wali</label>
+                      <input type="email" name="wali_email" class="form-control" id="wali_email"
+                        placeholder="Email Wali" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan email.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label for="wali_telp" class="form-label">Telepon Wali</label>
+                      <input type="text" name="wali_telp" class="form-control" id="wali_telp"
+                        placeholder="Telepon Wali" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan telepon wali.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label for="wali_hubungan" class="form-label">Hubungan Dengan Santri</label>
+                      <select class="form-select" name="wali_hubungan"
+                        id="wali_hubungan" readonly="true">
+                        <option selected="true" value="wali">Wali</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label for="wali_tgl_lahir" class="form-label">Tgl Lahir</label>
+                      <input type="text" name="wali_tgl_lahir" id="wali_tgl_lahir"
+                        placeholder="dd / mm / yyyy" autocomplete="off" class="form-control" />
+                      <div class="invalid-feedback">
+                        Masukkan tanggal lahir wali.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-3 d-flex justify-content-between">
+                  <button type="button"
+                    style="background-color: #4CAF50 !important; text-decoration: none; color: white; padding: 10px 20px; text-align: center; display: inline-block; font-size: 16px; border-radius: 5px; cursor: pointer;"
+                    class="btn btn-secondary btn-prev" data-prev="containerDataDiri">Kembali</button>
+                  <button type="button"
+                    style="background-color: #4CAF50 !important; text-decoration: none; color: white; padding: 10px 20px; text-align: center; display: inline-block; font-size: 16px; border-radius: 5px; cursor: pointer;"
+                    class="btn btn-success btn-next" data-next="containerDataSekolahAsal">
+                    Selanjutnya</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="container" id="containerDataSekolahAsal" style="display: none;">
+            <div style="max-width: 100%;" class="bg-white rounded mt-5 p-3">
+              <div class="step-indicator mb-3 overflow-auto">
+                <span class="fw-semibold step">
+                  Data Login</span>
+                <span class="fw-semibold step">Data Siswa</span>
+                <span class="fw-semibold step">Data Orang
+                  Tua</span>
+                <span class="fw-semibold step active">Data
+                  Sekolah Asal</span>
+                <span class="fw-semibold step">Data Berkas</span>
+              </div>
+              <h4 class="fw-semibold fs-3 mb-4">Data Sekolah Asal</h4>
+              <div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="asal_sekolah" class="form-label">Asal Sekolah<span
+                          class="text-danger" id="asalSekolahNotice">*</span></label>
+                      <input type="text" name="asal_sekolah" class="form-control" id="asal_sekolah"
+                        placeholder="Asal Sekolah" required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan Asal Sekolah.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="telp_asal_sek" class="form-label">Telepon Sekolah<span
+                          class="text-danger" id="teleponSekolahNotice">*</span></label>
+                      <input type="text" name="telp_asal_sek" class="form-control"
+                        id="telp_asal_sek" placeholder="Telepon Sekolah" required="true"
+                        autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan Telp Sekolah.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="status_sekolah_asal" class="form-label">Status Sekolah Asal<span
+                          class="text-danger" id="statusSekolahNotice">*</span></label>
+                      <select class="form-select" required="true" name="status_sekolah_asal"
+                        id="status_sekolah_asal">
+                        <option value="" selected="true" disabled="true" hidden="true">Pilih Status</option>
+                        <option value="negeri">Negeri</option>
+                        <option value="swasta">Swasta</option>
+                      </select>
+                      <div class="invalid-feedback">
+                        Pilih Status Sekolah Asal.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="alamat_asal_sek" class="form-label">Alamat Sekolah Asal<span
+                          class="text-danger" id="alamatSekolahNotice">*</span></label>
+                      <textarea class="form-control" name="alamat_asal_sek" id="alamat_asal_sek"
+                        rows="3" placeholder="Alamat Sekolah Asal" required="true"
+                        autocomplete="off"></textarea>
+                      <div class="invalid-feedback">
+                        Masukkan Alamat Sekolah Asal.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="mb-3">
+                      <label for="npsn" class="form-label">NPSN Sekolah<span class="text-danger" id="npsnNotice">*</span></label>
+                      <input type="text" name="npsn" class="form-control" id="npsn"
+                        placeholder="NPSN Sekolah" required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan NPSN.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                  <button type="button"
+                    style="background-color: #4CAF50; text-decoration: none; color: white; padding: 10px 20px; text-align: center; display: inline-block; font-size: 16px; border-radius: 5px; cursor: pointer;"
+                    class="btn btn-secondary btn-prev" data-prev="containerDataOrangTua">Kembali</button>
+                  <button type="button"
+                    style="background-color: #4CAF50; text-decoration: none; color: white; padding: 10px 20px; text-align: center; display: inline-block; font-size: 16px; border-radius: 5px; cursor: pointer;"
+                    class="btn btn-success btn-next" data-next="containerDataBerkas">Selanjutnya</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="container" id="containerDataBerkas" style="display: none;">
+            <div style="max-width: 100%;" class="bg-white rounded mt-5 p-3">
+              <div class="step-indicator mb-3 overflow-auto">
+                <span class="fw-semibold step">
+                  Data Login</span>
+                <span class="fw-semibold step">Data Siswa</span>
+                <span class="fw-semibold step">Data Orang
+                  Tua</span>
+                <span class="fw-semibold step">Data Sekolah
+                  Asal</span>
+                <span class="fw-semibold step active">Data
+                  Berkas</span>
+              </div>
+              <h4 class="fw-semibold fs-3 mb-4">Data Berkas</h4>
+              <div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="akta_kelahiran" class="form-label">Akta Kelahiran<span
+                          class="text-danger">*</span></label>
+                      <input type="file" class="form-control" name="akta_kelahiran"
+                        id="akta_kelahiran" required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan File.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="kartu_keluarga" class="form-label">Kartu Keluarga<span
+                          class="text-danger">*</span></label>
+                      <input type="file" name="kartu_keluarga" class="form-control"
+                        id="kartu_keluarga" placeholder="Kartu Keluarga" required="true"
+                        autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan File.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="ktp_ortu" class="form-label">KTP Orang Tua<span
+                          class="text-danger">*</span></label>
+                      <input type="file" name="ktp_ortu" class="form-control" id="ktp_ortu"
+                        placeholder="KTP Orang TUa" required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan File.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="pas_foto" class="form-label">Pas Foto<span class="text-danger">*</span></label>
+                      <input type="file" name="pas_foto" class="form-control" id="pas_foto"
+                        placeholder="Pas Foto" required="true" autocomplete="off" />
+                      <div class="invalid-feedback">
+                        Masukkan File.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="raport_terakhir" class="form-label">Raport Terakhir (Jika Ada)</label>
+                      <input type="file" name="raport_terakhir" class="form-control"
+                        id="raport_terakhir" placeholder="Raport Terakhir" autocomplete="off" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="surat_kesehatan" class="form-label">Surat Kesehatan (Jika Ada)</label>
+                      <input type="file" name="surat_kesehatan" class="form-control"
+                        id="surat_kesehatan" placeholder="Surat Kesehatan"
+                        autocomplete="off" />
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="ijazah" class="form-label">Ijazah (Jika Ada)</label>
+                      <input type="file" name="ijazah" class="form-control" id="ijazah"
+                        placeholder="Ijazah" autocomplete="off" />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="skhun" class="form-label">SKHUN (Jika Ada)</label>
+                      <input type="file" name="skhun" class="form-control" id="skhun"
+                        placeholder="SKHUN" autocomplete="off" />
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                  <button type="button"
+                    style="background-color: #4CAF50 !important; text-decoration: none; color: white; padding: 10px 20px; text-align: center; display: inline-block; font-size: 16px; border-radius: 5px; cursor: pointer;"
+                    class="btn btn-secondary btn-prev" data-prev="containerDataSekolahAsal">Kembali</button>
+                  <button type="submit"
+                    style="background-color: #180cf2 !important; cursor: pointer; padding: 10px 20px; text-align: center; color: white; display: inline-block; font-size: 16px; border-radius: 5px; border: none;"
+                    class="btn btn-primary">Daftar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </form>
+        <footer class="p-2"
+          style="display: flex; justify-content: space-between; flex-wrap: wrap; color: white !important;">
+          <div class="ms-5">
+            <ul
+              style="list-style-type: none; display: flex; text-transform: uppercase; font-size: 13px;"
+              class="fw-semibold">
+              <li>
+                <a href="/psb" class="me-4" style="text-decoration: none; color: white;">Home</a>
+              </li>
+              <li>
+                <a href="/beranda" class="me-4" style="text-decoration: none; color: white;"
+                  target="_blank">Info Pondok</a>
+              </li>
+              <li>
+                <a
+                  href="https://drive.google.com/drive/mobile/folders/1EYat5411joyoOmH_DkJ3g2DeJKgyyuBQ?usp=share_link&amp;fbclid=IwY2xjawGflGlleHRuA2FlbQIxMQABHTusVv9hD3VRDSLW9-671QhOL86e3KMv30smsAYW0DHkkWf7zwPlcBlbeA_aem_XXofAY-ay0syx043L5BLvw"
+                  class="me-4" style="text-decoration: none; color: white;" target="_blank">Brosur</a>
+              </li>
+              <li>
+                <a href="" class="me-4" style="text-decoration: none; color: white;">Panduan</a>
+              </li>
+            </ul>
+          </div>
+          <div class="me-5">
+            <p class="text-center mt-1 text-white">© 2024 TIM IT PPIB</p>
+          </div>
+        </footer>
+      </div>
+
+      <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+      <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js"></script>
+      <script type="text/javascript">
+
+        (() => {
+  'use strict';
+
+  const form = document.querySelector('.needs-validation');
+
+  // Navigasi antar langkah
+  const goToStep = (currentStep, targetStep) => {
+    document.getElementById(currentStep).style.display = 'none';
+    document.getElementById(targetStep).style.display = 'block';
+  };
+
+  // Fungsi regex password
+  const isValidPassword = (password) => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    return passwordRegex.test(password);
+  };
+
+  // Validasi semua input dalam container
+  const validateInputs = (container) => {
+    const inputs = container.querySelectorAll('input, select, textarea');
+    let isValid = true;
+
+    inputs.forEach(input => {
+      if (input.id === 'nik' || input.id === 'ktp_ayah' || input.id === 'ktp_ibu') {
+        // Validasi khusus NIK, KTP
+        if (input.value.length !== 16 || !/^\d+$/.test(input.value)) {
+          input.classList.add('is-invalid');
+          input.classList.remove('is-valid');
+          isValid = false;
+        } else {
+          input.classList.remove('is-invalid');
+          input.classList.add('is-valid');
+        }
+      } else if (input.id === 'password') {
+        // Validasi khusus password dengan regex
+        if (!isValidPassword(input.value)) {
+          input.classList.add('is-invalid');
+          input.classList.remove('is-valid');
+          isValid = false;
+        } else {
+          input.classList.remove('is-invalid');
+          input.classList.add('is-valid');
+        }
+      } else if (input.id === 'password2') {
+         // Validasi khusus konfirmasi password
+          const passwordInput = container.querySelector('#password');
+          if (input.value === passwordInput.value &amp;&amp; input.value.trim() !== '') {
+              input.classList.remove('is-invalid');
+              input.classList.add('is-valid');
+          } else {
+              input.classList.add('is-invalid');
+              input.classList.remove('is-valid');
+              isValid = false;
+          }
+      } else if (!input.checkValidity()) {
+        // Validasi umum
+        input.classList.add('is-invalid');
+        input.classList.remove('is-valid');
+        isValid = false;
+      } else {
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+      }
+    });
+
+    return isValid;
+  };
+
+  // Validasi file input khusus untuk langkah terakhir
+  const validateFileInputs = () => {
+    const fileInputs = document.querySelectorAll('#containerDataBerkas input[type="file"]');
+    let isValid = true;
+
+    fileInputs.forEach(fileInput => {
+      // Abaikan validasi jika input adalah SKHUN atau Surat Kesehatan
+      if (fileInput.id === 'skhun' || fileInput.id === 'surat_kesehatan' || fileInput.id === 'ijazah' || fileInput.id === 'raport_terakhir') {
+        return;
+      }
+      if (fileInput.files.length === 0) {
+        fileInput.classList.add('is-invalid');
+        fileInput.classList.remove('is-valid');
+        isValid = false;
+      } else {
+        fileInput.classList.remove('is-invalid');
+        fileInput.classList.add('is-valid');
+      }
+    });
+
+    return isValid;
+  };
+
+  // Navigasi "Selanjutnya"
+  document.querySelectorAll('.btn-next').forEach(button => {
+    button.addEventListener('click', () => {
+      const currentStep = button.closest('.container').id;
+      const nextStep = button.dataset.next;
+      const currentContainer = document.getElementById(currentStep);
+
+      if (!validateInputs(currentContainer)) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Perhatian',
+          text: 'Terdapat data yang belum di isi.',
+          confirmButtonText: 'OK',
+        });
+        return;
+      }
+
+      goToStep(currentStep, nextStep);
+    });
+  });
+
+  // Navigasi "Kembali"
+  document.querySelectorAll('.btn-prev').forEach(button => {
+    button.addEventListener('click', () => {
+      const currentStep = button.closest('.container').id;
+      const prevStep = button.dataset.prev;
+      goToStep(currentStep, prevStep);
+    });
+  });
+
+  // Validasi real-time
+  document.querySelectorAll('input, select, textarea').forEach(input => {
+    input.addEventListener('input', () => {
+      if (input.id === 'nik' || input.id === 'ktp_ayah' || input.id === 'ktp_ibu') {
+        if (input.value.length === 16 &amp;&amp; /^\d+$/.test(input.value)) {
+          input.classList.remove('is-invalid');
+          input.classList.add('is-valid');
+        } else {
+          input.classList.add('is-invalid');
+          input.classList.remove('is-valid');
+        }
+      } else if (input.id === 'password') {
+        if (isValidPassword(input.value)) {
+          input.classList.remove('is-invalid');
+          input.classList.add('is-valid');
+        } else {
+          input.classList.add('is-invalid');
+          input.classList.remove('is-valid');
+        }
+      } else if (input.id === 'password2') {
+        // Validasi khusus konfirmasi password
+        const passwordInput = document.querySelector('#password');
+        if (input.value === passwordInput.value &amp;&amp; input.value.trim() !== '') {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+        } else {
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
+        }
+      } else if (!input.checkValidity()) {
+        input.classList.add('is-invalid');
+        input.classList.remove('is-valid');
+      } else {
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+      }
+    });
+  });
+
+  // Tombol submit pada langkah terakhir
+  const submitButton = document.querySelector('button[type="submit"]');
+  submitButton.addEventListener('click', (event) => {
+    event.preventDefault(); // Mencegah pengiriman form secara default
+
+    const currentContainer = document.getElementById('containerDataBerkas');
+    const isInputValid = validateInputs(currentContainer);
+    const isFileValid = validateFileInputs();
+
+    if (isInputValid &amp;&amp; isFileValid) {
+      form.submit(); // Kirim form jika validasi berhasil
+    } else {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Perhatian',
+        text: 'Mohon lengkapi semua data dan berkas yang diperlukan sebelum mengirim form.',
+        confirmButtonText: 'OK',
+      });
+    }
+  });
+})();
+
+
+
+      
+
+        $(document).ready(function() {
+        // Pengaturan terjemahan manual untuk bahasa Indonesia
+        $.datepicker.regional['id'] = {
+        closeText: 'Tutup',
+        prevText: 'Sebelumnya',
+        nextText: 'Berikutnya',
+        currentText: 'Hari Ini',
+        monthNames: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus',
+        'September', 'Oktober', 'November', 'Desember'],
+        monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt',
+        'Nov', 'Des'],
+        dayNames: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'],
+        dayNamesShort: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
+        dayNamesMin: ['Mi', 'Se', 'Sa', 'Ra', 'Ka', 'Ju', 'Sa'],
+        weekHeader: 'Ming',
+        dateFormat: 'dd/mm/yy',
+        firstDay: 0,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: ''
+        };
+
+        $.datepicker.setDefaults($.datepicker.regional['id']);
+
+        // Inisialisasi Datepicker
+        $("#tanggal_lahir").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        yearRange: "1900:" + new Date().getFullYear(),
+        maxDate: new Date()
+        });
+        $("#tanggal_lahir_ayah").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        yearRange: "1900:" + new Date().getFullYear(),
+        maxDate: new Date()
+        });
+        $("#tanggal_lahir_ibu").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        yearRange: "1900:" + new Date().getFullYear(),
+        maxDate: new Date()
+        });
+        $("#wali_tgl_lahir").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        yearRange: "1900:" + new Date().getFullYear(),
+        maxDate: new Date()
+        });
+        });
+
+        const provinsiSelect = document.getElementById('provinsi_id');
+        const kotaSelect = document.getElementById('kota_id');
+        const kecamatanSelect = document.getElementById('kecamatan_id');
+
+        // Filter kota berdasarkan provinsi
+        provinsiSelect.addEventListener('change', function () {
+        const selectedProvinsi = this.value;
+
+        // Filter kota
+        [...kotaSelect.options].forEach(option => {
+        if (option.value === "" || option.dataset.propinsi === selectedProvinsi) {
+        option.classList.remove('d-none');
+        } else {
+        option.classList.add('d-none');
+        }
+        });
+
+        // Reset pilihan kota
+        kotaSelect.value = "";
+        kecamatanSelect.value = "";
+        });
+
+        // Filter kecamatan berdasarkan kota
+        kotaSelect.addEventListener('change', function () {
+        const selectedKota = this.value;
+
+        // Filter kecamatan
+        [...kecamatanSelect.options].forEach(option => {
+        if (option.value === "" || option.dataset.kota === selectedKota) {
+        option.classList.remove('d-none');
+        } else {
+        option.classList.add('d-none');
+        }
+        });
+
+        // Reset pilihan kecamatan
+        kecamatanSelect.value = "";
+        });
+
+        // Cari elemen body dengan class spesifik
+        const bodyElement = document.querySelector('body.o_body_html.container.overflow-x-hidden');
+        // Jika elemen ditemukan, hapus class "container"
+        if (bodyElement) {
+        bodyElement.classList.remove('o_body_html');
+        bodyElement.classList.remove('container');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+          // Inisialisasi Select2 untuk Provinsi
+          $('#provinsi_id').select2({
+              placeholder: 'Pilih Provinsi',
+              allowClear: true,
+              ajax: {
+                url: '/get_provinsi',
+                type: 'POST', // Gunakan POST jika diperlukan
+                contentType: 'application/json', // Pastikan tipe konten JSON
+                dataType: 'json', // Memastikan response diterima dalam format JSON
+                data: function (params) {
+                    return JSON.stringify({
+                        query: params.term // Parameter pencarian
+                    });
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.map(function (item) {
+                            return { id: item.id, text: item.name };
+                        })
+                    };
+                }
+              }
+          });
+
+          // Inisialisasi Select2 untuk Kota
+          $('#kota_id').select2({
+              placeholder: 'Pilih Kota',
+              allowClear: true
+          }).prop('disabled', true);
+
+          // Inisialisasi Select2 untuk Kecamatan
+          $('#kecamatan_id').select2({
+              placeholder: 'Pilih Kecamatan',
+              allowClear: true
+          }).prop('disabled', true);
+
+          // Event handler ketika Provinsi dipilih
+          $('#provinsi_id').on('change', function () {
+              const provinsi_id = $(this).val();
+
+              if (provinsi_id) {
+
+                  // Enable Kota jika Provinsi dipilih
+                  $('#kota_id').prop('disabled', false);
+
+                  $.ajax({
+                      url: '/get_kota/' + provinsi_id,
+                      type: 'POST',
+                      contentType: 'application/json', // Pastikan tipe konten JSON
+                      dataType: 'json',
+                      success: function (data) {
+                          const kotaSelect = $('#kota_id');
+                          kotaSelect.empty();
+                          kotaSelect.append('<option value="" selected="true" disabled="true" hidden="true">Pilih Kabupaten/Kota</option>');
+                          data.forEach(function (kota) {
+                              kotaSelect.append(`<option value="${kota.id}">${kota.name}</option>`);
+                          });
+
+                          // Re-inisialisasi Select2 untuk Kota dan Kecamatan
+                          kotaSelect.trigger('change');
+                      }
+                  });
+              } else {
+                // Disable Kota dan Kecamatan jika Provinsi tidak dipilih
+                $('#kota_id').prop('disabled', true).empty().append('<option value="" selected="true" disabled="true" hidden="true">Pilih Kabupaten/Kota</option>');
+                $('#kecamatan_id').prop('disabled', true).empty().append('<option value="" selected="true" disabled="true" hidden="true">Pilih Kecamatan</option>');
+              }
+          });
+
+          // Event handler ketika Kota dipilih
+          $('#kota_id').on('change', function () {
+              const kota_id = $(this).val();
+              console.log(kota_id)
+
+              if (kota_id) {
+
+                  // Enable Kecamatan jika Kota dipilih
+                  $('#kecamatan_id').prop('disabled', false);
+
+                  $.ajax({
+                      url: '/get_kecamatan/' + kota_id,
+                      type: 'POST',
+                      contentType: 'application/json', // Pastikan tipe konten JSON
+                      dataType: 'json',
+                      success: function (data) {
+                          const kecamatanSelect = $('#kecamatan_id');
+                          kecamatanSelect.empty();
+                          kecamatanSelect.append('<option value="" selected="true" disabled="true" hidden="true">Pilih Kecamatan</option>');
+                          data.forEach(function (kecamatan) {
+                              kecamatanSelect.append(`<option value="${kecamatan.id}">${kecamatan.name}</option>`);
+                          });
+
+                          // Re-inisialisasi Select2 untuk Kecamatan
+                          kecamatanSelect.trigger('change');
+                      }
+                  });
+              } else {
+                // Disable Kecamatan jika Kota tidak dipilih
+                $('#kecamatan_id').prop('disabled', true).empty().append('<option value="" selected="true" disabled="true" hidden="true">Pilih Kecamatan</option>');
+              }
+          });
+      });
+
+
+      function togglePasswordVisibility() {
+        // Ambil elemen input password
+        const passwordInput = document.getElementById('password');
+        // Ambil elemen ikon mata
+        const eyeIcon = passwordInput.nextElementSibling.nextElementSibling;
+      
+        // Periksa tipe input, lalu ubah visibilitas dan ikon
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text'; // Ubah ke teks untuk menampilkan password
+          eyeIcon.classList.replace('fa-eye-slash', 'fa-eye'); // Ubah ikon menjadi mata tertutup
+        } else {
+          passwordInput.type = 'password'; // Ubah ke password untuk menyembunyikan password
+          eyeIcon.classList.replace('fa-eye', 'fa-eye-slash'); // Ubah ikon menjadi mata terbuka
+        }
+      }
+
+      function togglePassword2Visibility() {
+        // Ambil elemen input password
+        const passwordInput = document.getElementById('password2');
+        // Ambil elemen ikon mata
+        const eyeIcon = passwordInput.nextElementSibling.nextElementSibling;
+      
+        // Periksa tipe input, lalu ubah visibilitas dan ikon
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text'; // Ubah ke teks untuk menampilkan password
+          eyeIcon.classList.replace('fa-eye-slash', 'fa-eye'); // Ubah ikon menjadi mata tertutup
+        } else {
+          passwordInput.type = 'password'; // Ubah ke password untuk menyembunyikan password
+          eyeIcon.classList.replace('fa-eye', 'fa-eye-slash'); // Ubah ikon menjadi mata terbuka
+        }
+      }
+
+      function filterJenjang() {
+        jenjang = document.getElementById('jenjang_id');
+        
+        nilaiJenjang = jenjang.options[jenjang.selectedIndex].text;
+
+        nisn = document.getElementById('nisn');
+        noticeNisn = document.getElementById('noticeNisn');
+
+        asalSekolah = document.getElementById('asal_sekolah');
+        noticeAsalSekolah = document.getElementById('asalSekolahNotice');
+        asalAlamatSekolah = document.getElementById('alamat_asal_sek');
+        noticeAlamatSekolah = document.getElementById('alamatSekolahNotice');
+        asalTelpSekolah = document.getElementById('telp_asal_sek');
+        noticeTelpSekolah = document.getElementById('teleponSekolahNotice');
+        asalStatusSekolah = document.getElementById('status_sekolah_asal');
+        noticeStatusSekolah = document.getElementById('statusSekolahNotice');
+        asalNpsnSekolah = document.getElementById('npsn');
+        noticeNpsnSekolah = document.getElementById('npsnNotice');
+
+        if( nilaiJenjang == 'KB (2-3 Tahun)' || nilaiJenjang == 'TK (4-5 Tahun)' || nilaiJenjang == 'SD TAHFIZH BILINGUAL' ) {
+          noticeNisn.style.display = 'none';
+          nisn.removeAttribute('required');
+        }else {
+          noticeNisn.style.display = 'inline';
+          nisn.setAttribute('required', 'true');
+        }
+
+        if( nilaiJenjang == 'KB (2-3 Tahun)' || nilaiJenjang == 'TK (4-5 Tahun)' ) {
+          noticeAsalSekolah.style.display = 'none';
+          asalSekolah.removeAttribute('required');
+          noticeAlamatSekolah.style.display = 'none';
+          asalAlamatSekolah.removeAttribute('required');
+          noticeTelpSekolah.style.display = 'none';
+          asalTelpSekolah.removeAttribute('required');
+          noticeStatusSekolah.style.display = 'none';
+          asalStatusSekolah.removeAttribute('required');
+          noticeNpsnSekolah.style.display = 'none';
+          asalNpsnSekolah.removeAttribute('required');
+        }else {
+          noticeAsalSekolah.style.display = 'inline';
+          asalSekolah.setAttribute('required', 'true');
+          noticeAlamatSekolah.style.display = 'inline';
+          asalAlamatSekolah.setAttribute('required', 'true');
+          noticeTelpSekolah.style.display = 'inline';
+          asalTelpSekolah.setAttribute('required', 'true');
+          noticeStatusSekolah.style.display = 'inline';
+          asalStatusSekolah.setAttribute('required', 'true');
+          noticeNpsnSekolah.style.display = 'inline';
+          asalNpsnSekolah.setAttribute('required', 'true');
+        }
+        
+      }
+
+      </script>
+    </t>
+  </template>
+
 </odoo>
