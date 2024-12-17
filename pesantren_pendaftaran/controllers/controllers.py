@@ -443,7 +443,7 @@ class PesantrenBeranda(http.Controller):
                 </div>
                 <!-- Image Section -->
                 <div class="col-md-6">
-                    <img src="https://psb.nuruljadid.net/img/PAGE2.44b0e259.png" class="img-fluid rounded-4"
+                    <img src="pesantren_pendaftaran/static/src/img/PAGE2.44b0e259.png" class="img-fluid rounded-4"
                     alt="Syarat Pendaftaran">
                 </div>
                 </div>
@@ -541,7 +541,7 @@ class PesantrenBeranda(http.Controller):
             <div class="container my-5">
                 <div class="row align-items-center">
                 <div class="col-md-6">
-                    <img src="https://psb.nuruljadid.net/img/PAGE3.e3b6d704.png" alt="Image" class="rounded-custom img-fluid" />
+                    <img src="pesantren_pendaftaran/static/src/img/PAGE3.e3b6d704.png" alt="Image" class="rounded-custom img-fluid" />
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <h3 class="fw-bold"><span class="text-primary ">Informasi</span> Pelayanan Pendaftaran</h3>
@@ -1005,7 +1005,7 @@ class PesantrenPendaftaran(http.Controller):
                 <div class="text-center text-white">
                     <h4 class="fs-2 fw-semibold mb-2">Aplikasi penerimaan santri baru</h4>
                     <span>Daarul Qur'an Istiqomah Tanah Laut Kalimantan Selatan</span> <br><br>
-                    <a href="/pendaftaran" style="background-color: #e91e63; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px;" class=" id="daftar">Daftar Sekarang</a>
+                    {f'<a href="/pendaftaran" {"data-bs-toggle='modal' data-bs-target='#modalPendaftaranTutup'" if not is_halaman_pendaftaran else ""} style="background-color: #e91e63; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px;" class=" id="daftar">Daftar Sekarang</a>'}
                 </div>
             </div>
 

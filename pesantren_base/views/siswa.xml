@@ -10,7 +10,7 @@
             <field name="arch" type="xml">
                 <list string="Siswa">
                     <header>
-                        <button name="print_kartu_santri" type="object" string="Cetak kartu santri" class="oe_highlight" groups="pesantren_kesantrian.group_kesantrian_staff"/>
+                        <button name="action_cetak_kts" type="object" string="Cetak kartu santri" class="oe_highlight" groups="pesantren_kesantrian.group_kesantrian_staff"/>
                         <button name="print_sertifikat_santri" type="object" string="Cetak sertifikat santri" class="oe_highlight" groups="pesantren_kesantrian.group_kesantrian_staff"/>
                     </header>
                     <field name="name" />
@@ -35,7 +35,7 @@
             <field name="arch" type="xml">
                 <form string="Siswa">
                     <header>
-                        <button name="print_kartu_santri" type="object" string="Cetak kartu santri" class="oe_highlight" groups="pesantren_kesantrian.group_kesantrian_staff"/>
+                        <button name="action_cetak_kts" type="object" string="Cetak kartu santri" class="oe_highlight" groups="pesantren_kesantrian.group_kesantrian_staff"/>
                         <button name="print_sertifikat_santri" type="object" string="Cetak sertifikat santri" class="oe_highlight" groups="pesantren_kesantrian.group_kesantrian_staff"/>
                     </header>
                     <sheet>

@@ -3,3 +3,11 @@ access_recharge_wallet_user,access.recharge.wallet.user,model_recharge_wallet,ba
 access_wallet_transaction_user,access.wallet.transaction.user,model_pos_wallet_transaction,base.group_user,1,1,1,1
 access_pos_wallet_account,access_pos_wallet_account,model_pos_wallet_account,base.group_user,1,1,1,1
 access_res_partner,pesantren_keuangan.res_partner,model_res_partner,base.group_user,1,0,0,0
+
+donation_public_access,Donasi Public Access,model_cdn_donation,base.group_public,1,0,0,0
+donation_internal_access,Donasi Internal Access,model_cdn_donation,base.group_user,1,0,0,0
+donation_manager_access,Donasi Manager Access,model_cdn_donation,pesantren_kesantrian.group_kesantrian_manager,1,1,1,1
+
+donation_detail_public_access,Detail Donasi Public Access,model_cdn_donation_detail,base.group_public,1,1,1,0
+donation_detail_internal_access,Detail Donasi Internal Access,model_cdn_donation_detail,base.group_user,1,1,1,0
+donation_detail_manager_access,Detail Donasi Manager Access,model_cdn_donation_detail,pesantren_kesantrian.group_kesantrian_manager,1,1,1,1

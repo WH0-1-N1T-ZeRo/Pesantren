@@ -6,4 +6,5 @@ from . import biaya_skolah
 from . import penetapan_tagihan
 from . import wallet
 from . import siswa
+from . import res_user
 

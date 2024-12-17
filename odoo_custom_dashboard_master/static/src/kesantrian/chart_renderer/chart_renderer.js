@@ -24,6 +24,7 @@
       this.chart2Ref = useRef("chart2");
       this.donutChartRef = useRef("donutChart"); 
       this.donutChart2Ref = useRef("donutChart2");
+      this.loadingOverlayRef = useRef("loadingOverlay");
       this.orm = useService("orm");
       this.actionService = useService("action");
       this.state = {
@@ -48,38 +49,54 @@
       }
 
       onWillUpdateProps(async (nextProps) => {
-        if (nextProps.period !== this.props.period) {
-          this.state.selectedPeriod = nextProps.period;
-        }
         if (
           nextProps.startDate !== this.props.startDate ||
           nextProps.endDate !== this.props.endDate
         ) {
-          this.state.currentStartDate = nextProps.startDate;
-          this.state.currentEndDate = nextProps.endDate;
-          this.state.isFiltered = !!(nextProps.startDate && nextProps.endDate);
+          this.showLoading();
+          try {
+            this.state.currentStartDate = nextProps.startDate;
+            this.state.currentEndDate = nextProps.endDate;
+            this.state.isFiltered = !!(nextProps.startDate && nextProps.endDate);
+  
+          await Promise.all([
           await this.fetchAttendanceData(
             this.state.currentStartDate,
             this.state.currentEndDate
-          );
+          ),
           await this.fetchTahsinAttendanceData(
             this.state.currentStartDate,
             this.state.currentEndDate
-          );
-        }
-      });
+          )
+        ]);
+      } catch (error) {
+        console.error("Error updating props:", error);
+      } finally {
+        this.hideLoading();
+      }
+    }
+  });
 
       onWillStart(async () => {
+        this.showLoading();
+        try {
         await loadJS("https://cdn.jsdelivr.net/npm/apexcharts");
+        await Promise.all([
         await this.fetchAttendanceData(
           this.state.currentStartDate,
           this.state.currentEndDate
-        );
+        ),
         await this.fetchTahsinAttendanceData(
           this.state.currentStartDate,
           this.state.currentEndDate
-        );
-      });
+        )
+      ]);
+    } catch (error) {
+      console.error("Error in initial data fetch:", error);
+    } finally {
+      this.hideLoading();
+    }
+  });
 
       onMounted(() => {
         this.renderChart();
@@ -93,6 +110,48 @@
         this.cleanup();
       });
     }
+    
+  showLoading() {
+    // Create loading overlay if it doesn't exist
+    if (!this.loadingOverlay) {
+      this.loadingOverlay = document.createElement('div');
+      this.loadingOverlay.innerHTML = `
+        <div class="musyrif-loading-overlay" style="
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.3);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 9999;
+        ">
+          <div class="loading-spinner">
+            <i class="fas fa-sync-alt fa-spin fa-3x text-white"></i>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(this.loadingOverlay);
+    }
+        // Ensure loading overlay is visible
+        if (this.loadingOverlay) {
+          this.loadingOverlay.style.display = 'flex';
+        }
+        
+        this.state.isLoading = true;
+      }
+
+      hideLoading() {
+        // Hide loading overlay
+        if (this.loadingOverlay) {
+          this.loadingOverlay.style.display = 'none';
+        }
+        
+        this.state.isLoading = false;
+      }
+
 
     cleanup() {
       if (this.chartInstance) {
@@ -149,13 +208,18 @@
     }
 
     async refreshChart() {
+      this.showLoading();
+
       const startDate = this.state.isFiltered
         ? this.state.currentStartDate
         : null;
       const endDate = this.state.isFiltered ? this.state.currentEndDate : null;
-    
-      await this.fetchAttendanceData(startDate, endDate);
-      await this.fetchTahsinAttendanceData(startDate, endDate);
+      
+    try {
+      await Promise.all([
+        await this.fetchAttendanceData(startDate, endDate),
+        await this.fetchTahsinAttendanceData(startDate, endDate)
+      ]);
     
       if (this.chartInstance) {
         this.chartInstance.updateOptions(
@@ -204,7 +268,12 @@
           true
         );
       }
+    } catch (error) {
+      console.error("Error refreshing charts:", error);
+    } finally {
+      this.hideLoading();
     }
+  }
 
     clearIntervals() {
       if (this.countdownInterval) clearInterval(this.countdownInterval);
@@ -229,6 +298,7 @@
 
     async handleDateFilter() {
       this.clearIntervals(); 
+      this.showLoading();
   
       const startDateInput = document.querySelector('input[name="start_date"]');
       const endDateInput = document.querySelector('input[name="end_date"]');
@@ -244,16 +314,24 @@
               this.state.currentStartDate = formattedStartDate;
               this.state.currentEndDate = formattedEndDate;
               this.state.isFiltered = true;
-  
-              await this.fetchAttendanceData(formattedStartDate, formattedEndDate);
-              await this.fetchTahsinAttendanceData(formattedStartDate, formattedEndDate);
+
+            try {
+              await Promise.all([         
+                await this.fetchAttendanceData(formattedStartDate, formattedEndDate),
+                await this.fetchTahsinAttendanceData(formattedStartDate, formattedEndDate)
+              ]);
+            } catch (error) {
+              console.error("Error in date filter:", error);
+            } finally {
+              this.hideLoading();
+            }
           }
-      }
-  
-      if (this.isCountingDown) {
+        }
+    
+        if (this.isCountingDown) {
           this.startCountdown();
+        }
       }
-  }
   
 
     formatDateToDisplay(date) {

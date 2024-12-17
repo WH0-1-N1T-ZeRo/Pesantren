@@ -1,106 +1,274 @@
-  /** @odoo-module */
-  import { registry } from "@web/core/registry";
-  import { loadJS } from "@web/core/assets";
-  const { Component, onWillStart, useRef, onMounted, onWillUnmount } = owl;
-  import { useService } from "@web/core/utils/hooks";
+/** @odoo-module */
+import { registry } from "@web/core/registry";
+import { loadJS } from "@web/core/assets";
+const { Component, onWillStart, useRef, onMounted, onWillUnmount, onWillUpdateProps } = owl;
+import { useService } from "@web/core/utils/hooks";
 
-  export class KeuanganChartRenderer extends Component {
-      static props = {
-          type: { type: String },
-          title: { type: String },
-          startDate: { type: String, optional: true },
-          endDate: { type: String, optional: true }
-      };
+export class KeuanganChartRenderer extends Component {
+    static props = {
+        type: { type: String },
+        title: { type: String },
+        startDate: { type: String, optional: true },
+        endDate: { type: String, optional: true }
+    };
+ 
+    setup() {
+        this.chartRef = useRef("chart");
+        this.orm = useService('orm');
+        this.actionService = useService("action");
+        this.state = {
+            chartData: { series: [], labels: [] }
+        };
+        this.chartInstance = null;
+        this.countdownInterval = null;
+        this.countdownTime = 10;
+        this.isCountingDown = false;
 
-      setup() {
-          this.chartRef = useRef("chart");
-          this.orm = useService('orm');
-          this.actionService = useService("action");
-          this.state = {
-              chartData: { labels: [], datasets: [] }
-          };
-          this.refreshInterval = null;
-          this.chartInstance = null;
+        if (this.props.startDate && this.props.endDate) {
+            this.state.isFiltered = true;
+        }
 
-          onWillStart(async () => {
-              await loadJS("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js");
-              await this.fetchData();
-          });
+        this.fetchData(this.props.startDate, this.props.endDate);
 
-          onMounted(() => {
-              this.renderChart();
-              this.refreshInterval = setInterval(() => {
-                  this.restartChart();
-              }, 10000); // Refresh every 10 seconds
-          });
+        onWillUpdateProps(async (nextProps) => {
+            if (nextProps.startDate !== this.props.startDate || 
+                nextProps.endDate !== this.props.endDate) {
+                this.state.currentStartDate = nextProps.startDate;
+                this.state.currentEndDate = nextProps.endDate;
+                this.state.isFiltered = !!(nextProps.startDate && nextProps.endDate);
+                await this.fetchData(this.state.currentStartDate, this.state.currentEndDate);
+            }
+        });
 
-          onWillUnmount(() => {
-              if (this.refreshInterval) {
-                  clearInterval(this.refreshInterval);
-              }
-              if (this.chartInstance) {
-                  this.chartInstance.destroy();
-              }
-          });
+        onWillStart(async () => {
+            await loadJS("https://cdn.jsdelivr.net/npm/apexcharts");
+            await this.fetchData(this.state.currentStartDate, this.state.currentEndDate);
+        });
+
+        onMounted(() => {
+            this.renderChart();
+            this.attachEventListeners();
+        });
+
+        onWillUnmount(() => {
+            this.cleanup();
+        });
+    }
+
+    cleanup() {
+        if (this.chartInstance) {
+            this.chartInstance.destroy();
+            this.chartInstance = null;
+        }
+        this.clearIntervals();
+    }
+
+ 
+    toggleCountdown() { 
+        if (this.isCountingDown) { 
+          this.clearIntervals(); 
+          document.getElementById("timerIcon").className = "fas fa-stopwatch "; 
+          document.getElementById("timerCountdown").textContent = ""; 
+        } else { 
+          this.startCountdown(); 
+          document.getElementById("timerIcon").className = "fas fa-stop d-none"; 
+        } 
+        this.isCountingDown = !this.isCountingDown; 
+      } 
+     
+      startCountdown() { 
+        this.countdownTime = 10; 
+        this.updateCountdownDisplay(); 
+        this.countdownInterval = setInterval(() => { 
+          this.countdownTime--; 
+          if (this.countdownTime < 0) { 
+            this.countdownTime = 10; 
+            this.refreshChart(); 
+          } 
+          this.updateCountdownDisplay(); 
+        }, 1000); 
+      } 
+     
+      updateCountdownDisplay() { 
+        document.getElementById("timerCountdown").textContent = this.countdownTime; 
+      } 
+
+      async refreshChart() {
+        // Use filtered dates if filtering is active
+        const startDate = this.state.isFiltered ? this.state.currentStartDate : null;
+        const endDate = this.state.isFiltered ? this.state.currentEndDate : null;
+        
+        await this.fetchData(startDate, endDate);
+        
+        if (this.chartInstance) {
+            this.chartInstance.updateOptions({
+                series: this.state.chartData.series,
+                xaxis: {
+                    categories: this.state.chartData.labels
+                }
+            }, true, true);
+        }
+    }
+     
+      clearIntervals() { 
+        if (this.countdownInterval) clearInterval(this.countdownInterval); 
+        if (this.refreshInterval) clearInterval(this.refreshInterval); 
       }
 
-      async fetchData(startDate = null, endDate = null) {
-        switch(this.props.title) {
-            case 'Tagihan Siswa':
-                await this.fetchTagihanData(startDate, endDate);
-                break;
-            case 'Uang Saku Masuk':
-                await this.fetchUangSakuMasukData(startDate, endDate);
-                break;
-            case 'Uang Saku Keluar':
-                await this.fetchUangSakuKeluarData(startDate, endDate);
-                break;
+    attachEventListeners() {
+        const timerButton = document.getElementById("timerButton");
+        if (timerButton) {
+            const timerButton = document.getElementById("timerButton"); 
+            timerButton.addEventListener("click", this.toggleCountdown.bind(this));
         }
-        if (this.chartRef.el) {
-            this.renderChart();
-        } else {
-            console.error('Chart element not found on fetchData');
+
+        // Add date filter listeners
+        const startDateInput = document.querySelector('input[name="start_date"]');
+        const endDateInput = document.querySelector('input[name="end_date"]');
+
+        if (startDateInput && endDateInput) {
+            startDateInput.addEventListener('change', () => this.handleDateFilter());
+            endDateInput.addEventListener('change', () => this.handleDateFilter());
         }
     }
 
-      async restartChart() {
-          if (this.chartInstance) {
-              this.chartInstance.destroy(); // Destroy the current chart instance
-          }
-          await this.fetchData(); // Fetch new data and re-render the chart
-      }
+    handleDateFilter() {
+        const startDateInput = document.querySelector('input[name="start_date"]');
+        const endDateInput = document.querySelector('input[name="end_date"]');
+
+        if (startDateInput && endDateInput) {
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+
+            if (startDate && endDate) {
+                // Format dates to match Odoo's expected format
+                const formattedStartDate = this.formatDateToOdoo(startDate);
+                const formattedEndDate = this.formatDateToOdoo(endDate);
+
+                // Update state with new filter values
+                this.state.currentStartDate = formattedStartDate;
+                this.state.currentEndDate = formattedEndDate;
+                this.state.isFiltered = true;
+
+                // Fetch new data with date range
+                this.fetchData(formattedStartDate, formattedEndDate);
+            } else {
+                // If either date is cleared, remove filtering
+                this.state.currentStartDate = null;
+                this.state.currentEndDate = null;
+                this.state.isFiltered = false;
+                this.fetchData();
+            }
+        }
+    }
+
+    formatDateToOdoo(dateString) {
+        const date = new Date(dateString);
+        return date.toISOString().split('.')[0] + 'Z';
+    }
+
+    async fetchData(startDate = null, endDate = null) {
+        try {
+            // Reset chartData to a safe state before fetching
+            this.state.chartData = { series: [], labels: [] };
+    
+            // Existing fetch logic remains the same
+            switch (this.props.title) {
+                case 'Tagihan Siswa':
+                    await this.fetchTagihanData(startDate, endDate);
+                    break;
+                case 'Uang Saku Masuk':
+                    await this.fetchUangSakuMasukData(startDate, endDate);
+                    break;
+                case 'Uang Saku Keluar':
+                    await this.fetchUangSakuKeluarData(startDate, endDate);
+                    break;
+            }
+            
+            // Render or update chart only if data exists
+            if (this.state.chartData.series && this.state.chartData.series.length > 0) {
+                if (this.chartInstance) {
+                    this.updateChart();
+                } else if (this.chartRef.el) {
+                    this.renderChart();
+                }
+            } else {
+                // If no data, destroy existing chart
+                if (this.chartInstance) {
+                    this.chartInstance.destroy();
+                    this.chartInstance = null;
+                }
+            }
+        } catch (error) {
+            console.error('Error in fetchData:', error);
+            // Ensure chartData is reset in case of error
+            this.state.chartData = { series: [], labels: [] };
+            if (this.chartInstance) {
+                this.chartInstance.destroy();
+                this.chartInstance = null;
+            }
+        }
+    }
+
+    updateChart() {
+        // Add a safety check to ensure chartData and its series exist
+        if (!this.state.chartData || !this.state.chartData.series || this.state.chartData.series.length === 0) {
+            console.warn('Chart data is not properly initialized');
+            if (this.chartInstance) {
+                this.chartInstance.destroy();
+            }
+            return;
+        }
+    
+        if (this.chartInstance) {
+            this.chartInstance.updateOptions({
+                xaxis: {
+                    categories: this.state.chartData.labels
+                },
+                series: this.state.chartData.series.map(series => ({
+                    ...series,
+                    data: series.data.map(value => value || 0) // Ensure all values are numbers
+                }))
+            });
+        }
+    }
 
     formatDate(date) {
         return date.toISOString().split('.')[0] + 'Z';
     }
 
-    // Parse date string to Date object considering timezone
     parseDate(dateStr) {
         const date = new Date(dateStr);
         return new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
     }
 
-    getDayBounds(dateStr) {
-        const date = this.parseDate(dateStr);
-        const startOfDay = new Date(date);
-        startOfDay.setHours(0, 0, 0, 0);
-        const endOfDay = new Date(date);
-        endOfDay.setHours(23, 59, 59, 999);
-        
-        return {
-            start: this.formatDate(startOfDay),
-            end: this.formatDate(endOfDay)
-        };
+    processDateData(data, field) {
+        return data.reduce((acc, record) => {
+            const date = this.parseDate(record.create_date);
+            const dateStr = date.toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+
+            if (!acc[dateStr]) {
+                acc[dateStr] = 0;
+            }
+            acc[dateStr] += record[field] || 0;
+            return acc;
+        }, {});
     }
 
     async fetchTagihanData(startDate = null, endDate = null) {
         try {
+            // Existing invoice domain
             const domain = [
                 ['move_id.move_type', 'in', ['out_invoice', 'out_refund', 'in_invoice', 'in_refund']],
                 ['display_type', 'in', ['product']],
                 ['product_id', '!=', false]
             ];
 
+            // Add date filters if provided
             if (startDate) {
                 domain.push(['date', '>=', startDate]);
             }
@@ -108,329 +276,557 @@
                 domain.push(['date', '<=', endDate]);
             }
 
+            // Fetch both debit and credit data
             const result = await this.orm.searchRead(
                 'account.move.line',
                 domain,
-                ['date', 'product_id', 'move_id', 'parent_state', 'name', 'quantity'],
+                ['date', 'product_id', 'move_id', 'parent_state', 'name', 'quantity', 'credit'],
                 { order: 'date asc' }
             );
 
             if (!result || result.length === 0) {
-                this.state.chartData = { labels: [], datasets: [] };
+                this.state.chartData = { series: [], labels: [] };
                 return;
             }
-            this.processTagihanData(result);
+
+            // Process data including credit
+            const processedData = this.processTagihanData(result);
+            this.state.chartData = processedData;
+            this.renderChart();
         } catch (error) {
             console.error('Error fetching tagihan data:', error);
-            this.state.chartData = { labels: [], datasets: [] };
+            this.state.chartData = { series: [], labels: [] };
+            this.renderChart();
         }
     }
 
     async fetchUangSakuMasukData(startDate = null, endDate = null) {
         try {
-            const domain = [['amount_in', '>', 0]];
-            
-            if (startDate) {
-                domain.push(['create_date', '>=', startDate]);
+            // If no dates provided, set default range to last 7 days
+            if (!startDate && !endDate) {
+                endDate = new Date();
+                startDate = new Date();
+                startDate.setDate(startDate.getDate() - 6); // Get last 7 days including today
+                
+                // Convert to YYYY-MM-DD format for API
+                startDate = startDate.toISOString().split('T')[0];
+                endDate = endDate.toISOString().split('T')[0];
             }
-            if (endDate) {
-                domain.push(['create_date', '<=', endDate]);
-            }
-
+    
+            const domain = [
+                ['amount_in', '>', 0],
+                ['create_date', '>=', startDate],
+                ['create_date', '<=', endDate]
+            ];
+    
             const result = await this.orm.searchRead(
                 'cdn.uang_saku',
                 domain,
                 ['create_date', 'amount_in', 'state'],
                 { order: 'create_date asc' }
             );
-
+    
             if (!result || result.length === 0) {
-                console.warn('No uang saku masuk data found');
-                this.state.chartData = { labels: [], datasets: [] };
+                this.state.chartData = { series: [], labels: [] };
                 return;
             }
-
-            this.processUangSakuMasukData(result);
+    
+            // Store the current view range in state
+            this.state.currentViewRange = {
+                startDate,
+                endDate,
+                viewType: 'masuk'
+            };
+    
+            this.processUangSakuData(result, 'amount_in', 'Uang Masuk');
         } catch (error) {
             console.error('Error fetching uang saku masuk data:', error);
-            this.state.chartData = { labels: [], datasets: [] };
+            this.state.chartData = { series: [], labels: [] };
+            this.state.currentViewRange = null;
         }
     }
-
+    
+    
     async fetchUangSakuKeluarData(startDate = null, endDate = null) {
         try {
-            const domain = [['amount_out', '>', 0]];
-            
-            if (startDate) {
-                domain.push(['create_date', '>=', startDate]);
+            // If no dates provided, set default range to last 7 days
+            if (!startDate && !endDate) {
+                endDate = new Date();
+                startDate = new Date();
+                startDate.setDate(startDate.getDate() - 6); // Get last 7 days including today
+                
+                // Convert to YYYY-MM-DD format for API
+                startDate = startDate.toISOString().split('T')[0];
+                endDate = endDate.toISOString().split('T')[0];
             }
-            if (endDate) {
-                domain.push(['create_date', '<=', endDate]);
-            }
-
+    
+            const domain = [
+                ['amount_out', '>', 0],
+                ['create_date', '>=', startDate],
+                ['create_date', '<=', endDate]
+            ];
+    
             const result = await this.orm.searchRead(
                 'cdn.uang_saku',
                 domain,
                 ['create_date', 'amount_out', 'state'],
                 { order: 'create_date asc' }
             );
-
+    
             if (!result || result.length === 0) {
-                console.warn('No uang saku keluar data found');
-                this.state.chartData = { labels: [], datasets: [] };
+                this.state.chartData = { series: [], labels: [] };
                 return;
             }
-
-            this.processUangSakuKeluarData(result);
+    
+            this.state.currentViewRange = {
+                startDate,
+                endDate,
+                viewType: 'keluar'
+            };
+    
+            this.processUangSakuData(result, 'amount_out', 'Uang Keluar');
         } catch (error) {
             console.error('Error fetching uang saku keluar data:', error);
-            this.state.chartData = { labels: [], datasets: [] };
+            this.state.chartData = { series: [], labels: [] };
+            this.state.currentViewRange = null;
         }
     }
+    
+    isCustomDateRange() {
+        if (!this.state.currentViewRange) return false;
+        
+        const today = new Date();
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 6);
+        
+        const currentStartDate = new Date(this.state.currentViewRange.startDate);
+        const currentEndDate = new Date(this.state.currentViewRange.endDate);
+        
+        return !(
+            currentStartDate.toISOString().split('T')[0] === weekAgo.toISOString().split('T')[0] &&
+            currentEndDate.toISOString().split('T')[0] === today.toISOString().split('T')[0]
+        );
+    }
 
-      processTagihanData(data) {
-        // Check if data is valid
+    processTagihanData(data) {
         if (!Array.isArray(data) || data.length === 0) {
-            console.warn('No tagihan data available for processing.');
-            this.state.chartData = { labels: [], datasets: [] }; // Reset chart data
-            return;
+            return { series: [], labels: [] };
         }
-
-        // Group products and count their status
-        const productStats = data.reduce((acc, record) => {
-            const productName = record.product_id[1];
-            if (!acc[productName]) {
-                acc[productName] = {
-                    lunas: 0,
-                    belumLunas: 0
-                };
-            }
-
+    
+        const lunasData = new Map();
+        const belumLunasData = new Map();
+        const creditData = new Map();
+    
+        data.forEach(record => {
+            const productName = record.product_id && record.product_id[1] ? record.product_id[1] : 'Unknown Product';
+            const quantity = record.quantity || 1;
+            const credit = record.credit || 0;
+    
             if (record.parent_state === 'posted') {
-                acc[productName].lunas += record.quantity || 1;
+                lunasData.set(productName, (lunasData.get(productName) || 0) + quantity);
             } else {
-                acc[productName].belumLunas += record.quantity || 1;
+                belumLunasData.set(productName, (belumLunasData.get(productName) || 0) + quantity);
             }
+            
 
-            return acc;
-        }, {});
-
-        // Sort products by total quantity and get top 10
-        const sortedProducts = Object.entries(productStats)
-            .sort(([, a], [, b]) => (b.lunas + b.belumLunas) - (a.lunas + a.belumLunas))
-            .slice(0, 10);
-
-        const labels = sortedProducts.map(([name]) => name);
-        const lunasData = sortedProducts.map(([, data]) => data.lunas);
-        const belumLunasData = sortedProducts.map(([, data]) => data.belumLunas);
-
-        this.state.chartData = {
-            labels: labels,
-            datasets: [
+            creditData.set(productName, (creditData.get(productName) || 0) + credit);
+        });
+    
+        // Combine and sort products based on total volume
+        const allProducts = new Set([...lunasData.keys(), ...belumLunasData.keys(), ...creditData.keys()]);
+        const sortedProducts = Array.from(allProducts)
+            .map(product => ({
+                name: product,
+                total: (lunasData.get(product) || 0) + 
+                       (belumLunasData.get(product) || 0)
+            }))
+            .sort((a, b) => b.total - a.total)
+            .slice(0, 10)
+            .map(item => item.name);
+    
+        return {
+            labels: sortedProducts,
+            series: [
                 {
-                    label: 'Lunas',
-                    data: lunasData,
-                    backgroundColor: 'rgba(75, 192, 92, 0.7)',
-                    borderColor: 'rgba(75, 192, 92, 1)',
-                    borderWidth: 1
+                    name: 'Lunas',
+                    data: sortedProducts.map(product => lunasData.get(product) || 0),
+                    type: 'bar'
                 },
                 {
-                    label: 'Belum Lunas',
-                    data: belumLunasData,
-                    backgroundColor: 'rgba(255, 99, 132, 0.7)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1
+                    name: 'Belum Lunas',
+                    data: sortedProducts.map(product => belumLunasData.get(product) || 0),
+                    type: 'bar'
+                },
+                {
+                    name: 'Credit',
+                    data: sortedProducts.map(product => creditData.get(product) || 0),
+                    type: 'line'
                 }
             ]
         };
     }
 
-  processUangSakuMasukData(data) {
-    // Validate data
-    if (!Array.isArray(data) || data.length === 0) {
-        console.warn('No uang saku masuk data available for processing.');
-        this.state.chartData = { labels: [], datasets: [] }; // Reset chart data
-        return;
-    }
-
-    const dateData = this.processDateData(data, 'amount_in');
-    const sortedDates = Object.keys(dateData).sort((a, b) => new Date(a) - new Date(b));
-
-    if (sortedDates.length === 0) {
-        console.warn('No valid dates for Uang Masuk.');
-    }
-
-    this.state.chartData = {
-        labels: sortedDates,
-        datasets: [{
-            label: 'Uang Masuk',
-            data: sortedDates.map(date => dateData[date] || 0), // Default to 0 if undefined
-            borderColor: 'rgba(75, 192, 192, 1)',
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            fill: true,
-            tension: 0.4
-        }]
-    };
-  }
-
-  processUangSakuKeluarData(data) {
-    // Validate data
-    if (!Array.isArray(data) || data.length === 0) {
-        console.warn('No uang saku keluar data available for processing.');
-        this.state.chartData = { labels: [], datasets: [] }; // Reset chart data
-        return;
-    }
-
-    const dateData = this.processDateData(data, 'amount_out');
-    const sortedDates = Object.keys(dateData).sort((a, b) => new Date(a) - new Date(b));
-
-    if (sortedDates.length === 0) {
-        console.warn('No valid dates for Uang Keluar.');
-    }
-
-    this.state.chartData = {
-        labels: sortedDates,
-        datasets: [{
-            label: 'Uang Keluar',
-            data: sortedDates.map(date => dateData[date] || 0), // Default to 0 if undefined
-            borderColor: 'rgba(255, 99, 132, 1)',
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            fill: true,
-            tension: 0.4
-        }]
-    };
-  }
-
-  processDateData(data, field) {
-    return data.reduce((acc, record) => {
-        // Parse the date considering timezone
-        const date = this.parseDate(record.create_date);
-        const dateStr = date.toLocaleDateString('id-ID', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-        });
-
-        if (!acc[dateStr]) {
-            acc[dateStr] = 0;
+    processUangSakuData(data, field, label) {
+        if (!Array.isArray(data) || data.length === 0) {
+            this.state.chartData = { series: [], labels: [] };
+            return;
         }
-        acc[dateStr] += record[field] || 0;
-        return acc;
-    }, {});
-}
+    
+        const dateData = this.processDateData(data, field);
+        const sortedDates = Object.keys(dateData).sort((a, b) => new Date(a) - new Date(b));
+    
+        this.state.chartData = {
+            labels: sortedDates,
+            series: [{
+                name: label,
+                type: 'area',
+                data: sortedDates.map(date => dateData[date] || 0)
+            }]
+        };
+    }
 
-  getChartConfig() {
-    const isBar = this.props.type === 'bar';
-    return {
-        type: this.props.type,
-        data: this.state.chartData,
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
+    getChartConfig() {
+        const baseConfig = {
+            chart: {
+                height: 450,
+                type: this.props.type === 'bar' ? 'bar' : 'area',
+                toolbar: {
+                    show: false,
+                    tools: {
+                        download: false,
+                        selection: false,
+                        zoom: false,
+                        zoomin: false,
+                        zoomout: false,
+                        pan: false,
+                    }
                 },
+                animations: {
+                    enabled: true,
+                    easing: 'easeinout',
+                    speed: 800,
+                    dynamicAnimation: {
+                        enabled: true,
+                        speed: 350
+                    }
+                },
+                stacked: true
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '50%',
+                    endingShape: 'rounded',
+                    borderRadius: 4
+                }
+            },
+            stroke: {
+                show: true,
+                width: this.props.type === 'bar' ? [0, 0, 3] : [3],
+                curve: 'smooth'
+            },
+            dataLabels: {
+                enabled: true,  // Menyalakan data labels untuk bar dan area
+                formatter: function (val) {
+                    return val.toLocaleString('id-ID');
+                },
+                style: {
+                    colors: this.props.type === 'bar' ? ['#FFFFFF'] : ['#000000']  // Putih untuk bar, hitam untuk area/line
+                },
+                dropShadow: {
+                    enabled: true,
+                    top: 1,
+                    left: 1,
+                    blur: 1,
+                    opacity: 0.3
+                }
+            },
+            colors: this.props.type === 'bar'
+                ? ['#00E396', '#FF4560', '#2E93fA']
+                : ['#00E396'], 
+            xaxis: {
+                categories: this.state.chartData.labels.map(label => 
+                    label.length > 10 ? label.substring(0, 10) + '...' : label
+                ),
+                labels: {
+                    rotate: -45,
+                    style: {
+                        fontSize: '12px'
+                    }
+                }
+            },
+            yaxis: this.props.type === 'bar' ? [
+                {
+                    title: {
+                        text: '',
+                        style: {
+                            fontSize: '14px',
+                            fontWeight: 600
+                        }
+                    },
+                    labels: {
+                        formatter: function (value) {
+                            return Math.round(value).toLocaleString('id-ID');
+                        }
+                    }
+                },
+                {
+                    title: {
+                        text: '',
+                        style: {
+                            fontSize: '14px',
+                            fontWeight: 600
+                        }
+                    },
+                    labels: {
+                        formatter: function (value) {
+                            return Math.round(value).toLocaleString('id-ID');
+                        }
+                    }
+                },
+                {
+                    opposite: true,
+                    title: {
+                        text: '',
+                        style: {
+                            fontSize: '14px',
+                            fontWeight: 600
+                        }
+                    },
+                    labels: {
+                        formatter: function (value) {
+                            return value.toLocaleString('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
+                                maximumFractionDigits: 0 // Hapus desimal
+                            });
+                        }
+                    }
+                }
+            ] : {
                 title: {
-                    display: true,
-                    text: this.props.title,
-                    font: {
-                        size: 16,
-                        weight: 'bold'
+                    text: '',
+                    style: {
+                        fontSize: '14px',
+                        fontWeight: 600
                     }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    stacked: false, // Changed to false to separate the bars
                 },
-                x: {
-                    stacked: false, // Changed to false to separate the bars
-                    ticks: {
-                        maxRotation: 45,
-                        minRotation: 45
+                labels: {
+                    formatter: function (value) {
+                        return value.toLocaleString('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                            maximumFractionDigits: 0 // Hapus desimal
+                        });
                     }
                 }
             },
-            barPercentage: 0.8, // Controls the width of the bars
-            categoryPercentage: 0.9 // Controls the spacing between bar groups
-        }
-    };
-}
-
-
-
-
-  renderChart() {
-    if (this.chartRef.el) {
+            title: {
+                text: this.props.title,
+                align: 'center',
+                style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold'
+                }
+            },
+            legend: {
+                position: 'top',
+                horizontalAlign: 'center'
+            },
+            fill: {
+                opacity: this.props.type === 'bar' ? 1 : 0.7,
+                type: this.props.type === 'bar' ? 'solid' : 'gradient',
+                gradient: this.props.type === 'bar' ? undefined : {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.7,
+                    opacityTo: 0.9,
+                    stops: [0, 90, 100]
+                }
+            },
+            tooltip: {
+                shared: true,
+                intersect: false,
+                y: this.props.type === 'bar' ? [
+                    {
+                        formatter: function (value) {
+                            return Math.round(value).toLocaleString('id-ID');
+                        }
+                    },
+                    {
+                        formatter: function (value) {
+                            return Math.round(value).toLocaleString('id-ID');
+                        }
+                    },
+                    {
+                        formatter: function (value) {
+                            return value.toLocaleString('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
+                                maximumFractionDigits: 0 // Hapus desimal
+                            });
+                        }
+                    }
+                ] : {
+                    formatter: function (value) {
+                        return value.toLocaleString('id-ID', {
+                            style: 'currency',
+                            currency: 'IDR',
+                            maximumFractionDigits: 0 // Hapus desimal
+                        });
+                    }
+                }
+            }
+        };
+    
+        return baseConfig;
+    }
+    
+    renderChart() {
+        if (!this.chartRef.el) return;
+    
         if (this.chartInstance) {
-            this.chartInstance.destroy(); // Destroy previous chart instance
+            this.chartInstance.destroy();
+            this.chartInstance = null;
         }
-
-        const config = this.getChartConfig();
+    
+        this.chartRef.el.innerHTML = '';
+    
+        const config = {
+            ...this.getChartConfig(),
+            series: this.state.chartData.series.map(series => ({
+                ...series,
+                data: series.data.map(value => value || 0)
+            })),
+            chart: {
+                ...this.getChartConfig().chart,
+                events: {
+                    dataPointSelection: (event, chartContext, config) => {
+                        this.onChartClick(event, chartContext, config);
+                    },
+                    click: (event, chartContext, config) => {
+                        if (config.dataPointIndex !== undefined && config.seriesIndex !== undefined) {
+                            this.onChartClick(event, chartContext, {
+                                dataPointIndex: config.dataPointIndex,
+                                seriesIndex: config.seriesIndex
+                            });
+                        }
+                    }
+                }
+            }
+        };
+    
         try {
-            this.chartInstance = new Chart(this.chartRef.el, config);
-            this.chartRef.el.onclick = this.onChartClick.bind(this); // Add click event listener
+            this.chartInstance = new ApexCharts(this.chartRef.el, config);
+            this.chartInstance.render();
         } catch (error) {
             console.error('Error rendering chart:', error);
         }
-    } else {
-        //
     }
-  }
+    
+    onChartClick(event, chartContext, config) {
+        const dataPointIndex = config.dataPointIndex;
+        const seriesIndex = config.seriesIndex;
+    
+        if (dataPointIndex === -1 || seriesIndex === -1) return;
 
-  onChartClick(event) {
-    try {
-        const points = this.chartInstance.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true);
-        if (points.length > 0) {
-            const point = points[0];
-            const label = this.state.chartData.labels[point.index];
-            const datasetLabel = this.chartInstance.data.datasets[point.datasetIndex].label;
-
-            if (!label || !datasetLabel) {
-                console.error('Label or dataset label is undefined:', { label, datasetLabel });
-                return;
+        if (!this.state?.chartData?.labels || !this.state?.chartData?.series) {
+            console.error('Chart data is not properly initialized');
+            return;
+        }
+    
+        const label = this.state.chartData.labels[dataPointIndex];
+        // Pastikan series ada dan memiliki properti name
+        const seriesName = this.state.chartData.series[seriesIndex]?.name || 'Unknown';
+    
+        // Pastikan label ada
+        if (!label) {
+            console.error('Label not found for dataPointIndex:', dataPointIndex);
+            return;
+        }
+    
+        let actionConfig = {
+            type: 'ir.actions.act_window',
+            name: `${this.props.title} - ${seriesName}`,
+            view_mode: 'list,form',
+            target: 'current',
+            views: [[false, 'list'], [false, 'form']],
+            context: {},
+        };
+    
+        switch (this.props.title) {
+            case 'Tagihan Siswa': {
+                actionConfig.res_model = 'account.move.line';
+                const domain = [
+                    ['move_id.move_type', 'in', ['out_invoice', 'out_refund', 'in_invoice', 'in_refund']],
+                    ['display_type', 'in', ['product']]
+                ];
+    
+                // Hanya tambahkan product_id.name ke domain jika label valid
+                if (label) {
+                    domain.push(['product_id.name', '=', label]);
+                }
+            
+                // Menambahkan kondisi berdasarkan status Lunas/Belum Lunas
+                if (seriesName === 'Lunas') {
+                    domain.push(['parent_state', '=', 'posted']);
+                } else {
+                    domain.push(['parent_state', 'in', ['draft', 'cancel']]);
+                }
+            
+                // Pengecekan tanggal yang lebih aman
+                if (this.state?.currentStartDate) {
+                    try {
+                        const start = new Date(this.state.currentStartDate);
+                        if (!isNaN(start.getTime())) {
+                            start.setUTCHours(0, 0, 0, 0);
+                            domain.push(['date', '>=', start.toISOString().split('.')[0] + 'Z']);
+                        }
+                    } catch (e) {
+                        console.error('Invalid start date:', e);
+                    }
+                }
+    
+                if (this.state?.currentEndDate) {
+                    try {
+                        const end = new Date(this.state.currentEndDate);
+                        if (!isNaN(end.getTime())) {
+                            end.setUTCHours(23, 59, 59, 999);
+                            domain.push(['date', '<=', end.toISOString().split('.')[0] + 'Z']);
+                        }
+                    } catch (e) {
+                        console.error('Invalid end date:', e);
+                    }
+                }
+            
+                actionConfig.domain = domain;
+                break;
             }
-
-            let actionConfig = {
-                type: 'ir.actions.act_window',
-                name: `${this.props.title} - ${datasetLabel}`,
-                view_mode: 'list,form',
-                target: 'current',
-                views: [[false, 'list'], [false, 'form']],
-            };
-
-            // Configure model and domain based on chart type
-            switch (this.props.title) {
-                case 'Tagihan Siswa':
-                    actionConfig.res_model = 'account.move.line';
-                    actionConfig.domain = [
-                        ['product_id', '!=', false],
-                        ['display_type', 'in', ['product']],
-                        ['product_id.name', '=', label],
-                        ['parent_state', datasetLabel === 'Lunas' ? '=' : '!=', 'posted']
-                    ];
-                    break;
-
-                case 'Uang Saku Masuk':
-                case 'Uang Saku Keluar': {
-                    actionConfig.res_model = 'cdn.uang_saku';
-                    
-                    // Parse the clicked date considering local format
+    
+            case 'Uang Saku Masuk':
+            case 'Uang Saku Keluar': {
+                actionConfig.res_model = 'cdn.uang_saku';
+                try {
                     const [day, month, year] = label.split('/');
-                    // Create date object for start of day
+                    if (!day || !month || !year) {
+                        console.error('Invalid date format in label:', label);
+                        return;
+                    }
+    
                     const startDate = new Date(year, month - 1, day);
-                    startDate.setHours(0, 0, 0, 0);
-                    // Create date object for end of day
                     const endDate = new Date(year, month - 1, day);
+    
+                    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                        console.error('Invalid date created from label:', label);
+                        return;
+                    }
+    
+                    startDate.setHours(0, 0, 0, 0);
                     endDate.setHours(23, 59, 59, 999);
-
-                    // Format dates to match Odoo's format
+    
                     const formattedStartDate = startDate.toISOString().split('.')[0];
                     const formattedEndDate = endDate.toISOString().split('.')[0];
-
-                    actionConfig.domain = this.props.title === 'Uang Saku Masuk' 
+    
+                    actionConfig.domain = this.props.title === 'Uang Saku Masuk'
                         ? [
                             ['amount_in', '>', 0],
                             ['create_date', '>=', formattedStartDate],
@@ -441,25 +837,25 @@
                             ['create_date', '>=', formattedStartDate],
                             ['create_date', '<=', formattedEndDate]
                         ];
-                    break;
-                }
-
-                default:
-                    console.error('Unknown chart title:', this.props.title);
+                } catch (e) {
+                    console.error('Error processing date:', e);
                     return;
+                }
+                break;
             }
-
-            
-            this.actionService.doAction(actionConfig);
+    
+            default:
+                console.error('Unhandled title:', this.props.title);
+                return;
         }
-    } catch (error) {
-        console.error('Error handling chart click:', error, {
-            stack: error.stack,
-            message: error.message
-        });
+    
+        // Pastikan actionService tersedia sebelum memanggil
+        if (this.actionService?.doAction) {
+            this.actionService.doAction(actionConfig);
+        } else {
+            console.error('Action service not available');
+        }
     }
 }
-}
-  
 
-  KeuanganChartRenderer.template = 'owl.KeuanganChartRenderer';
+KeuanganChartRenderer.template = 'owl.KeuanganChartRenderer';

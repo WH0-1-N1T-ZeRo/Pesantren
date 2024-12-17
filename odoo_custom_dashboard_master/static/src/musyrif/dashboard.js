@@ -5,7 +5,8 @@ import { MusyrifChartRenderer } from "./chart_renderer/chart_renderer";
 import { MusyrifPerijinanCardList } from "./card_list/card_list";
 import { useState, Component } from '@odoo/owl';
 
-export class OwlMusyrifDashboard extends Component {    setup() {
+export class OwlMusyrifDashboard extends Component {
+    setup() {
     this.state = useState({
         selectedDateRange: null,
         tempDateRange: { start: '', end: '' },

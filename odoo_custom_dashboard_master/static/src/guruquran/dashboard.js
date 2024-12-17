@@ -108,7 +108,6 @@ export class OwlGuruquranDashboard extends Component {
             return;
         }
 
-        // Get current date in local timezone
         const now = new Date();
         const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         
@@ -151,13 +150,13 @@ export class OwlGuruquranDashboard extends Component {
                 break;
 
             case 'thisYear':
-                start = new Date(todayStart.getFullYear(), 0, 1); // January 1st of current year
-                end = new Date(todayStart.getFullYear(), 11, 31); // December 31st of current year
+                start = new Date(todayStart.getFullYear(), 0, 1);
+                end = new Date(todayStart.getFullYear(), 11, 31);
                 break;
 
             case 'lastYear':
-                start = new Date(todayStart.getFullYear() - 1, 0, 1); // January 1st of last year
-                end = new Date(todayStart.getFullYear() - 1, 11, 31); // December 31st of last year
+                start = new Date(todayStart.getFullYear() - 1, 0, 1);
+                end = new Date(todayStart.getFullYear() - 1, 11, 31);
                 break;
         }
 

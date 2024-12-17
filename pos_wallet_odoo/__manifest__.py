@@ -29,7 +29,7 @@
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['base', 'contacts', 'account', 'point_of_sale','web'],
+    'depends': ['base', 'contacts', 'account', 'point_of_sale','web','base_setup'],
     'data': [
         'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
@@ -39,6 +39,7 @@
         'views/pos_payment_method_views.xml',
         'wizard/recharge_wallet_views.xml',
         'views/res_users_views.xml',
+        'views/beforeload.xml',
     ],
     'assets': {
         'point_of_sale._assets_pos': [
@@ -58,7 +59,9 @@
           'pos_wallet_odoo/static/src/overrides/components/menu/close.js',
           'pos_wallet_odoo/static/src/overrides/components/menu/close.xml',
         ],'web.assets_backend': [
-            'pos_wallet_odoo/static/src/js/beforeunload.js',
+            'pos_wallet_odoo/static/src/js/PopupOnce.js',
+            'pos_wallet_odoo/static/src/xml/custom_number_popup.xml',
+            'pos_wallet_odoo/static/src/js/icon.js',
         ],
     },
     'images': ['static/description/banner.jpg'],

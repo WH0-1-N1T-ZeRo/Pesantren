@@ -11,9 +11,10 @@ export class KeuanganChartRenderer extends Component {
         startDate: { type: String, optional: true },
         endDate: { type: String, optional: true }
     };
-
+ 
     setup() {
         this.chartRef = useRef("chart");
+        this.loadingOverlayRef = useRef("loadingOverlay");
         this.orm = useService('orm');
         this.actionService = useService("action");
         this.state = {
@@ -32,17 +33,37 @@ export class KeuanganChartRenderer extends Component {
 
         onWillUpdateProps(async (nextProps) => {
             if (nextProps.startDate !== this.props.startDate || 
-                nextProps.endDate !== this.props.endDate) {
+                nextProps.endDate !== this.props.endDate
+            ) {
+                this.showLoading();
+                try {
                 this.state.currentStartDate = nextProps.startDate;
                 this.state.currentEndDate = nextProps.endDate;
                 this.state.isFiltered = !!(nextProps.startDate && nextProps.endDate);
-                await this.fetchData(this.state.currentStartDate, this.state.currentEndDate);
+
+                await Promise.all([
+                    await this.fetchData(this.state.currentStartDate, this.state.currentEndDate)
+                ]);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            } finally {
+                this.hideLoading();
             }
+        }
         });
 
         onWillStart(async () => {
+            this.showLoading();
+            try {
             await loadJS("https://cdn.jsdelivr.net/npm/apexcharts");
-            await this.fetchData(this.state.currentStartDate, this.state.currentEndDate);
+            await Promise.all([
+                await this.fetchData(this.state.currentStartDate, this.state.currentEndDate)
+            ]);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        } finally {
+            this.hideLoading();
+        }
         });
 
         onMounted(() => {
@@ -55,6 +76,47 @@ export class KeuanganChartRenderer extends Component {
         });
     }
 
+    showLoading() {
+        // Create loading overlay if it doesn't exist
+        if (!this.loadingOverlay) {
+          this.loadingOverlay = document.createElement('div');
+          this.loadingOverlay.innerHTML = `
+            <div class="musyrif-loading-overlay" style="
+              position: fixed;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              background: rgba(0, 0, 0, 0.3);
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              z-index: 9999;
+            ">
+              <div class="loading-spinner">
+                <i class="fas fa-sync-alt fa-spin fa-3x text-white"></i>
+              </div>
+            </div>
+          `;
+          document.body.appendChild(this.loadingOverlay);
+        }
+            // Ensure loading overlay is visible
+            if (this.loadingOverlay) {
+              this.loadingOverlay.style.display = 'flex';
+            }
+            
+            this.state.isLoading = true;
+          }
+    
+          hideLoading() {
+            // Hide loading overlay
+            if (this.loadingOverlay) {
+              this.loadingOverlay.style.display = 'none';
+            }
+            
+            this.state.isLoading = false;
+          }
+
     cleanup() {
         if (this.chartInstance) {
             this.chartInstance.destroy();
@@ -63,7 +125,6 @@ export class KeuanganChartRenderer extends Component {
         this.clearIntervals();
     }
 
- 
     toggleCountdown() { 
         if (this.isCountingDown) { 
           this.clearIntervals(); 
@@ -74,31 +135,36 @@ export class KeuanganChartRenderer extends Component {
           document.getElementById("timerIcon").className = "fas fa-stop d-none"; 
         } 
         this.isCountingDown = !this.isCountingDown; 
-      } 
+    } 
      
-      startCountdown() { 
+    startCountdown() { 
         this.countdownTime = 10; 
         this.updateCountdownDisplay(); 
         this.countdownInterval = setInterval(() => { 
-          this.countdownTime--; 
-          if (this.countdownTime < 0) { 
-            this.countdownTime = 10; 
-            this.refreshChart(); 
-          } 
-          this.updateCountdownDisplay(); 
+            this.countdownTime--; 
+            if (this.countdownTime < 0) { 
+                this.countdownTime = 10; 
+                this.refreshChart(); 
+            } 
+            this.updateCountdownDisplay(); 
         }, 1000); 
-      } 
+    } 
      
-      updateCountdownDisplay() { 
+    updateCountdownDisplay() { 
         document.getElementById("timerCountdown").textContent = this.countdownTime; 
-      } 
+    } 
 
-      async refreshChart() {
+    async refreshChart() {
+        this.showLoading();
         // Use filtered dates if filtering is active
         const startDate = this.state.isFiltered ? this.state.currentStartDate : null;
         const endDate = this.state.isFiltered ? this.state.currentEndDate : null;
+
+        try {
+            await Promise.all([
+                await this.fetchData(startDate, endDate)
+            ]);
         
-        await this.fetchData(startDate, endDate);
         
         if (this.chartInstance) {
             this.chartInstance.updateOptions({
@@ -108,12 +174,17 @@ export class KeuanganChartRenderer extends Component {
                 }
             }, true, true);
         }
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    } finally {
+        this.hideLoading();
     }
+}
      
-      clearIntervals() { 
+    clearIntervals() { 
         if (this.countdownInterval) clearInterval(this.countdownInterval); 
         if (this.refreshInterval) clearInterval(this.refreshInterval); 
-      }
+    }
 
     attachEventListeners() {
         const timerButton = document.getElementById("timerButton");
@@ -135,25 +206,26 @@ export class KeuanganChartRenderer extends Component {
     handleDateFilter() {
         const startDateInput = document.querySelector('input[name="start_date"]');
         const endDateInput = document.querySelector('input[name="end_date"]');
-
+    
         if (startDateInput && endDateInput) {
             const startDate = startDateInput.value;
             const endDate = endDateInput.value;
-
-            if (startDate && endDate) {
-                // Format dates to match Odoo's expected format
+    
+            // Cek apakah tanggal yang dimasukkan valid
+            if (this.isValidDate(startDate) && this.isValidDate(endDate)) {
+                // Format tanggal agar sesuai dengan format yang diharapkan oleh Odoo
                 const formattedStartDate = this.formatDateToOdoo(startDate);
                 const formattedEndDate = this.formatDateToOdoo(endDate);
-
-                // Update state with new filter values
+    
+                // Update state dengan nilai filter baru
                 this.state.currentStartDate = formattedStartDate;
                 this.state.currentEndDate = formattedEndDate;
                 this.state.isFiltered = true;
-
-                // Fetch new data with date range
+    
+                // Ambil data baru berdasarkan rentang tanggal
                 this.fetchData(formattedStartDate, formattedEndDate);
             } else {
-                // If either date is cleared, remove filtering
+                // Jika tanggal tidak valid atau kosong, reset filter dan ambil data tanpa filter
                 this.state.currentStartDate = null;
                 this.state.currentEndDate = null;
                 this.state.isFiltered = false;
@@ -161,6 +233,23 @@ export class KeuanganChartRenderer extends Component {
             }
         }
     }
+    
+    // Fungsi untuk memeriksa apakah tanggal valid
+    isValidDate(date) {
+        const regex = /^\d{4}-\d{2}-\d{2}$/; // Format YYYY-MM-DD
+        return regex.test(date); // Cek apakah tanggal sesuai dengan format
+    }
+    
+    // Fungsi untuk format tanggal ke format Odoo (misalnya, YYYY-MM-DD)
+    formatDateToOdoo(date) {
+        const parsedDate = new Date(date);
+        const year = parsedDate.getFullYear();
+        const month = (parsedDate.getMonth() + 1).toString().padStart(2, '0'); // Menambahkan leading zero jika bulan kurang dari 10
+        const day = parsedDate.getDate().toString().padStart(2, '0'); // Menambahkan leading zero jika hari kurang dari 10
+    
+        return `${year}-${month}-${day}`;
+    }
+    
 
     formatDateToOdoo(dateString) {
         const date = new Date(dateString);
@@ -168,39 +257,79 @@ export class KeuanganChartRenderer extends Component {
     }
 
     async fetchData(startDate = null, endDate = null) {
-        // Jika tanggal diberikan, format ke format Odoo
-        const formattedStartDate = startDate ? this.formatDateToOdoo(startDate) : null;
-        const formattedEndDate = endDate ? this.formatDateToOdoo(endDate) : null;
+        try {
+            // Reset chartData to a safe state before fetching
+            this.state.chartData = { series: [], labels: [] };
 
-        switch (this.props.title) {
-            case 'Tagihan Siswa':
-                await this.fetchTagihanData(formattedStartDate, formattedEndDate);
-                break;
-            case 'Uang Saku Masuk':
-                await this.fetchUangSakuMasukData(formattedStartDate, formattedEndDate);
-                break;
-            case 'Uang Saku Keluar':
-                await this.fetchUangSakuKeluarData(formattedStartDate, formattedEndDate);
-                break;
+            // Existing fetch logic remains the same
+            switch (this.props.title) {
+                case 'Tagihan Siswa':
+                    await this.fetchTagihanData(startDate, endDate);
+                    break;
+                case 'Uang Saku Masuk':
+                    await this.fetchUangSakuMasukData(startDate, endDate);
+                    break;
+                case 'Uang Saku Keluar':
+                    await this.fetchUangSakuKeluarData(startDate, endDate);
+                    break;
+            }
+            
+            // Validate chartData before updating or rendering
+            if (this.isValidChartData(this.state.chartData)) {
+                if (this.chartInstance) {
+                    this.updateChart();
+                } else if (this.chartRef.el) {
+                    this.renderChart();
+                }
+            } else {
+                console.warn('Invalid chart data received');
+                this.resetChart();
+            }
+        } catch (error) {
+            console.error('Error in fetchData:', error);
+            this.resetChart();
         }
-        
+    }
+
+    // Add this new method to validate chart data
+    isValidChartData(chartData) {
+        return chartData && 
+               Array.isArray(chartData.series) && 
+               chartData.series.length > 0 &&
+               Array.isArray(chartData.labels) &&
+               chartData.labels.length > 0;
+    }
+
+    // Add this new method to reset the chart
+    resetChart() {
+        this.state.chartData = { series: [], labels: [] };
         if (this.chartInstance) {
-            this.updateChart();
-        } else if (this.chartRef.el) {
-            this.renderChart();
+            this.chartInstance.destroy();
+            this.chartInstance = null;
         }
     }
 
     updateChart() {
+        if (!this.isValidChartData(this.state.chartData)) {
+            console.warn('Attempting to update chart with invalid data');
+            return;
+        }
+
         if (this.chartInstance) {
+            const updatedSeries = this.state.chartData.series.map(series => ({
+                ...series,
+                data: series.data.map(value => value || 0) // Ensure all values are numbers
+            }));
+
             this.chartInstance.updateOptions({
                 xaxis: {
                     categories: this.state.chartData.labels
                 },
-                series: this.state.chartData.series
-            });
+                series: updatedSeries
+            }, true, true);
         }
     }
+
 
     formatDate(date) {
         return date.toISOString().split('.')[0] + 'Z';
@@ -271,16 +400,12 @@ export class KeuanganChartRenderer extends Component {
 
     async fetchUangSakuMasukData(startDate = null, endDate = null) {
         try {
-            // If no dates provided, set default range to last 7 days
-            if (!startDate && !endDate) {
-                endDate = new Date();
-                startDate = new Date();
-                startDate.setDate(startDate.getDate() - 6); // Get last 7 days including today
-                
-                // Convert to YYYY-MM-DD format for API
-                startDate = startDate.toISOString().split('T')[0];
-                endDate = endDate.toISOString().split('T')[0];
-            }
+            if (this.loading) return; // Prevent stacked calls
+            this.loading = true;
+    
+            const today = new Date();
+            startDate = startDate || new Date(today.getFullYear(), today.getMonth(), 1).toISOString();
+            endDate = endDate || new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString();
     
             const domain = [
                 ['amount_in', '>', 0],
@@ -292,90 +417,128 @@ export class KeuanganChartRenderer extends Component {
                 'cdn.uang_saku',
                 domain,
                 ['create_date', 'amount_in', 'state'],
-                { order: 'create_date asc' }
+                { order: 'create_date asc', limit: 1000 } // Add a reasonable limit
             );
     
             if (!result || result.length === 0) {
-                this.state.chartData = { series: [], labels: [] };
-                return;
+                this.state.chartData = { 
+                    labels: [], 
+                    series: [{ 
+                        name: 'Uang Masuk', 
+                        type: 'area', 
+                        data: [] 
+                    }] 
+                };
+            } else {
+                this.processUangSakuData(result, 'amount_in', 'Uang Masuk');
             }
     
-            // Store the current view range in state
             this.state.currentViewRange = {
                 startDate,
                 endDate,
                 viewType: 'masuk'
             };
-    
-            this.processUangSakuData(result, 'amount_in', 'Uang Masuk');
         } catch (error) {
             console.error('Error fetching uang saku masuk data:', error);
-            this.state.chartData = { series: [], labels: [] };
-            this.state.currentViewRange = null;
+            this.state.chartData = { 
+                labels: [], 
+                series: [{ 
+                    name: 'Uang Masuk', 
+                    type: 'area', 
+                    data: [] 
+                }] 
+            };
+        } finally {
+            this.loading = false; // Reset loading flag
         }
-    }
-    
+    }    
     
     async fetchUangSakuKeluarData(startDate = null, endDate = null) {
         try {
-            // If no dates provided, set default range to last 7 days
-            if (!startDate && !endDate) {
-                endDate = new Date();
-                startDate = new Date();
-                startDate.setDate(startDate.getDate() - 6); // Get last 7 days including today
-                
-                // Convert to YYYY-MM-DD format for API
-                startDate = startDate.toISOString().split('T')[0];
-                endDate = endDate.toISOString().split('T')[0];
-            }
+            // Validate dates to ensure they are not null
+            const safeStartDate = startDate || this.getFirstDayOfMonth();
+            const safeEndDate = endDate || this.getLastDayOfMonth();
     
             const domain = [
                 ['amount_out', '>', 0],
-                ['create_date', '>=', startDate],
-                ['create_date', '<=', endDate]
+                ['create_date', '>=', safeStartDate],
+                ['create_date', '<=', safeEndDate]
             ];
     
             const result = await this.orm.searchRead(
                 'cdn.uang_saku',
                 domain,
                 ['create_date', 'amount_out', 'state'],
-                { order: 'create_date asc' }
+                { order: 'create_date asc', limit: 1000 } // Add a reasonable limit
             );
     
             if (!result || result.length === 0) {
-                this.state.chartData = { series: [], labels: [] };
-                return;
+                this.state.chartData = { 
+                    labels: [], 
+                    series: [{ 
+                        name: 'Uang Keluar', 
+                        type: 'area', 
+                        data: [] 
+                    }] 
+                };
+            } else {
+                this.processUangSakuData(result, 'amount_out', 'Uang Keluar');
             }
     
+            // Store view range in state
             this.state.currentViewRange = {
-                startDate,
-                endDate,
+                startDate: safeStartDate,
+                endDate: safeEndDate,
                 viewType: 'keluar'
             };
     
-            this.processUangSakuData(result, 'amount_out', 'Uang Keluar');
         } catch (error) {
             console.error('Error fetching uang saku keluar data:', error);
-            this.state.chartData = { series: [], labels: [] };
-            this.state.currentViewRange = null;
+            this.state.chartData = { 
+                labels: [], 
+                series: [{ 
+                    name: 'Uang Keluar', 
+                    type: 'area', 
+                    data: [] 
+                }] 
+            };
+        } finally {
+            this.loading = false; 
         }
+    }  
+    
+    // Helper to get first day of current month
+    getFirstDayOfMonth() {
+        const date = new Date();
+        date.setDate(1);
+        return date.toISOString().split('T')[0]; // Format YYYY-MM-DD
     }
     
-    isCustomDateRange() {
-        if (!this.state.currentViewRange) return false;
-        
-        const today = new Date();
-        const weekAgo = new Date();
-        weekAgo.setDate(weekAgo.getDate() - 6);
-        
-        const currentStartDate = new Date(this.state.currentViewRange.startDate);
-        const currentEndDate = new Date(this.state.currentViewRange.endDate);
-        
-        return !(
-            currentStartDate.toISOString().split('T')[0] === weekAgo.toISOString().split('T')[0] &&
-            currentEndDate.toISOString().split('T')[0] === today.toISOString().split('T')[0]
-        );
+    // Helper to get last day of current month
+    getLastDayOfMonth() {
+        const date = new Date();
+        date.setMonth(date.getMonth() + 1);
+        date.setDate(0);
+        return date.toISOString().split('T')[0]; // Format YYYY-MM-DD
     }
+    
+    
+    
+    // isCustomDateRange() {
+    //     if (!this.state.currentViewRange) return false;
+        
+    //     const today = new Date();
+    //     const weekAgo = new Date();
+    //     weekAgo.setDate(weekAgo.getDate() - 6);
+        
+    //     const currentStartDate = new Date(this.state.currentViewRange.startDate);
+    //     const currentEndDate = new Date(this.state.currentViewRange.endDate);
+        
+    //     return !(
+    //         currentStartDate.toISOString().split('T')[0] === weekAgo.toISOString().split('T')[0] &&
+    //         currentEndDate.toISOString().split('T')[0] === today.toISOString().split('T')[0]
+    //     );
+    // }
 
     processTagihanData(data) {
         if (!Array.isArray(data) || data.length === 0) {
@@ -436,22 +599,49 @@ export class KeuanganChartRenderer extends Component {
     }
 
     processUangSakuData(data, field, label) {
-        if (!Array.isArray(data) || data.length === 0) {
-            this.state.chartData = { series: [], labels: [] };
+        // Ensure data is valid before processing
+        if (!data || !Array.isArray(data) || data.length === 0) {
+            console.warn('No data available for chart rendering');
+            this.state.chartData = { 
+                labels: [], 
+                series: [{ 
+                    name: label, 
+                    type: 'area', 
+                    data: [] 
+                }] 
+            };
             return;
         }
     
-        const dateData = this.processDateData(data, field);
-        const sortedDates = Object.keys(dateData).sort((a, b) => new Date(a) - new Date(b));
+        try {
+            const dateData = this.processDateData(data, field);
+            const sortedDates = Object.keys(dateData)
+                .sort((a, b) => new Date(a) - new Date(b));
     
-        this.state.chartData = {
-            labels: sortedDates,
-            series: [{
-                name: label,
-                type: 'area',
-                data: sortedDates.map(date => dateData[date] || 0)
-            }]
-        };
+            // Ensure data is always an array of numbers
+            const processedData = sortedDates.map(date => 
+                Math.max(0, Number(dateData[date]) || 0)
+            );
+    
+            this.state.chartData = {
+                labels: sortedDates,
+                series: [{
+                    name: label,
+                    type: 'area',
+                    data: processedData
+                }]
+            };
+        } catch (error) {
+            console.error('Error processing Uang Saku data:', error);
+            this.state.chartData = { 
+                labels: [], 
+                series: [{ 
+                    name: label, 
+                    type: 'area', 
+                    data: [] 
+                }] 
+            };
+        }
     }
 
     getChartConfig() {
@@ -644,6 +834,16 @@ export class KeuanganChartRenderer extends Component {
                         });
                     }
                 }
+            },
+            noData: {
+                text: 'Tidak ada data',
+                align: 'center',
+                verticalAlign: 'middle',
+                style: {
+                    color: '#1f2937',
+                    fontSize: '16px',
+                    fontFamily: 'Inter'
+                }
             }
         };
     
@@ -651,15 +851,17 @@ export class KeuanganChartRenderer extends Component {
     }
     
     renderChart() {
-        if (!this.chartRef.el) return;
-    
+        if (!this.chartRef.el || !this.isValidChartData(this.state.chartData)) {
+            console.warn('Cannot render chart: invalid element or data');
+            return;
+        }
+
         if (this.chartInstance) {
             this.chartInstance.destroy();
-            this.chartInstance = null;
         }
-    
+
         this.chartRef.el.innerHTML = '';
-    
+
         const config = {
             ...this.getChartConfig(),
             series: this.state.chartData.series.map(series => ({

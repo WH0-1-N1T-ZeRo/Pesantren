@@ -20,3 +20,20 @@ class SiswaController(http.Controller):
         siswa_data = request.env['cdn.siswa'].sudo().search_read(domain, [])
         
         return siswa_data
+class DonasiController(http.Controller):
+    
+    @http.route('/cdn_donasi/get_donasi', type='json', auth='user')
+    def get_all_donasi(self, domain=None):
+        """
+        Mengembalikan semua data dari model `cdn.donation` dengan atau tanpa filter domain.
+
+        :param domain: List domain Odoo yang digunakan untuk memfilter data (opsional).
+        :return: List berisi data dari model `cdn.donation` dalam format JSON.
+        """
+        # Jika tidak ada domain yang diberikan, gunakan domain kosong
+        domain = domain or []
+
+        # Fetch data dari model 'cdn.donation' menggunakan domain yang diberikan
+        donasi_data = request.env['cdn.donation'].sudo().search_read(domain, [])
+
+        return donasi_data

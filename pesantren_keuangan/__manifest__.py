@@ -47,7 +47,7 @@
     'license': 'LGPL-3',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','pesantren_base','base_accounting_kit', 'account', 'point_of_sale','pos_wallet_odoo'],
+    'depends': ['base','pesantren_base','base_accounting_kit', 'account', 'point_of_sale','pos_wallet_odoo','hr_holidays'],
 
     # always loaded
     'data': [
@@ -72,6 +72,7 @@
         'views/penetapan_tagihan.xml',
         'views/pos_wallet_transaction.xml',
         'views/res_partner_inherit.xml',
+        'views/res_user.xml',
         'views/tagihan_vendor.xml',
         'views/pos_order.xml',
         'views/siswa.xml',

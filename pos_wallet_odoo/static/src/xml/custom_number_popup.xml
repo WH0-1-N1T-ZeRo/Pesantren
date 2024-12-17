@@ -1,24 +1,17 @@
-<!-- custom_number_popup.xml -->
+<?xml version="1.0" encoding="UTF-8" ?>
 <templates xml:space="preserve">
-    <t t-name="CustomNumberPopup">
-        <div class="popup">
-            <header class="title">Masukkan Nomor</header>
-            <div class="popup-input">
-                <span t-esc="'*'.repeat(state.inputBuffer.length)" />
+    <t t-name="systray_icon" owl="1">
+        <div class="o_dropdown">
+            <div class="new_icon">
+                <div class="icon_div">
+                    <div class="toggle-icon" role="button" t-on-click="_showPopup" style="color: white; padding:16px 5px;">
+                        <i id="create_order"
+                           class="fa fa-donate fa-1.5x"
+                           role="img" aria-label="Sale/Purchase Order"/>
+                        <span class="o-mail-ActivityMenu-counter badge rounded-pill" t-esc="state.donasiData"/>
+                    </div>
+                </div>
             </div>
-            <div class="popup-numpad">
-                <t t-foreach="[1, 2, 3, 4, 5, 6, 7, 8, 9, 0]" t-as="num">
-                    <button class="input-button" t-on-click="() => this.onInput(num)">
-                        <t t-esc="num"/>
-                    </button>
-                </t>
-                <button class="backspace" t-on-click="backspace">
-                    Hapus
-                </button>
-            </div>
-            <footer class="footer">
-                <button class="button confirm" t-on-click="confirm">OK</button>
-            </footer>
         </div>
     </t>
 </templates>
