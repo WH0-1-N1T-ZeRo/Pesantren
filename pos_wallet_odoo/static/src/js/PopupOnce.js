@@ -3,6 +3,7 @@
 import { WebClient } from "@web/webclient/webclient";
 import { patch } from "@web/core/utils/patch";
 import { useService } from "@web/core/utils/hooks";
+import { session } from "@web/session";
 
 patch(WebClient.prototype, {
     setup() {
@@ -159,6 +160,7 @@ patch(WebClient.prototype, {
             view_mode: "list",
             views: [[false, "list"], [false, "form"]],
             target: "main",
+            domain: [['created_by.name','=',session.partner_display_name]]
         });
     }    
 });
