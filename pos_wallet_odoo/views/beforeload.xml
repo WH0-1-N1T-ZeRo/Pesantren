@@ -33,6 +33,7 @@
                         </group>
                         <group>
                             <field name="description" widget="html"/>
+                            <field name="donation_detail_ids" readonly="1"/>
                         </group>
                     </group>
                     <group>
@@ -112,7 +113,7 @@
         <field name="name">Detail Donasi</field>
         <field name="res_model">cdn.donation.detail</field>
         <field name="view_mode">list,form</field>
-        <field name="target">current</field>
+        <field name="target">main</field>
     </record>
     <!-- Menuitem Utama Donasi -->
     <menuitem id="menu_donasi" name="Donasi" parent="pesantren_keuangan.keuangan_menu_root"/>

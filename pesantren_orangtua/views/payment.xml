@@ -27,5 +27,46 @@
         </record>
         <!-- This Menu Item must have a parent and an action -->
         <menuitem id="payment_orangtua_menu_act" name="Pembayaran" parent="keuangan_menu_categ" action="pembayaran_orangtua_action" sequence="20"/>
+        <record id="view_account_payment_form_inherit" model="ir.ui.view">
+            <field name="name">account.payment.form.inherit</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+                <!-- Tambahkan group pada setiap button -->
+                <xpath expr="//header/button[@name='action_post']" position="attributes">
+                    <attribute name="groups">account.group_account_manager</attribute>
+                </xpath>
+                <xpath expr="//header/button[@name='action_validate']" position="attributes">
+                    <attribute name="groups">account.group_account_manager</attribute>
+                </xpath>
+                <xpath expr="//header/button[@name='action_reject']" position="attributes">
+                    <attribute name="groups">account.group_account_manager</attribute>
+                </xpath>
+                <xpath expr="//header/button[@name='action_draft']" position="attributes">
+                    <attribute name="groups">account.group_account_manager</attribute>
+                </xpath>
+                <xpath expr="//header/button[@name='action_cancel']" position="attributes">
+                    <attribute name="groups">account.group_account_manager</attribute>
+                </xpath>
+                <xpath expr="//header/button[@name='button_request_cancel']" position="attributes">
+                    <attribute name="groups">account.group_account_manager</attribute>
+                </xpath>
+                <xpath expr="//header/button[@name='mark_as_sent']" position="attributes">
+                    <attribute name="groups">account.group_account_manager</attribute>
+                </xpath>
+                <xpath expr="//header/button[@name='unmark_as_sent']" position="attributes">
+                    <attribute name="groups">account.group_account_manager</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='payment_type']" position="attributes">
+                    <attribute name="groups">account.group_account_manager</attribute>
+                </xpath>
+                <xpath expr="//field[@name='partner_bank_id']" position="after">
+                    <field name="bukti_pembayaran" 
+                    widget="image"
+                    />
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>

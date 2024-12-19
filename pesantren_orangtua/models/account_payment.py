@@ -6,6 +6,10 @@ class AccountPayment(models.Model):
 
     siswa_id = fields.Many2one('cdn.siswa', string='siswa', compute='_compute_siswa', store=True)
     is_internal_transfer = fields.Boolean(string='Internal Transfer')
+    bukti_pembayaran =fields.Binary(
+        string='Bukti Pembayaran'
+    )
+    
 
     @api.depends('partner_id')
     def _compute_siswa(self):

@@ -15,5 +15,28 @@
             </xpath>
         </field>
     </record>
-
+    <!-- Inherit view -->
+    <record id="inherit_hr_attendance_view_form" model="ir.ui.view">
+        <field name="name">hr.attendance.view.form.inherit.kesantrian</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.hr_attendance_view_form"/>
+        <field name="arch" type="xml">
+            <!-- Modify validated_overtime_hours field -->
+            <field name="validated_overtime_hours" position="attributes">
+                <attribute name="groups">pesantren_kesantrian.group_kesantrian_manager</attribute>
+            </field>
+            <!-- Modify Approve button -->
+            <button name="action_approve_overtime" position="attributes">
+                <attribute name="groups">pesantren_kesantrian.group_kesantrian_manager</attribute>
+            </button>
+            <!-- Modify Refuse button -->
+            <button name="action_refuse_overtime" position="attributes">
+                <attribute name="groups">pesantren_kesantrian.group_kesantrian_manager</attribute>
+            </button>
+            <field name="overtime_status" position="attributes">
+                <attribute name="default">to_approve</attribute>
+                <attribute name="readonly">1</attribute>
+            </field>
+        </field>
+    </record>
 </odoo>

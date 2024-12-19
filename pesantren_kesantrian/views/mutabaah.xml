@@ -72,7 +72,7 @@
             </field>
         </record>
                 
-     <menuitem id="mutabaah_menu_act" name="Mutabaah" parent="pengaturan_kepengasuhan_menu_categ" action="cdn_mutabaah_action" sequence="10"/>
+     <menuitem id="mutabaah_menu_act" name="Mutabaah" parent="pengaturan_kepengasuhan_menu_categ" action="cdn_mutabaah_action" sequence="13"/>
     </data>
     
 </odoo>

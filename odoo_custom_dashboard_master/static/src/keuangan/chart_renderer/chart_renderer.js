@@ -260,7 +260,7 @@ export class KeuanganChartRenderer extends Component {
         try {
             // Reset chartData to a safe state before fetching
             this.state.chartData = { series: [], labels: [] };
-
+    
             // Existing fetch logic remains the same
             switch (this.props.title) {
                 case 'Tagihan Siswa':
@@ -274,23 +274,48 @@ export class KeuanganChartRenderer extends Component {
                     break;
             }
             
-            // Validate chartData before updating or rendering
-            if (this.isValidChartData(this.state.chartData)) {
-                if (this.chartInstance) {
-                    this.updateChart();
-                } else if (this.chartRef.el) {
-                    this.renderChart();
-                }
-            } else {
-                console.warn('Invalid chart data received');
-                this.resetChart();
+            // Aggressive validation and fallback
+            const isEmptyData = !this.state.chartData.series || 
+                                this.state.chartData.series.length === 0 || 
+                                this.state.chartData.series.every(series => 
+                                    !series.data || series.data.length === 0 || 
+                                    series.data.every(value => value === 0)
+                                );
+    
+            if (isEmptyData) {
+                this.state.chartData = {
+                    labels: [],
+                    series: [{
+                        name: this.props.title,
+                        type: this.props.type === 'bar' ? 'bar' : 'area',
+                        data: []
+                    }]
+                };
             }
+    
+            // Consistent rendering logic
+            if (this.chartRef.el) {
+                this.renderChart();
+            }
+    
         } catch (error) {
             console.error('Error in fetchData:', error);
-            this.resetChart();
+            
+            // Ensure a clean, fallback chart state
+            this.state.chartData = {
+                labels: [],
+                series: [{
+                    name: this.props.title,
+                    type: this.props.type === 'bar' ? 'bar' : 'area',
+                    data: []
+                }]
+            };
+            
+            if (this.chartRef.el) {
+                this.renderChart();
+            }
         }
     }
-
     // Add this new method to validate chart data
     isValidChartData(chartData) {
         return chartData && 
@@ -420,15 +445,20 @@ export class KeuanganChartRenderer extends Component {
                 { order: 'create_date asc', limit: 1000 } // Add a reasonable limit
             );
     
+            // Handle empty result explicitly
             if (!result || result.length === 0) {
                 this.state.chartData = { 
-                    labels: [], 
-                    series: [{ 
+                    labels: [],
+                    series: [{
                         name: 'Uang Masuk', 
                         type: 'area', 
-                        data: [] 
-                    }] 
+                        data: []
+                    }]
                 };
+                
+                if (this.chartInstance) {
+                    this.renderChart(); // Force render to show "No Data" state
+                }
             } else {
                 this.processUangSakuData(result, 'amount_in', 'Uang Masuk');
             }
@@ -448,10 +478,14 @@ export class KeuanganChartRenderer extends Component {
                     data: [] 
                 }] 
             };
+            
+            if (this.chartInstance) {
+                this.renderChart(); // Force render to show "No Data" state
+            }
         } finally {
             this.loading = false; // Reset loading flag
         }
-    }    
+    }
     
     async fetchUangSakuKeluarData(startDate = null, endDate = null) {
         try {
@@ -472,15 +506,20 @@ export class KeuanganChartRenderer extends Component {
                 { order: 'create_date asc', limit: 1000 } // Add a reasonable limit
             );
     
+            // Handle empty result explicitly
             if (!result || result.length === 0) {
                 this.state.chartData = { 
-                    labels: [], 
-                    series: [{ 
+                    labels: [],
+                    series: [{
                         name: 'Uang Keluar', 
                         type: 'area', 
-                        data: [] 
-                    }] 
+                        data: []
+                    }]
                 };
+                
+                if (this.chartInstance) {
+                    this.renderChart(); // Force render to show "No Data" state
+                }
             } else {
                 this.processUangSakuData(result, 'amount_out', 'Uang Keluar');
             }
@@ -502,10 +541,14 @@ export class KeuanganChartRenderer extends Component {
                     data: [] 
                 }] 
             };
+            
+            if (this.chartInstance) {
+                this.renderChart(); // Force render to show "No Data" state
+            }
         } finally {
             this.loading = false; 
         }
-    }  
+    }
     
     // Helper to get first day of current month
     getFirstDayOfMonth() {
@@ -851,37 +894,61 @@ export class KeuanganChartRenderer extends Component {
     }
     
     renderChart() {
-        if (!this.chartRef.el || !this.isValidChartData(this.state.chartData)) {
-            console.warn('Cannot render chart: invalid element or data');
+        // Validate chart reference and data
+        if (!this.chartRef.el) {
+            console.warn('Cannot render chart: invalid chart element');
             return;
         }
-
+    
+        // Destroy existing chart instance if it exists
         if (this.chartInstance) {
             this.chartInstance.destroy();
         }
-
+    
+        // Clear previous chart content
         this.chartRef.el.innerHTML = '';
-
+    
+        // Check if data is completely empty or invalid
+        const isEmptyData = !this.state.chartData.series || 
+                            this.state.chartData.series.length === 0 || 
+                            this.state.chartData.series.every(series => 
+                                !series.data || 
+                                series.data.length === 0 || 
+                                series.data.every(value => value === 0)
+                            );
+    
         const config = {
             ...this.getChartConfig(),
-            series: this.state.chartData.series.map(series => ({
-                ...series,
-                data: series.data.map(value => value || 0)
-            })),
-            chart: {
-                ...this.getChartConfig().chart,
-                events: {
-                    dataPointSelection: (event, chartContext, config) => {
-                        this.onChartClick(event, chartContext, config);
-                    },
-                    click: (event, chartContext, config) => {
-                        if (config.dataPointIndex !== undefined && config.seriesIndex !== undefined) {
-                            this.onChartClick(event, chartContext, {
-                                dataPointIndex: config.dataPointIndex,
-                                seriesIndex: config.seriesIndex
-                            });
+            series: isEmptyData 
+                ? [{ name: 'No Data', data: [] }] 
+                : this.state.chartData.series.map(series => ({
+                    ...series,
+                    data: series.data ? series.data.map(value => Number(value) || 0) : []
+                })),
+                chart: {
+                    ...this.getChartConfig().chart,
+                    events: {
+                        dataPointSelection: (event, chartContext, config) => {
+                            this.onChartClick(event, chartContext, config);
+                        },
+                        click: (event, chartContext, config) => {
+                            if (config.dataPointIndex !== undefined && config.seriesIndex !== undefined) {
+                                this.onChartClick(event, chartContext, {
+                                    dataPointIndex: config.dataPointIndex,
+                                    seriesIndex: config.seriesIndex
+                                });
+                            }
                         }
                     }
+                },
+            noData: {
+                text: 'Tidak ada data untuk ditampilkan',
+                align: 'center',
+                verticalAlign: 'middle',
+                style: {
+                    color: '#6b7280',
+                    fontSize: '18px',
+                    fontWeight: 'bold'
                 }
             }
         };
@@ -891,8 +958,10 @@ export class KeuanganChartRenderer extends Component {
             this.chartInstance.render();
         } catch (error) {
             console.error('Error rendering chart:', error);
+            // Potentially add fallback handling or user notification
         }
     }
+    
     
     onChartClick(event, chartContext, config) {
         const dataPointIndex = config.dataPointIndex;

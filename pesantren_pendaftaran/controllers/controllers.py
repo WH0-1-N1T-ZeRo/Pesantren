@@ -3,13 +3,13 @@
 import json
 from odoo import http
 from odoo.http import request
-import random
 from datetime import date
 import datetime
 from odoo.exceptions import UserError
-import hashlib
-import locale
 import base64
+import tempfile
+import os
+
 
 # class PsbController(http.Controller):
 #     @http.route('/psb/statistics', type='http', auth='public', methods=['POST'], csrf=False)
@@ -83,6 +83,8 @@ class PesantrenBeranda(http.Controller):
 
         tgl_mulai_pendaftaran = config_obj.get_param('pesantren_pendaftaran.tgl_mulai_pendaftaran')
         tgl_akhir_pendaftaran = config_obj.get_param('pesantren_pendaftaran.tgl_akhir_pendaftaran')
+        tgl_mulai_verifikasi_berkas = config_obj.get_param('pesantren_pendaftaran.tgl_mulai_verifikasi_berkas')
+        tgl_akhir_verifikasi_berkas = config_obj.get_param('pesantren_pendaftaran.tgl_akhir_verifikasi_berkas')
         tgl_mulai_seleksi = config_obj.get_param('pesantren_pendaftaran.tgl_mulai_seleksi')
         tgl_akhir_seleksi = config_obj.get_param('pesantren_pendaftaran.tgl_akhir_seleksi')
         tgl_pengumuman_hasil_seleksi = config_obj.get_param('pesantren_pendaftaran.tgl_pengumuman_hasil_seleksi')
@@ -99,6 +101,18 @@ class PesantrenBeranda(http.Controller):
             tgl_akhir_pendaftaran = tgl_akhir_pendaftaran_dt.strftime('%Y-%m-%d %H:%M:%S')
         else:
             tgl_akhir_pendaftaran_dt = datetime.datetime.strptime(tgl_akhir_pendaftaran, '%Y-%m-%d %H:%M:%S')
+
+        if not tgl_mulai_verifikasi_berkas:
+            tgl_mulai_verifikasi_berkas_dt = datetime.datetime.now() + datetime.timedelta(days=1)
+            tgl_mulai_verifikasi_berkas = tgl_mulai_verifikasi_berkas_dt.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            tgl_mulai_verifikasi_berkas_dt = datetime.datetime.strptime(tgl_mulai_verifikasi_berkas, '%Y-%m-%d %H:%M:%S')
+
+        if not tgl_akhir_verifikasi_berkas:
+            tgl_akhir_verifikasi_berkas_dt = tgl_mulai_verifikasi_berkas_dt + datetime.timedelta(days=3)
+            tgl_akhir_verifikasi_berkas = tgl_akhir_verifikasi_berkas_dt.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            tgl_akhir_verifikasi_berkas_dt = datetime.datetime.strptime(tgl_akhir_verifikasi_berkas, '%Y-%m-%d %H:%M:%S')
 
         if not tgl_mulai_seleksi:
             tgl_mulai_seleksi_dt = tgl_akhir_pendaftaran_dt
@@ -129,6 +143,8 @@ class PesantrenBeranda(http.Controller):
         # Format tanggal untuk ditampilkan di halaman
         tgl_mulai_pendaftaran_formatted = format_tanggal_manual(tgl_mulai_pendaftaran_dt)
         tgl_akhir_pendaftaran_formatted = format_tanggal_manual(tgl_akhir_pendaftaran_dt)
+        tgl_mulai_verifikasi_berkas_formatted = format_tanggal_manual(tgl_mulai_verifikasi_berkas_dt)
+        tgl_akhir_verifikasi_berkas_formatted = format_tanggal_manual(tgl_akhir_verifikasi_berkas_dt)
         tgl_mulai_seleksi_formatted = format_tanggal_manual(tgl_mulai_seleksi_dt)
         tgl_akhir_seleksi_formatted = format_tanggal_manual(tgl_akhir_seleksi_dt)
         tgl_pengumuman_hasil_seleksi_formatted = format_tanggal_manual(tgl_pengumuman_hasil_seleksi_dt)
@@ -443,7 +459,7 @@ class PesantrenBeranda(http.Controller):
                 </div>
                 <!-- Image Section -->
                 <div class="col-md-6">
-                    <img src="pesantren_pendaftaran/static/src/img/PAGE2.44b0e259.png" class="img-fluid rounded-4"
+                    <img src="https://psb.nuruljadid.net/img/PAGE2.44b0e259.png" class="img-fluid rounded-4"
                     alt="Syarat Pendaftaran">
                 </div>
                 </div>
@@ -541,7 +557,7 @@ class PesantrenBeranda(http.Controller):
             <div class="container my-5">
                 <div class="row align-items-center">
                 <div class="col-md-6">
-                    <img src="pesantren_pendaftaran/static/src/img/PAGE3.e3b6d704.png" alt="Image" class="rounded-custom img-fluid" />
+                    <img src="https://psb.nuruljadid.net/img/PAGE3.e3b6d704.png" alt="Image" class="rounded-custom img-fluid" />
                 </div>
                 <div class="col-md-6 col-sm-12">
                     <h3 class="fw-bold"><span class="text-primary ">Informasi</span> Pelayanan Pendaftaran</h3>
@@ -557,7 +573,7 @@ class PesantrenBeranda(http.Controller):
                         data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                             <p class="m-0">Tanggal:</p>
-                            <p class="fw-bold">1 Maret s.d. 8 Juli 2024</p>
+                            <p class="fw-bold">{tgl_mulai_pendaftaran_formatted} s.d {tgl_akhir_pendaftaran_formatted}</p>
                             <p class="m-0">Layanan Putra:</p>
                             <p class="fw-bold">Kantor Sekretariat Putra</p>
                             <p class="m-0">Layanan Putri:</p>
@@ -577,7 +593,7 @@ class PesantrenBeranda(http.Controller):
                         <div class="accordion-body">
                             <!-- Konten untuk Verifikasi Berkas -->
                             <p class="m-0">Tanggal:</p>
-                            <p class="fw-bold">{tgl_mulai_pendaftaran_formatted} s.d {tgl_akhir_pendaftaran_formatted}</p>
+                            <p class="fw-bold">{tgl_mulai_verifikasi_berkas_formatted} s.d {tgl_akhir_verifikasi_berkas_formatted}</p>
                             <p class="m-0">Tempat Penerimaan:</p>
                             <p class="fw-bold">Pondok Pesantren Daarul Qur'an Istiqomah, {alamat_lengkap} </p>
                         </div>
@@ -619,7 +635,7 @@ class PesantrenBeranda(http.Controller):
                     </p>
                     </div>
                     <div class="col-md-4">
-                    <h5>Social Pages</h5>
+                    <h5>Social /pesantren_pendaftaran/static/src/Pages</h5>
                     <ul class="list-unstyled">
                         <li><a href="https://www.facebook.com/daquistiqomah?mibextid=ZbWKwL" class="text-white"><i class="bi bi-facebook"></i> Facebook</a></li>
                         <li><a href="https://www.instagram.com/dqimedia?igsh=NTVwdWlwd3o5MTF1" class="text-white"><i class="bi bi-instagram"></i> Instagram</a></li>
@@ -646,7 +662,7 @@ class PesantrenBeranda(http.Controller):
             <!-- Footer end -->
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-                crossorigin="anonymous"></script>
+                crossorigin="anonymous"></>
 
                 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
                 <script>
@@ -1005,7 +1021,7 @@ class PesantrenPendaftaran(http.Controller):
                 <div class="text-center text-white">
                     <h4 class="fs-2 fw-semibold mb-2">Aplikasi penerimaan santri baru</h4>
                     <span>Daarul Qur'an Istiqomah Tanah Laut Kalimantan Selatan</span> <br><br>
-                    {f'<a href="/pendaftaran" {"data-bs-toggle='modal' data-bs-target='#modalPendaftaranTutup'" if not is_halaman_pendaftaran else ""} style="background-color: #e91e63; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px;" class=" id="daftar">Daftar Sekarang</a>'}
+                    <a href="/pendaftaran" style="background-color: #e91e63; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px;" class=" id="daftar">Daftar Sekarang</a>
                 </div>
             </div>
 
@@ -1300,6 +1316,8 @@ class UbigPendaftaranController(http.Controller):
         email                  = post.get('email')
         password               = post.get('password')
         jenjang_id             = post.get('jenjang_id')
+        is_alumni              = request.params.get('is_alumni') if request.params.get('is_alumni') else ''
+        is_pindahan_sd         = request.params.get('is_pindahan_sd') if request.params.get('is_pindahan_sd') else ''
         gender                 = request.params.get('gender')
         kota_lahir             = post.get('kota_lahir')
         tanggal_lahir_str      = request.params.get('tanggal_lahir')
@@ -1430,6 +1448,8 @@ class UbigPendaftaranController(http.Controller):
             'email'                  : email,
             'password'               : password,
             'jenjang_id'             : int(jenjang_id),
+            'is_alumni'              : is_alumni,
+            'is_pindahan_sd'         : is_pindahan_sd,
             'gender'                 : gender,
             'kota_lahir'             : kota_lahir,
             'tanggal_lahir'          : tanggal_lahir,
@@ -1969,7 +1989,7 @@ class PesantrenPsbBantuan(http.Controller):
                         <i class="fa-solid fa-fingerprint text-white"></i>
                     </div>
                     <div class="timeline-content bg-white rounded p-3">
-                        <span class="badge text-bg-info text-white text-uppercase">Video Profil Ponpes <br> Daarul Qur'an Istiqomah</span>
+                        <span class="badge text-bg-info text-white text-uppercase">Video Profil Ponpes Daarul Qur'an Istiqomah</span>
                         <div class="ratio ratio-16x9 my-4">
                         <iframe width="437" height="315" src="https://www.youtube.com/embed/OiPEDy0Sv1U" title="" frameborder="0" allowfullscreen></iframe>
                         </div>
@@ -2572,6 +2592,48 @@ class PortalOrangTua(http.Controller):
             </tr>
             """
 
+        next_rows = ""
+        for data in records:
+            # Filter biaya_ids berdasarkan kondisi
+            filtered_biaya = [
+                biaya for biaya in data.jenjang_id.biaya_ids
+                if (data.is_alumni and biaya.is_alumni) or (data.is_pindahan_sd and biaya.is_pindahan_sd) or (not data.is_alumni and not data.is_pindahan_sd and not biaya.is_alumni and not biaya.is_pindahan_sd)
+            ]
+
+            biaya_details = ""
+            if data.status_pembayaran == 'sudahbayar':  # Cek apakah sudah bayar
+                for biaya in filtered_biaya:
+                    # Buat URL untuk unduh file
+                    download_url = f"/download/biaya/{biaya.id}"
+                    
+                    # Tambahkan detail biaya dengan tautan unduhan
+                    biaya_details += f"""
+                    <div class="d-flex justify-content-between">
+                        <p class="fw-semibold">({biaya.name})</p>
+                        <a href="{download_url}" class="btn btn-secondary">Unduh Rincian Biaya Masuk</a>
+                    </div>
+                    """
+
+            # Tentukan status pembayaran
+            if data.status_pembayaran == 'belumbayar':
+                status_pembayaran = f"Rp {int(data.biaya):,}".replace(',', '.') + " (Belum Bayar)"
+            elif data.status_pembayaran == 'sudahbayar':
+                status_pembayaran = "Rp 0 (Sudah Bayar)"
+            elif data.state == 'ditolak':
+                status_pembayaran = "Pendaftaran Dibatalkan"
+            else:
+                status_pembayaran = ""
+
+            # Buat HTML untuk setiap record
+            next_rows += f"""
+            <div class="mb-1" style="border-bottom: 1px solid black;">
+                <h6>- {data.partner_id.name}</h6>
+                <p>Jenjang : {data.jenjang.replace('sdmi', 'SD / MI').replace('smpmts', 'SMP / MTS').replace('smama', 'SMA / MA').replace('paud', 'PAUD').replace('tk', 'TK')}</p>
+                <div>{biaya_details}</div>
+                <p><strong>{status_pembayaran}</strong></p>
+            </div>
+            """
+
         # Membuat HTML dinamis
         html_content = f"""
                 <html lang="en">
@@ -2852,20 +2914,7 @@ class PortalOrangTua(http.Controller):
                         <div class="row">
                             <div class="col-md-6">
                                 <h5 class="mb-3">Biaya PSB:</h5>
-                                {''.join([f"""
-                                <div class="mb-1" style="border-bottom: 1px solid black;">
-                                    <h6>- {data.partner_id.name}</h6>
-                                    <p>Jenjang : {data.jenjang.replace('sdmi', 'SD / MI').replace('smpmts', 'SMP / MTS').replace('smama', 'SMA / MA').replace('paud', 'PAUD').replace('tk', 'TK')}</p>
-                                    <p>
-                                        <strong>
-                                            {'Rp ' + str(f"{int(data.biaya):,}").replace(',', '.') + ' (Belum Bayar)' if data.status_pembayaran == 'belumbayar' else 
-                                            'Rp 0 (Sudah Bayar)' if data.status_pembayaran == 'sudahbayar' else 
-                                            'Pendaftaran Dibatalkan' if data.state == 'ditolak' else ''}
-                                        </strong>
-
-                                    </p>
-                                </div>
-                                """ for data in records])}
+                                {next_rows}
                                 <div class="mt-3 mb-3">
                                     <h6><strong>Total Bayar : Rp {str(f"{sum(int(data.biaya) if data.status_pembayaran == 'belumbayar' else 0 for data in records):,}").replace(',', '.')}</strong></h6>
                                 </div>
@@ -2981,20 +3030,10 @@ class PesantrenLogin(http.Controller):
     def index(self, **kwargs):
         # Ambil data dari sesi
         user_id = request.session.get('user_id')
-        # Ambil nilai dari field konfigurasi
-        config_obj = http.request.env['ir.config_parameter'].sudo()
-
-        is_halaman_pendaftaran = config_obj.get_param('pesantren_pendaftaran.is_halaman_pendaftaran')
-        is_halaman_pengumuman = config_obj.get_param('pesantren_pendaftaran.is_halaman_pengumuman')
-
         if user_id:
             return request.redirect('/portal_orang_tua')
         
-        return request.render('pesantren_pendaftaran.pendaftaran_login_template', {
-            'is_halaman_pengumuman': is_halaman_pengumuman,
-            'is_halaman_pendaftaran': is_halaman_pendaftaran,
-
-        })
+        return request.render('pesantren_pendaftaran.pendaftaran_login_template')
     
     @http.route('/login/submit', type='http', auth='public', methods=['POST'], csrf=True)
     def login(self, **post):
@@ -3065,3 +3104,737 @@ class UploadBuktiPembayaran(http.Controller):
                     'bukti_pembayaran': bukti_pembayaran_b64,
                 })
                 return request.redirect('/portal_orang_tua')
+
+
+
+class MyPage(http.Controller):
+    @http.route('/mypage', type='http', auth='public')
+    def index(self):
+        html_response = f"""
+                            <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Purple Admin</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="/pesantren_pendaftaran/static/src/assets/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="/pesantren_pendaftaran/static/src/assets/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="/pesantren_pendaftaran/static/src/assets/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="/pesantren_pendaftaran/static/src/assets/vendors/font-awesome/css/font-awesome.min.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="/pesantren_pendaftaran/static/src/assets/vendors/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/pesantren_pendaftaran/static/src/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="/pesantren_pendaftaran/static/src/assets/css/style.css">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="/pesantren_pendaftaran/static/src/assets/images/favicon.png" />
+  </head>
+  <body>
+    <div class="container-scroller">
+      <div class="row p-0 m-0 proBanner" id="proBanner">
+        <div class="col-md-12 p-0 m-0">
+          <div class="card-body card-body-padding d-flex align-items-center justify-content-between">
+            <div class="ps-lg-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <p class="mb-0 font-weight-medium me-3 buy-now-text">Free 24/7 customer support, updates, and more with this template!</p>
+                <a href="https://www.bootstrapdash.com/product/purple-bootstrap-admin-template/" target="_blank" class="btn me-2 buy-now-btn border-0">Buy Now</a>
+              </div>
+            </div>
+            <div class="d-flex align-items-center justify-content-between">
+              <a href="https://www.bootstrapdash.com/product/purple-bootstrap-admin-template/"><i class="mdi mdi-home me-3 text-white"></i></a>
+              <button id="bannerClose" class="btn border-0 p-0">
+                <i class="mdi mdi-close text-white mr-0"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- partial:partials/_navbar.html -->
+      <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+        <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+          <a class="navbar-brand brand-logo" href="/mypage"><img src="/pesantren_pendaftaran/static/src/assets/images/logo.svg" alt="logo" /></a>
+          <a class="navbar-brand brand-logo-mini" href="/mypage"><img src="/pesantren_pendaftaran/static/src/assets/images/logo-mini.svg" alt="logo" /></a>
+        </div>
+        <div class="navbar-menu-wrapper d-flex align-items-stretch">
+          <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+            <span class="mdi mdi-menu"></span>
+          </button>
+          <div class="search-field d-none d-md-block">
+            <form class="d-flex align-items-center h-100" action="#">
+              <div class="input-group">
+                <div class="input-group-prepend bg-transparent">
+                  <i class="input-group-text border-0 mdi mdi-magnify"></i>
+                </div>
+                <input type="text" class="form-control bg-transparent border-0" placeholder="Search projects">
+              </div>
+            </form>
+          </div>
+          <ul class="navbar-nav navbar-nav-right">
+            <li class="nav-item nav-profile dropdown">
+              <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="nav-profile-img">
+                  <img src="/pesantren_pendaftaran/static/src/assets/images/faces/face1.jpg" alt="image">
+                  <span class="availability-status online"></span>
+                </div>
+                <div class="nav-profile-text">
+                  <p class="mb-1 text-black">David Greymaax</p>
+                </div>
+              </a>
+              <div class="dropdown-menu navbar-dropdown" aria-labelledby="profileDropdown">
+                <a class="dropdown-item" href="#">
+                  <i class="mdi mdi-cached me-2 text-success"></i> Activity Log </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">
+                  <i class="mdi mdi-logout me-2 text-primary"></i> Signout </a>
+              </div>
+            </li>
+            <li class="nav-item d-none d-lg-block full-screen-link">
+              <a class="nav-link">
+                <i class="mdi mdi-fullscreen" id="fullscreen-button"></i>
+              </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link count-indicator dropdown-toggle" id="messageDropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="mdi mdi-email-outline"></i>
+                <span class="count-symbol bg-warning"></span>
+              </a>
+              <div class="dropdown-menu dropdown-menu-end navbar-dropdown preview-list" aria-labelledby="messageDropdown">
+                <h6 class="p-3 mb-0">Messages</h6>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item preview-item">
+                  <div class="preview-thumbnail">
+                    <img src="/pesantren_pendaftaran/static/src/assets/images/faces/face4.jpg" alt="image" class="profile-pic">
+                  </div>
+                  <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                    <h6 class="preview-subject ellipsis mb-1 font-weight-normal">Mark send you a message</h6>
+                    <p class="text-gray mb-0"> 1 Minutes ago </p>
+                  </div>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item preview-item">
+                  <div class="preview-thumbnail">
+                    <img src="/pesantren_pendaftaran/static/src/assets/images/faces/face2.jpg" alt="image" class="profile-pic">
+                  </div>
+                  <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                    <h6 class="preview-subject ellipsis mb-1 font-weight-normal">Cregh send you a message</h6>
+                    <p class="text-gray mb-0"> 15 Minutes ago </p>
+                  </div>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item preview-item">
+                  <div class="preview-thumbnail">
+                    <img src="/pesantren_pendaftaran/static/src/assets/images/faces/face3.jpg" alt="image" class="profile-pic">
+                  </div>
+                  <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                    <h6 class="preview-subject ellipsis mb-1 font-weight-normal">Profile picture updated</h6>
+                    <p class="text-gray mb-0"> 18 Minutes ago </p>
+                  </div>
+                </a>
+                <div class="dropdown-divider"></div>
+                <h6 class="p-3 mb-0 text-center">4 new messages</h6>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
+                <i class="mdi mdi-bell-outline"></i>
+                <span class="count-symbol bg-danger"></span>
+              </a>
+              <div class="dropdown-menu dropdown-menu-end navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
+                <h6 class="p-3 mb-0">Notifications</h6>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item preview-item">
+                  <div class="preview-thumbnail">
+                    <div class="preview-icon bg-success">
+                      <i class="mdi mdi-calendar"></i>
+                    </div>
+                  </div>
+                  <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                    <h6 class="preview-subject font-weight-normal mb-1">Event today</h6>
+                    <p class="text-gray ellipsis mb-0"> Just a reminder that you have an event today </p>
+                  </div>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item preview-item">
+                  <div class="preview-thumbnail">
+                    <div class="preview-icon bg-warning">
+                      <i class="mdi mdi-cog"></i>
+                    </div>
+                  </div>
+                  <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                    <h6 class="preview-subject font-weight-normal mb-1">Settings</h6>
+                    <p class="text-gray ellipsis mb-0"> Update dashboard </p>
+                  </div>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item preview-item">
+                  <div class="preview-thumbnail">
+                    <div class="preview-icon bg-info">
+                      <i class="mdi mdi-link-variant"></i>
+                    </div>
+                  </div>
+                  <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                    <h6 class="preview-subject font-weight-normal mb-1">Launch Admin</h6>
+                    <p class="text-gray ellipsis mb-0"> New admin wow! </p>
+                  </div>
+                </a>
+                <div class="dropdown-divider"></div>
+                <h6 class="p-3 mb-0 text-center">See all notifications</h6>
+              </div>
+            </li>
+            <li class="nav-item nav-logout d-none d-lg-block">
+              <a class="nav-link" href="#">
+                <i class="mdi mdi-power"></i>
+              </a>
+            </li>
+            <li class="nav-item nav-settings d-none d-lg-block">
+              <a class="nav-link" href="#">
+                <i class="mdi mdi-format-line-spacing"></i>
+              </a>
+            </li>
+          </ul>
+          <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+            <span class="mdi mdi-menu"></span>
+          </button>
+        </div>
+      </nav>
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_sidebar.html -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+          <ul class="nav">
+            <li class="nav-item nav-profile">
+              <a href="#" class="nav-link">
+                <div class="nav-profile-image">
+                  <img src="/pesantren_pendaftaran/static/src/assets/images/faces/face1.jpg" alt="profile" />
+                  <span class="login-status online"></span>
+                  <!--change to offline or busy as needed-->
+                </div>
+                <div class="nav-profile-text d-flex flex-column">
+                  <span class="font-weight-bold mb-2">David Grey. H</span>
+                  <span class="text-secondary text-small">Project Manager</span>
+                </div>
+                <i class="mdi mdi-bookmark-check text-success nav-profile-badge"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/mypage">
+                <span class="menu-title">Dashboard</span>
+                <i class="mdi mdi-home menu-icon"></i>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+                <span class="menu-title">Basic UI Elements</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-crosshairs-gps menu-icon"></i>
+              </a>
+              <div class="collapse" id="ui-basic">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item">
+                    <a class="nav-link" href="/pesantren_pendaftaran/static/src/pages/ui-features/buttons.html">Buttons</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/pesantren_pendaftaran/static/src/pages/ui-features/dropdowns.html">Dropdowns</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/pesantren_pendaftaran/static/src/pages/ui-features/typography.html">Typography</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="collapse" href="#icons" aria-expanded="false" aria-controls="icons">
+                <span class="menu-title">Icons</span>
+                <i class="mdi mdi-contacts menu-icon"></i>
+              </a>
+              <div class="collapse" id="icons">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item">
+                    <a class="nav-link" href="/pesantren_pendaftaran/static/src/pages/icons/font-awesome.html">Font Awesome</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="collapse" href="#forms" aria-expanded="false" aria-controls="forms">
+                <span class="menu-title">Forms</span>
+                <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+              </a>
+              <div class="collapse" id="forms">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item">
+                    <a class="nav-link" href="/pesantren_pendaftaran/static/src/pages/forms/basic_elements.html">Form Elements</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="collapse" href="#charts" aria-expanded="false" aria-controls="charts">
+                <span class="menu-title">Charts</span>
+                <i class="mdi mdi-chart-bar menu-icon"></i>
+              </a>
+              <div class="collapse" id="charts">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item">
+                    <a class="nav-link" href="/pesantren_pendaftaran/static/src/pages/charts/chartjs.html">ChartJs</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="collapse" href="#tables" aria-expanded="false" aria-controls="tables">
+                <span class="menu-title">Tables</span>
+                <i class="mdi mdi-table-large menu-icon"></i>
+              </a>
+              <div class="collapse" id="tables">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item">
+                    <a class="nav-link" href="/pesantren_pendaftaran/static/src/pages/tables/basic-table.html">Basic table</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
+                <span class="menu-title">User</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-lock menu-icon"></i>
+              </a>
+              <div class="collapse" id="auth">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item">
+                    <a class="nav-link" href="/pesantren_pendaftaran/static/src/pages/samples/blank-page.html"> Blank Page </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/pesantren_pendaftaran/static/src/pages/samples/login.html"> Login </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/pesantren_pendaftaran/static/src/pages/samples/register.html"> Register </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/pesantren_pendaftaran/static/src/pages/samples/error-404.html"> 404 </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="/pesantren_pendaftaran/static/src/pages/samples/error-500.html"> 500 </a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/pesantren_pendaftaran/static/src/docs/documentation.html" target="_blank">
+                <span class="menu-title">Documentation</span>
+                <i class="mdi mdi-file-document-box menu-icon"></i>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              <h3 class="page-title">
+                <span class="page-title-icon bg-gradient-primary text-white me-2">
+                  <i class="mdi mdi-home"></i>
+                </span> Dashboard
+              </h3>
+              <nav aria-label="breadcrumb">
+                <ul class="breadcrumb">
+                  <li class="breadcrumb-item active" aria-current="page">
+                    <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+            <div class="row">
+              <div class="col-md-4 stretch-card grid-margin">
+                <div class="card bg-gradient-danger card-img-holder text-white">
+                  <div class="card-body">
+                    <img src="/pesantren_pendaftaran/static/src/assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                    <h4 class="font-weight-normal mb-3">Weekly Sales <i class="mdi mdi-chart-line mdi-24px float-end"></i>
+                    </h4>
+                    <h2 class="mb-5">$ 15,0000</h2>
+                    <h6 class="card-text">Increased by 60%</h6>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 stretch-card grid-margin">
+                <div class="card bg-gradient-info card-img-holder text-white">
+                  <div class="card-body">
+                    <img src="/pesantren_pendaftaran/static/src/assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                    <h4 class="font-weight-normal mb-3">Weekly Orders <i class="mdi mdi-bookmark-outline mdi-24px float-end"></i>
+                    </h4>
+                    <h2 class="mb-5">45,6334</h2>
+                    <h6 class="card-text">Decreased by 10%</h6>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 stretch-card grid-margin">
+                <div class="card bg-gradient-success card-img-holder text-white">
+                  <div class="card-body">
+                    <img src="/pesantren_pendaftaran/static/src/assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                    <h4 class="font-weight-normal mb-3">Visitors Online <i class="mdi mdi-diamond mdi-24px float-end"></i>
+                    </h4>
+                    <h2 class="mb-5">95,5741</h2>
+                    <h6 class="card-text">Increased by 5%</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-7 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="clearfix">
+                      <h4 class="card-title float-start">Visit And Sales Statistics</h4>
+                      <div id="visit-sale-chart-legend" class="rounded-legend legend-horizontal legend-top-right float-end"></div>
+                    </div>
+                    <canvas id="visit-sale-chart" class="mt-4"></canvas>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-5 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Traffic Sources</h4>
+                    <div class="doughnutjs-wrapper d-flex justify-content-center">
+                      <canvas id="traffic-chart"></canvas>
+                    </div>
+                    <div id="traffic-chart-legend" class="rounded-legend legend-vertical legend-bottom-left pt-4"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Recent Tickets</h4>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th> Assignee </th>
+                            <th> Subject </th>
+                            <th> Status </th>
+                            <th> Last Update </th>
+                            <th> Tracking ID </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              <img src="/pesantren_pendaftaran/static/src/assets/images/faces/face1.jpg" class="me-2" alt="image"> David Grey
+                            </td>
+                            <td> Fund is not recieved </td>
+                            <td>
+                              <label class="badge badge-gradient-success">DONE</label>
+                            </td>
+                            <td> Dec 5, 2017 </td>
+                            <td> WD-12345 </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <img src="/pesantren_pendaftaran/static/src/assets/images/faces/face2.jpg" class="me-2" alt="image"> Stella Johnson
+                            </td>
+                            <td> High loading time </td>
+                            <td>
+                              <label class="badge badge-gradient-warning">PROGRESS</label>
+                            </td>
+                            <td> Dec 12, 2017 </td>
+                            <td> WD-12346 </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <img src="/pesantren_pendaftaran/static/src/assets/images/faces/face3.jpg" class="me-2" alt="image"> Marina Michel
+                            </td>
+                            <td> Website down for one week </td>
+                            <td>
+                              <label class="badge badge-gradient-info">ON HOLD</label>
+                            </td>
+                            <td> Dec 16, 2017 </td>
+                            <td> WD-12347 </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <img src="/pesantren_pendaftaran/static/src/assets/images/faces/face4.jpg" class="me-2" alt="image"> John Doe
+                            </td>
+                            <td> Loosing control on server </td>
+                            <td>
+                              <label class="badge badge-gradient-danger">REJECTED</label>
+                            </td>
+                            <td> Dec 3, 2017 </td>
+                            <td> WD-12348 </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-5 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body p-0 d-flex">
+                    <div id="inline-datepicker" class="datepicker datepicker-custom"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-7 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Recent Updates</h4>
+                    <div class="d-flex">
+                      <div class="d-flex align-items-center me-4 text-muted font-weight-light">
+                        <i class="mdi mdi-account-outline icon-sm me-2"></i>
+                        <span>jack Menqu</span>
+                      </div>
+                      <div class="d-flex align-items-center text-muted font-weight-light">
+                        <i class="mdi mdi-clock icon-sm me-2"></i>
+                        <span>October 3rd, 2018</span>
+                      </div>
+                    </div>
+                    <div class="row mt-3">
+                      <div class="col-6 pe-1">
+                        <img src="/pesantren_pendaftaran/static/src/assets/images/dashboard/img_1.jpg" class="mb-2 mw-100 w-100 rounded" alt="image">
+                        <img src="/pesantren_pendaftaran/static/src/assets/images/dashboard/img_4.jpg" class="mw-100 w-100 rounded" alt="image">
+                      </div>
+                      <div class="col-6 ps-1">
+                        <img src="/pesantren_pendaftaran/static/src/assets/images/dashboard/img_2.jpg" class="mb-2 mw-100 w-100 rounded" alt="image">
+                        <img src="/pesantren_pendaftaran/static/src/assets/images/dashboard/img_3.jpg" class="mw-100 w-100 rounded" alt="image">
+                      </div>
+                    </div>
+                    <div class="d-flex mt-5 align-items-top">
+                      <img src="/pesantren_pendaftaran/static/src/assets/images/faces/face3.jpg" class="img-sm rounded-circle me-3" alt="image">
+                      <div class="mb-0 flex-grow">
+                        <h5 class="me-2 mb-2">School Website - Authentication Module.</h5>
+                        <p class="mb-0 font-weight-light">It is a long established fact that a reader will be distracted by the readable content of a page.</p>
+                      </div>
+                      <div class="ms-auto">
+                        <i class="mdi mdi-heart-outline text-muted"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-7 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Project Status</h4>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th> # </th>
+                            <th> Name </th>
+                            <th> Due Date </th>
+                            <th> Progress </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td> 1 </td>
+                            <td> Herman Beck </td>
+                            <td> May 15, 2015 </td>
+                            <td>
+                              <div class="progress">
+                                <div class="progress-bar bg-gradient-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td> 2 </td>
+                            <td> Messsy Adam </td>
+                            <td> Jul 01, 2015 </td>
+                            <td>
+                              <div class="progress">
+                                <div class="progress-bar bg-gradient-danger" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td> 3 </td>
+                            <td> John Richards </td>
+                            <td> Apr 12, 2015 </td>
+                            <td>
+                              <div class="progress">
+                                <div class="progress-bar bg-gradient-warning" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td> 4 </td>
+                            <td> Peter Meggik </td>
+                            <td> May 15, 2015 </td>
+                            <td>
+                              <div class="progress">
+                                <div class="progress-bar bg-gradient-primary" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td> 5 </td>
+                            <td> Edward </td>
+                            <td> May 03, 2015 </td>
+                            <td>
+                              <div class="progress">
+                                <div class="progress-bar bg-gradient-danger" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td> 5 </td>
+                            <td> Ronald </td>
+                            <td> Jun 05, 2015 </td>
+                            <td>
+                              <div class="progress">
+                                <div class="progress-bar bg-gradient-info" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-5 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title text-dark">Todo List</h4>
+                    <div class="add-items d-flex">
+                      <input type="text" class="form-control todo-list-input" placeholder="What do you need to do today?">
+                      <button class="add btn btn-gradient-primary font-weight-bold todo-list-add-btn" id="add-task">Add</button>
+                    </div>
+                    <div class="list-wrapper">
+                      <ul class="d-flex flex-column-reverse todo-list todo-list-custom">
+                        <li>
+                          <div class="form-check">
+                            <label class="form-check-label">
+                              <input class="checkbox" type="checkbox"> Meeting with Alisa </label>
+                          </div>
+                          <i class="remove mdi mdi-close-circle-outline"></i>
+                        </li>
+                        <li class="completed">
+                          <div class="form-check">
+                            <label class="form-check-label">
+                              <input class="checkbox" type="checkbox" checked> Call John </label>
+                          </div>
+                          <i class="remove mdi mdi-close-circle-outline"></i>
+                        </li>
+                        <li>
+                          <div class="form-check">
+                            <label class="form-check-label">
+                              <input class="checkbox" type="checkbox"> Create invoice </label>
+                          </div>
+                          <i class="remove mdi mdi-close-circle-outline"></i>
+                        </li>
+                        <li>
+                          <div class="form-check">
+                            <label class="form-check-label">
+                              <input class="checkbox" type="checkbox"> Print Statements </label>
+                          </div>
+                          <i class="remove mdi mdi-close-circle-outline"></i>
+                        </li>
+                        <li class="completed">
+                          <div class="form-check">
+                            <label class="form-check-label">
+                              <input class="checkbox" type="checkbox" checked> Prepare for presentation </label>
+                          </div>
+                          <i class="remove mdi mdi-close-circle-outline"></i>
+                        </li>
+                        <li>
+                          <div class="form-check">
+                            <label class="form-check-label">
+                              <input class="checkbox" type="checkbox"> Pick up kids from school </label>
+                          </div>
+                          <i class="remove mdi mdi-close-circle-outline"></i>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+          <footer class="footer">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+              <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2023 <a href="https://www.bootstrapdash.com/" target="_blank">BootstrapDash</a>. All rights reserved.</span>
+              <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with <i class="mdi mdi-heart text-danger"></i></span>
+            </div>
+          </footer>
+          <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="/pesantren_pendaftaran/static/src/assets/vendors/js/vendor.bundle.base.js"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="/pesantren_pendaftaran/static/src/assets/vendors/chart.js/chart.umd.js"></script>
+    <script src="/pesantren_pendaftaran/static/src/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="/pesantren_pendaftaran/static/src/assets/js/off-canvas.js"></script>
+    <script src="/pesantren_pendaftaran/static/src/assets/js/misc.js"></script>
+    <script src="/pesantren_pendaftaran/static/src/assets/js/settings.js"></script>
+    <script src="/pesantren_pendaftaran/static/src/assets/js/todolist.js"></script>
+    <script src="/pesantren_pendaftaran/static/src/assets/js/jquery.cookie.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page -->
+    <script src="/pesantren_pendaftaran/static/src/assets/js/dashboard.js"></script>
+    <!-- End custom js for this page -->
+  </body>
+</html>
+
+                        """
+        return request.make_response(html_response)
+
+
+class RincianBiayaController(http.Controller):
+    @http.route('/download/biaya/<int:biaya_id>', type='http', auth='public')
+    def download_biaya(self, biaya_id, **kwargs):
+
+        def convert_binary_to_pdf(binary_data, file_name="converted_file.pdf"):
+            # Mengonversi data biner kembali ke format PDF
+            pdf_data = base64.b64decode(binary_data)
+            
+            # Gunakan tempfile untuk membuat file sementara
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
+                temp_file.write(pdf_data)
+                return temp_file.name  # Mengembalikan path ke file sementara
+        # Ambil data biaya berdasarkan ID
+        biaya = request.env['ubig.biaya_daftarulang'].sudo().browse(biaya_id)
+        
+        if biaya.gambar:
+            binary_data = biaya.gambar
+            file_path = convert_binary_to_pdf(binary_data)
+            # Pastikan file ada sebelum melanjutkan
+            if os.path.exists(file_path):
+                with open(file_path, 'rb') as file:
+                    dt = file.read()
+
+            nama_file_download = f"RincianBiaya{biaya.name}.pdf"
+
+            # Kirimkan file ke pengguna sebagai download
+            return request.make_response(dt, headers=[
+                ('Content-Type', 'application/pdf'),
+                ('Content-Disposition', f'attachment; filename={nama_file_download}'),
+            ])
+        else:
+            return "No PDF found"
+
+

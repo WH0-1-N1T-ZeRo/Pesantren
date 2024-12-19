@@ -29,6 +29,11 @@
                                 <field name="tgl_akhir_pendaftaran" widget="date" string="Tanggal Akhir Pendaftaran"/>
                             </group>
 
+                            <group string="Tanggal Verifikasi Berkas" name="group_tanggal_verifikasi_berkas">
+                                <field name="tgl_mulai_verifikasi_berkas" widget="date" string="Tanggal Mulai Verifikasi Berkas"/>
+                                <field name="tgl_akhir_verifikasi_berkas" widget="date" string="Tanggal Akhir Verifikasi Berkas"/>
+                            </group>
+
                             <group string="Tanggal Seleksi" name="group_tanggal_seleksi">
                                 <field name="tgl_mulai_seleksi" widget="datetime" string="Tanggal Mulai Seleksi"/>
                                 <field name="tgl_akhir_seleksi" widget="datetime" string="Tanggal Akhir Seleksi"/>

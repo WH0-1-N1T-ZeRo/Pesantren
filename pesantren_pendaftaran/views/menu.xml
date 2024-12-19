@@ -19,13 +19,13 @@
         id="pendaftaran_pengaturan" 
         name="Pengaturan" 
         parent="pendaftaran_menu_root" 
-        sequence="50"/>
+        sequence="20"/>
     <menuitem 
             id="pengaturan_setting" 
-            name="Setting PSB"
-            parent="pendaftaran_pengaturan"
+            name="Pengaturan PSB"
+            parent="pengaturan_umum_menu"
             action="res_config_settings_action" 
-            sequence="1"/>
+            sequence="20"/>
     <menuitem 
             id="pengaturan_umum_menu" 
             name="Pengaturan Umum"

@@ -573,6 +573,18 @@ class ResConfigSettings(models.TransientModel):
         config_parameter='pesantren_pendaftaran.tgl_akhir_pendaftaran',
         help="Atur tgl akhir dari pendaftaran",
     )
+
+    tgl_mulai_verifikasi_berkas = fields.Datetime(
+        string="Tanggal Mulai Pendaftaran",
+        config_parameter='pesantren_pendaftaran.tgl_mulai_verifikasi_berkas',
+        help="Atur tgl mulai verifikasi berkas",
+    )
+    tgl_akhir_verifikasi_berkas = fields.Datetime(
+        string="Tanggal Akhir Pendaftaran",
+        config_parameter='pesantren_pendaftaran.tgl_akhir_verifikasi_berkas',
+        help="Atur tgl akhir verifikasi berkas",
+    )
+
     tgl_mulai_seleksi = fields.Datetime(
         string="Tanggal Mulai Seleksi",
         config_parameter='pesantren_pendaftaran.tgl_mulai_seleksi',
@@ -626,6 +638,16 @@ class ResConfigSettings(models.TransientModel):
             'pesantren_pendaftaran.tgl_akhir_pendaftaran',
             self.tgl_akhir_pendaftaran.strftime('%Y-%m-%d %H:%M:%S') if self.tgl_akhir_pendaftaran else False
         )
+
+        self.env['ir.config_parameter'].set_param(
+            'pesantren_pendaftaran.tgl_mulai_verifikasi_berkas',
+            self.tgl_mulai_verifikasi_berkas.strftime('%Y-%m-%d %H:%M:%S') if self.tgl_mulai_verifikasi_berkas else False
+        )
+        self.env['ir.config_parameter'].set_param(
+            'pesantren_pendaftaran.tgl_akhir_verifikasi_berkas',
+            self.tgl_akhir_verifikasi_berkas.strftime('%Y-%m-%d %H:%M:%S') if self.tgl_akhir_verifikasi_berkas else False
+        )
+
         self.env['ir.config_parameter'].set_param(
             'pesantren_pendaftaran.tgl_mulai_seleksi',
             self.tgl_mulai_seleksi.strftime('%Y-%m-%d %H:%M:%S') if self.tgl_mulai_seleksi else False
@@ -675,6 +697,14 @@ class ResConfigSettings(models.TransientModel):
         if not tgl_akhir_pendaftaran:
             tgl_akhir_pendaftaran = (datetime.now() + timedelta(days=4)).strftime('%Y-%m-%d %H:%M:%S')
 
+        tgl_mulai_verifikasi_berkas = icp.get_param('pesantren_pendaftaran.tgl_mulai_verifikasi_berkas', default=False)
+        if not tgl_mulai_verifikasi_berkas:
+            tgl_mulai_verifikasi_berkas = (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')
+
+        tgl_akhir_verifikasi_berkas = icp.get_param('pesantren_pendaftaran.tgl_akhir_verifikasi_berkas', default=False)
+        if not tgl_akhir_verifikasi_berkas:
+            tgl_akhir_verifikasi_berkas = (datetime.now() + timedelta(days=4)).strftime('%Y-%m-%d %H:%M:%S')
+
         tgl_mulai_seleksi = icp.get_param('pesantren_pendaftaran.tgl_mulai_seleksi', default=False)
         if not tgl_mulai_seleksi:
             tgl_mulai_seleksi = (datetime.now() + timedelta(days=5)).strftime('%Y-%m-%d %H:%M:%S')
@@ -691,6 +721,8 @@ class ResConfigSettings(models.TransientModel):
             # 'kuota_pendaftaran': int(icp.get_param('pesantren_pendaftaran.kuota_pendaftaran', default=0)),
             'tgl_mulai_pendaftaran': tgl_mulai_pendaftaran,
             'tgl_akhir_pendaftaran': tgl_akhir_pendaftaran,
+            'tgl_mulai_verifikasi_berkas': tgl_mulai_verifikasi_berkas,
+            'tgl_akhir_verifikasi_berkas': tgl_akhir_verifikasi_berkas,
             'tgl_mulai_seleksi': tgl_mulai_seleksi,
             'tgl_akhir_seleksi': tgl_akhir_seleksi,
             'tgl_pengumuman_hasil_seleksi': tgl_pengumuman_hasil_seleksi,
